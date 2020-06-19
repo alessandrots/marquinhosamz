@@ -7,9 +7,11 @@ import { AuthContext } from '../../contexts/auth';
 
 import {RNCamera} from 'react-native-camera';
 
+import Icon from "react-native-vector-icons/Feather";
+
 //import api from '../../services/api';
 
-import { StackActions } from '@react-navigation/native';
+//import { StackActions } from '@react-navigation/native';
 
 
 
@@ -30,6 +32,9 @@ function PhotoMain(props) {
   const [photoShot, setPhotoShot] = useState(false);
   const [loading, setLoading] = useState(false);
   const [sidePhoto, setSidePhoto] = useState({});
+
+  const [camera, setCamera] = useState();
+
 
   useEffect(() => {
     //console.log('\n\n props PhotoMain objParams = ', props);
@@ -110,7 +115,7 @@ function PhotoMain(props) {
     //console.log('identifiedImage = ', identifiedImage);
 
 		// Show an alert with the answer on
-
+    /**
     Alert.alert(
       "AIZON",
       "[Foto] = " + identifiedImage.uri,
@@ -123,7 +128,7 @@ function PhotoMain(props) {
       ],
       { cancelable: false }
   );
-
+ */
 		// Resume the preview
 		//camera.resumePreview();
 	}
@@ -176,21 +181,6 @@ function PhotoMain(props) {
     );
   }
 
-  function BotoesView  () {
-      if (photoShot) {
-        return  (
-              <ModalButtons>
-                <CameraButtonContainer onPress={() => handleCameraDiscard()}>
-                  <CancelButtonText>Cancelar</CancelButtonText>
-                </CameraButtonContainer>
-                <CameraButtonContainer onPress={() => handleCameraForward()}>
-                  <ContinueButtonText>Continuar</ContinueButtonText>
-                </CameraButtonContainer>
-              </ModalButtons>
-          )
-    }
-  }
-
 
   return (
 
@@ -204,15 +194,15 @@ function PhotoMain(props) {
                   title: 'Permission to use camera',
                   message: 'We need your permission to use your camera',
                   buttonPositive: 'Ok',
-                  buttonNegative: 'Cancel',
+                  buttonNegative: 'Cancelar',
                 }}
                 androidRecordAudioPermissionOptions={{
                   title: 'Permission to use audio recording',
                   message: 'We need your permission to use your audio',
                   buttonPositive: 'Ok',
-                  buttonNegative: 'Cancel',
+                  buttonNegative: 'Cancelar',
                 }}
-                onGoogleVisionBarcodesDetected={({ barcodes }) => {
+                onGoogleVisionBarcodesDetected={({ barcodes }) =>  {
                   console.log(barcodes);
                 }}
               >
@@ -222,24 +212,26 @@ function PhotoMain(props) {
 
                       if (!photoShot) {
                         return (
-                          <View visible={photoShot}>
+                          <View style={styles.viewPhoto} visible={photoShot}>
                             <ActivityIndicator size="large" color="#0EABB5" animating={loading}/>
                             <TouchableOpacity onPress={() => handleTakePicture2(camera)} style={styles.capture}>
-                              <Text style={{ fontSize: 14 }}> FOTO </Text>
+                              <Icon name="octagon" size={80} color={"#F0B42F"} />
                             </TouchableOpacity>
-
+                            <TouchableOpacity onPress={() => handleCameraDiscard()} style={styles.buttonCloseCamera}>
+                              <Icon name="home" size={40} color={"#0EABB5"} />
+                            </TouchableOpacity>
                           </View>
                         );
                       } else {
                         return (
-                          <ModalButtons>
-                            <CameraButtonContainer onPress={() => handleCameraDiscard()}>
-                              <CancelButtonText>Descartar</CancelButtonText>
-                            </CameraButtonContainer>
-                            <CameraButtonContainer onPress={() => handleCameraForward()}>
-                              <ContinueButtonText>Enviar</ContinueButtonText>
-                            </CameraButtonContainer>
-                          </ModalButtons>
+                          <View style={styles.viewPhotoTaked}>
+                            <TouchableOpacity onPress={() => handleCameraDiscard()} style={styles.capture2}>
+                              <Icon name="home" size={40} color={"#0EABB5"} />
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => handleCameraForward()} style={styles.capture2}>
+                              <Icon name="save" size={40} color={"#F0B42F"} />
+                            </TouchableOpacity>
+                          </View>
                         )
                       }
                   }}
@@ -257,11 +249,39 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
     alignItems: 'center'
   },
+  viewPhoto: {
+    flex: 1,
+    flexDirection: 'column',
+    backgroundColor: 'transparent',
+    justifyContent:'flex-end'
+  },
+
   capture: {
-    backgroundColor: '#fff',
+    backgroundColor:  'transparent',
     borderRadius: 5,
     paddingHorizontal: 20,
     alignSelf: 'center',
+    margin: 10,
+  },
+
+  buttonCloseCamera: {
+    flex: 0,
+    position: "absolute",
+    top: 20,
+    left: 40
+  },
+
+  viewPhotoTaked: {
+    flex: 1,
+    flexDirection: 'row',
+    backgroundColor: 'transparent',
+    justifyContent:'flex-end'
+  },
+
+  capture2: {
+    borderRadius: 5,
+    paddingHorizontal: 20,
+    alignSelf:'flex-end',
     margin: 10,
   },
 });

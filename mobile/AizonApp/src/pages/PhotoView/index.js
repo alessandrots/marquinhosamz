@@ -32,11 +32,7 @@ export default function PhotoView({ navigator, route }) {
         <Header titlePage="Foto de Documento"/>
       </ContainerHeader>
 
-
       <PhotoMain objParams={ {navigator:navigator, route:route} }/>
-
-
-
 
     </Background>
   );

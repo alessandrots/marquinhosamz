@@ -9,15 +9,17 @@ import ImageList from "../../components/ImageList/ImageList";
 
 import ImageView from "react-native-image-viewing";
 
+import PhotoService from '../../services/photo/PhotoService';
+
 import { ImageURISource, ImageRequireSource } from "react-native";
 
 import { Background, ContainerHeader, ContainerFooter, ContainerMain} from '../Home/styles';
 
-import {  Link, LinkText } from '../SignIn/styles';
+import {  Link, LinkText, SubmitButton, SubmitText } from '../SignIn/styles';
 
 const ImageSource = ImageURISource | ImageRequireSource;
 
-export default function ViewData() {
+export default function ViewData({ navigator, route }) {
 
   const { user } = useContext(AuthContext);
 
@@ -66,6 +68,22 @@ export default function ViewData() {
   const [visible, setIsVisible] = useState(false);
   const [imagesOriginal, setImagesOriginal] = useState();
 
+
+  async function getDataForConfig() {
+    let res = await PhotoService.getDataForConfig('/image/getDataForConfig', '6sn96FINoUghUbh');
+    //let res = await PhotoService.realGetDataForConfig('/image/getDataForConfig', '6sn96FINoUghUbh');
+
+    if (res) {
+      console.log(`Status code: ${res.status}`);
+      console.log(`Status text: ${res.statusText}`);
+      console.log(`Request method: ${res.request.method}`);
+      console.log(`Path: ${res.request.path}`);
+
+      console.log(`Date: ${res.headers.date}`);
+      console.log(`Data: ${res.data}`);
+    }
+  }
+
   const onSelect = (images, index) => {
     setImageIndex(index);
     setImagesOriginal(arrayImagesOriginal);
@@ -82,6 +100,10 @@ export default function ViewData() {
         <Link onPress={ () => navigation.navigate('Photo')}>
             <LinkText>PHOTO 2</LinkText>
         </Link>
+
+        <SubmitButton onPress={getDataForConfig}>
+            <SubmitText>Get DATA CONFIG</SubmitText>
+        </SubmitButton>
 
       </ContainerMain>
 

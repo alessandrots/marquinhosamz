@@ -102,12 +102,19 @@ function AppRoutes(){
           <AppDrawer.Screen
               name="PhotoManager"
               component={PhotoManager}
+              options={{ title: 'Foto Documental' }}
               />
+
+          <AppDrawer.Screen
+            name="ViewData"
+            component={ViewData}
+            options={{ title: 'Visualizar Dados' }}/>
 
           <AppDrawer.Screen
             name="Verificar_Autenticidade"
             component={ViewAuthenticity}
             options={{ title: 'Verificar Autenticidade' }}/>
+
 
           <AppDrawer.Screen
             name="CertifyProcess"
