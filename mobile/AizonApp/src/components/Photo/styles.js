@@ -87,11 +87,11 @@ export const ModalImageItem = styled.Image.attrs({
 })``;
 
 export const ModalButtons = styled.View.attrs({
-  paddingHorizontal: 5,
-  paddingVertical: 0,
-  //backgroundColor: 'rgba(52, 52, 52, 0.8)',
+  alignItems: 'center',
   flexDirection: 'row',
-  justifyContent: 'space-between',
+  backgroundColor: '#CC0000',
+  justifyContent:'center'
+
 })``;
 
 export const CameraButtonContainer = styled.TouchableHighlight.attrs({

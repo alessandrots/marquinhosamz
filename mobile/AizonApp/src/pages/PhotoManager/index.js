@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { Alert, StatusBar, StyleSheet, SafeAreaView, View, Text, RefreshControl, Image} from 'react-native';
+import { Alert, StatusBar, StyleSheet, SafeAreaView,
+  View, Text, RefreshControl, Image, ActivityIndicator} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 import { AuthContext } from '../../contexts/auth';
@@ -30,6 +31,7 @@ export default function PhotoManager({ navigator, route }) {
   const [visibleList, setIsVisibleList] = useState(false);
 
   const [toggleCheckBox, setToggleCheckBox] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     //console.log('route PhotoManager = ', route);
@@ -331,6 +333,7 @@ export default function PhotoManager({ navigator, route }) {
       alertMessageUpload('É importante ter as duas imagens carregadas.');
       return;
     }
+    setLoading(true);
 
     console.log('uploadBase64ToAizonViaBody = ');
     let fileImageFront = images[0]['uri'];
@@ -348,6 +351,7 @@ export default function PhotoManager({ navigator, route }) {
 
 
     if (res) {
+      setLoading(false);
       console.log('Status code: ',res.status);
       console.log('Status text: ',res.statusText);
       console.log('Request method: ',res.request.method);
@@ -381,12 +385,16 @@ export default function PhotoManager({ navigator, route }) {
         [
           {
             text: "Ok",
-            onPress: () => {return null},
+            onPress: () => goToDataVisualization(),
             style: "ok"
           }
         ],
         { cancelable: false }
     );
+  }
+
+  function goToDataVisualization() {
+    navigation.navigate('ViewData', { side: '0'});
   }
 
   function isShowImageList() {
@@ -439,12 +447,12 @@ export default function PhotoManager({ navigator, route }) {
 
               <ContainerMain>
 
-
+                <ActivityIndicator size="large" color="#0EABB5" animating={loading}/>
                 <ContainerImageRight>
 
                     <ContainerDadosView>
                       <TitleText>Primeira Fotografia: </TitleText>
-                      <SubmitButton onPress={ () => navigation.navigate('Photo', { side: '0' })}>
+                      <SubmitButton onPress={ () => navigation.navigate('Photo', { side: '0', visible: true })}>
                           <SubmitText>Frontal</SubmitText>
                       </SubmitButton>
                     </ContainerDadosView>
@@ -476,7 +484,7 @@ export default function PhotoManager({ navigator, route }) {
                 <ContainerImageLeft>
                   <ContainerDadosView>
                     <TitleText>Segunda Fotografia: </TitleText>
-                    <SubmitButton onPress={ () => navigation.navigate('Photo', { side: 1 })}>
+                    <SubmitButton onPress={ () => navigation.navigate('Photo', { side: 1, visible: true })}>
                         <SubmitText>Verso</SubmitText>
                     </SubmitButton>
                   </ContainerDadosView>

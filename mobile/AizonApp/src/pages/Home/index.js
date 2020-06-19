@@ -28,6 +28,8 @@ export default function Home() {
   }
 
   async function getDataForConfig() {
+    console.log(' ==> getDataForConfig ==> ANTES DO POST 1 = ', url);
+
     let res = await PhotoService.getDataForConfig('/image/getDataForConfig', '6sn96FINoUghUbh');
     //let res = await PhotoService.realGetDataForConfig('/image/getDataForConfig', '6sn96FINoUghUbh');
 
