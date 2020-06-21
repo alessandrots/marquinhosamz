@@ -1,7 +1,24 @@
 # marquinhosamz
 freela Marquinhos
 
+https://stackoverflow.com/questions/44506207/reactjs-lifecycle-method-inside-a-function-component
+https://www.youtube.com/watch?v=jcc9T-5inrk&vl=pt
+
+tem q ir para a pasta tools do SDK, depois list os avds e por fim chama o comando emulator
+$ cd $ANDROID_HOME/tools
+$ emulator -list-avds
+$ emulator -avd <name_of_avd>
+
+- STARTAR EMULADOR com internet
+tools$ emulator -avd Nexus_5X_API_28 -dns-server 8.8.8.8 &
+
+
 INSTALADOS:
+
+https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi
+https://chrome.google.com/webstore/detail/octotree/bkhaagjahfmjljalopjnoealnfndnagc/related?hl=pt-BR
+https://whimsical.com/PqiiqvuTdD3DYqVHUdBKJF
+https://devdocs.io/
 
   https://styled-components.com/docs/basics
     npm install --save styled-components

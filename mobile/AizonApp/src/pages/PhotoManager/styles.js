@@ -59,16 +59,17 @@ export const SubmitButton = styled.TouchableOpacity`
     align-items: center;
     justify-content: center;
     background-color: #0EABB5;
-    width: 45%;
-    height: 45px;
-    margin-top: 20px;
+    width: 100px;
+    height: 30px;
+    margin-top: 10px;
     margin-left: 20px;
     border-radius: 7px;
 `;
 
 export const SubmitText = styled.Text`
     font-size: 15px;
-    color: #131313;
+    color: #F0B42F;;
+    font-weight: bold;
     margin-left: 10px;
     margin-right: 10px;
 `;

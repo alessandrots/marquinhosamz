@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { Alert, StatusBar, StyleSheet, SafeAreaView,
-  View, Text, RefreshControl, Image, ActivityIndicator} from 'react-native';
+  View, Text, RefreshControl, Image, ActivityIndicator, TouchableOpacity} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 import { AuthContext } from '../../contexts/auth';
@@ -10,7 +10,7 @@ import ImageList from "../../components/ImageList/ImageList";
 import PhotoService from '../../services/photo/PhotoService';
 
 import ImageView from "react-native-image-viewing";
-import CheckBox from '@react-native-community/checkbox';
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 import { Background, ContainerMain, SendImageBackground,
   ContainerImageRight, ContainerImageLeft, ContainerImagens,ContainerDadosView,
@@ -188,15 +188,6 @@ export default function PhotoManager({ navigator, route }) {
 
   async function showImages () {
 
-    //setImageFrontal(await PhotoService.getRGAlexandreFrontBase64());
-    //setImageVerso(await PhotoService.getRGAlexandreVersoBase64());
-    //setImages(null);
-
-    console.log('imageFrontal= ', imageFrontal);
-    console.log('\n\n ');
-    console.log('imageVerso= ', imageVerso);
-    console.log('\n\n  ');
-
     if (imageFrontal && imageVerso) {
       let arr = [];
       console.log('\n\n showImages 2= ');
@@ -320,7 +311,7 @@ export default function PhotoManager({ navigator, route }) {
       console.log('Date: ',res.headers.date);
       console.log('Data: ',res.data);
       let data = res.data;
-      alertMessageUpload(data);
+      alertMessageUpload(data, true);
     }
   }
 
@@ -330,9 +321,10 @@ export default function PhotoManager({ navigator, route }) {
   async function uploadBase64ToAizonViaBody() {
 
     if (!images || images.length < 2) {
-      alertMessageUpload('É importante ter as duas imagens carregadas.');
+      alertMessageUpload('Clique no botão refresh!', false);
       return;
     }
+
     setLoading(true);
 
     console.log('uploadBase64ToAizonViaBody = ');
@@ -353,20 +345,24 @@ export default function PhotoManager({ navigator, route }) {
     if (res) {
       setLoading(false);
       console.log('Status code: ',res.status);
-      console.log('Status text: ',res.statusText);
-      console.log('Request method: ',res.request.method);
-      console.log('Path: ',res.request.path);
-
-      console.log('Date: ',res.headers.date);
+      //console.log('Status text: ',res.statusText);
+      //console.log('Request method: ',res.request.method);
+      //console.log('Path: ',res.request.path);
+      //console.log('Date: ',res.headers.date);
       console.log('Data: ',res.data);
       let data = res.data;
-      let msg = "Processamento realizado com sucesso. ID: " + data.id + ' => Data: '+ data.date_time;
-      alertMessageUpload(msg);
+      let msg = "Processamento realizado com sucesso. ID: " + data.id; //+ ' => Data: '+ data.date_time;
+      alertMessageUpload(msg, true);
 
     }
   }
 
   function refreshTela() {
+    if (!images || images.length < 2) {
+      alertMessageUpload('É preciso fotografar frente e verso do documento!', false);
+      return;
+    }
+
     showImages ();
   }
 
@@ -378,17 +374,28 @@ export default function PhotoManager({ navigator, route }) {
     setImageVerso(null);
   }
 
-  function alertMessageUpload( msg) {
+  function alertMessageUpload( msg, sendForPage) {
+    let arr =[
+      {
+        text: "Ok",
+        style: "ok"
+      }
+    ]
+
+    if (sendForPage) {
+      arr = [
+        {
+          text: "Ok",
+          onPress: () => goToDataVisualization(),
+          style: "ok"
+        }
+      ]
+    }
+
     Alert.alert(
         "AIZON - UPLOAD",
         msg,
-        [
-          {
-            text: "Ok",
-            onPress: () => goToDataVisualization(),
-            style: "ok"
-          }
-        ],
+        arr,
         { cancelable: false }
     );
   }
@@ -462,7 +469,7 @@ export default function PhotoManager({ navigator, route }) {
                           source={{uri: `data:image/gif;base64,${imageFrontal}`}}
                           style={{
                             width: 150,
-                            height: 150,
+                            height: 100,
                             resizeMode: 'contain'
                           }}
                           />
@@ -494,7 +501,8 @@ export default function PhotoManager({ navigator, route }) {
                           source={{uri: `data:image/gif;base64,${imageVerso}`}}
                           style={{
                             width: 150,
-                            height: 150,
+                            height: 100,
+                            marginTop: 10,
                             resizeMode: 'contain'
                           }}
                           />
@@ -523,9 +531,10 @@ export default function PhotoManager({ navigator, route }) {
                       )}
 
                       {!visibleList && (
-                         <Link onPress={ () => refreshTela()}>
-                              <LinkText>Refresh</LinkText>
-                          </Link>
+
+                          <TouchableOpacity onPress={() => refreshTela()} style={styles.capture}>
+                            <Icon name="refresh" size={50} color={"#F0B42F"} />
+                          </TouchableOpacity>
                       )}
 
                       <ImageView
@@ -533,17 +542,23 @@ export default function PhotoManager({ navigator, route }) {
                         imageIndex={currentImageIndex}
                         visible={visible}
                         onRequestClose={() => setIsVisible(false)}
+                        style={{
+                          width: 150,
+                          height: 120,
+                          resizeMode: 'contain'
+                        }}
                       />
                     </SafeAreaView>
                 </ContainerImagens>
 
                 <ContainerScreenButton>
-                  <SubmitButton onPress={uploadBase64ToAizonViaBody}>
+                  <SubmitButton onPress={ () => uploadBase64ToAizonViaBody()}>
                       <SubmitText>Upload</SubmitText>
                   </SubmitButton>
-                  <Link onPress={ () => limparTela()}>
-                      <LinkText>LIMPAR</LinkText>
-                  </Link>
+
+                  <SubmitButton onPress={ () => limparTela()}>
+                      <SubmitText>Limpar</SubmitText>
+                  </SubmitButton>
                 </ContainerScreenButton>
 
               </ContainerMain>
@@ -587,6 +602,13 @@ const styles = StyleSheet.create({
   },
   myTextView: {
     marginTop:10,
+  },
+  capture: {
+    backgroundColor:  'transparent',
+    borderRadius: 5,
+    paddingHorizontal: 20,
+    alignSelf: 'center',
+    margin: 10,
   },
 
 });
