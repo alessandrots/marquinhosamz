@@ -7,7 +7,7 @@ import { AuthContext } from '../../contexts/auth';
 
 import {RNCamera} from 'react-native-camera';
 
-import Icon from "react-native-vector-icons/Feather";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 //import api from '../../services/api';
 
@@ -215,10 +215,10 @@ function PhotoMain(props) {
                           <View style={styles.viewPhoto} visible={photoShot}>
                             <ActivityIndicator size="large" color="#0EABB5" animating={loading}/>
                             <TouchableOpacity onPress={() => handleTakePicture2(camera)} style={styles.capture}>
-                              <Icon name="octagon" size={80} color={"#F0B42F"} />
+                              <Icon name="camera-alt" size={60} color={"#F0B42F"} />
                             </TouchableOpacity>
                             <TouchableOpacity onPress={() => handleCameraDiscard()} style={styles.buttonCloseCamera}>
-                              <Icon name="home" size={40} color={"#0EABB5"} />
+                              <Icon name="cancel" size={40} color={"#0EABB5"} />
                             </TouchableOpacity>
                           </View>
                         );
@@ -226,10 +226,10 @@ function PhotoMain(props) {
                         return (
                           <View style={styles.viewPhotoTaked}>
                             <TouchableOpacity onPress={() => handleCameraDiscard()} style={styles.capture2}>
-                              <Icon name="home" size={40} color={"#0EABB5"} />
+                              <Icon name="cancel" size={60} color={"#0EABB5"} />
                             </TouchableOpacity>
                             <TouchableOpacity onPress={() => handleCameraForward()} style={styles.capture2}>
-                              <Icon name="save" size={40} color={"#F0B42F"} />
+                              <Icon name="save" size={60} color={"#F0B42F"} />
                             </TouchableOpacity>
                           </View>
                         )

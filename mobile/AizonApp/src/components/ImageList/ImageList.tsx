@@ -15,8 +15,8 @@ type Props = {
   shift?: number;
 };
 
-const IMAGE_WIDTH = 120;
-const IMAGE_HEIGH = 120;
+const IMAGE_WIDTH = 100;
+const IMAGE_HEIGH = 100;
 
 const ImageList = ({ images, shift = 0, onPress }: Props) => (
   <ScrollView

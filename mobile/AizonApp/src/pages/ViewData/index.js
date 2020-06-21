@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { StatusBar, StyleSheet, SafeAreaView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
@@ -69,9 +69,50 @@ export default function ViewData({ navigator, route }) {
   const [imagesOriginal, setImagesOriginal] = useState();
 
 
+  useEffect(() => {
+    getDataForConfigToObj();
+    return () => {
+      //como se fosse o componentWillUnmount
+    }
+
+  }, []);
+
+  const dataExtract = {
+    'carteira_de_identidade': '',
+    'cpf': '',
+    'data_de_nascimento': '',
+    'data_expedicao': '',
+    'doc_origem': '',
+    'estado': '',
+    'filiacao': '',
+    'filiacao_mae': '',
+    'filiacao_pai': '',
+    'instituto': '',
+    'lei': '',
+    'naturalidade': '',
+    'nome_pessoa': '',
+    'numeracao_espelho_a_direita_superior': '',
+    'numeracao_espelho_a_esquerda_inferior': '',
+    'numero_rg': '',
+    'republica': '',
+    'secretaria': '',
+    'uf': '',
+    'validade': '',
+  };
+
+// passing an empty array as second argument triggers the callback in useEffect only
+// after the initial render thus replicating `componentDidMount` lifecycle behaviour
+/**
+ useEffect(() => {
+     // action here
+  }, [props.counter]); // checks for changes in the values in this array
+
+ */
+
+
+
   async function getDataForConfig() {
     let res = await PhotoService.getDataForConfig('/image/getDataForConfig', '6sn96FINoUghUbh');
-    //let res = await PhotoService.realGetDataForConfig('/image/getDataForConfig', '6sn96FINoUghUbh');
 
     if (res) {
       console.log(`Status code: ${res.status}`);
@@ -81,6 +122,34 @@ export default function ViewData({ navigator, route }) {
 
       console.log(`Date: ${res.headers.date}`);
       console.log(`Data: ${res.data}`);
+    }
+  }
+
+   /**
+        let body = {
+            "origin":true,
+            "classification":true,
+            "pre_processing":false,
+            "data_extract":true,
+            "data_validation":false,
+            "certification":false,
+            "score":true,
+            "origin_image":false,
+            "best_image":false,
+            "binary_image":false,
+            "binary_image_data_anchors":false,
+            "ia_image_analisys_anchors":false,
+            "list_img_to_analisys":false,
+            "validate_img_anchors":false,
+            "blur_validate_img_anchors":false
+        }
+        */
+  async function getDataForConfigToObj() {
+    let res = await PhotoService.getDataForConfig('/image/getDataForConfig', '6sn96FINoUghUbh');
+
+    if (res) {
+      console.log('Data: ', res.data.data_extract.data_extract);
+      console.log(`Data: ${res.data.data_extract.data_extract.carteira_de_identidade}`);
     }
   }
 
@@ -101,9 +170,11 @@ export default function ViewData({ navigator, route }) {
             <LinkText>PHOTO 2</LinkText>
         </Link>
 
+        {/**
         <SubmitButton onPress={getDataForConfig}>
             <SubmitText>Get DATA CONFIG</SubmitText>
         </SubmitButton>
+          */}
 
       </ContainerMain>
 
