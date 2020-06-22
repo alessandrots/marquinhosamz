@@ -53,15 +53,15 @@ export const SubmitButton = styled.TouchableOpacity`
     align-items: center;
     justify-content: center;
     background-color: #0EABB5;
-    width: 70%;
-    height: 45px;
-    border-radius: 7px;
+    width: 130px;
+    height: 40px;
+    border-radius: 10px;
     margin-left: 20px;
     margin-right: 20px;
 `;
 
 export const SubmitText = styled.Text`
-    font-size: 25px;
+    font-size: 20px;
     color: #131313;
     margin-left: 20px;
     margin-right: 20px;
