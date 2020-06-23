@@ -358,12 +358,15 @@ export default function PhotoManager({ navigator, route }) {
   }
 
   function refreshTela() {
+    console.log(images);
+    showImages ();
+    /**
     if (!images || images.length < 2) {
       alertMessageUpload('É preciso fotografar frente e verso do documento!', false);
       return;
     }
 
-    showImages ();
+    */
   }
 
   function limparTela() {
