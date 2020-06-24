@@ -31,7 +31,7 @@ export default function PdfView({ navigator, route }) {
       //como se fosse o componentWillUnmount
     }
 
-  }, [dataExtract]);
+  }, []);
 
   const dataExtract = {
     'carteira_de_identidade': '',
@@ -65,90 +65,22 @@ export default function PdfView({ navigator, route }) {
 
  */
   async function getDataForConfigToObj() {
+    setImageBase64(null);
     setLoading(true);
     let res = await PhotoService.getDataForConfig('/image/getDataForConfig', '6sn96FINoUghUbh');
 
-    //console.log('res = ', 'data:application/pdf;base64,' + res.data.certification);
-
     if (res) {
-      //setResponseData(res.data.data_extract.data_extract);
-
-      //let img = await PhotoService.getImageBase64();
       setImageBase64('data:application/pdf;base64,' + res.data.certification);
       setLoading(false);
-
-
-
-      //setImageBase64(img);
     }
-  }
-
-  function getUriPdf() {
-    if (!imageBase64) {
-        alertMessageUpload('PDF não carregado', false);
-    }
-
-    /**
-     * <WebView
-                source={{
-                    uri: `${imageBase64}`
-                }}
-                style={{ marginTop: 20 }}
-            />
-     */
-    return (
-      <View style={styles.container}>
-          <Pdf
-              source={imageBase64}
-              onLoadComplete={(numberOfPages, filePath) => {
-                  console.log(`number of pages: ${numberOfPages}`);
-              }}
-              onPageChanged={(page, numberOfPages) => {
-                  console.log(`current page: ${page}`);
-              }}
-              onError={error => {
-                  console.log(error);
-              }}
-              style={styles.pdf}
-          />
-      </View>
-    )
-    //console.log('res 2 = ', imageBase64);
-    //return imageBase64
-  }
-
-  function alertMessageUpload( msg, sendForPage) {
-    let arr =[
-      {
-        text: "Ok",
-        style: "ok"
-      }
-    ]
-
-    if (sendForPage) {
-      arr = [
-        {
-          text: "Ok",
-          onPress: () => goToDataVisualization(),
-          style: "ok"
-        }
-      ]
-    }
-
-    Alert.alert(
-        "AIZON - UPLOAD",
-        msg,
-        arr,
-        { cancelable: false }
-    );
   }
 
  return (
     <Background>
         <ContainerHeader>
-        <Header titlePage="Certificado"/>
+          <Header titlePage="Certificado"/>
 
-      </ContainerHeader>
+        </ContainerHeader>
 
       <ContainerMain>
         <ActivityIndicator size="large" color="#0EABB5" animating={loading}/>
@@ -188,14 +120,19 @@ export default function PdfView({ navigator, route }) {
 
                     </Modal>
 
-                    <TouchableHighlight
-                      style={styles.openButton}
-                      onPress={() => {
-                        setModalVisible(true);
-                      }}
-                    >
-                      <Text style={styles.textStyle}>Abrir PDF</Text>
-                    </TouchableHighlight>
+                    {imageBase64 && (
+                        <View style={styles.containerRow}>
+                            <TouchableHighlight
+                              style={styles.openButton}
+                              onPress={() => {
+                                setModalVisible(true);
+                              }}
+                            >
+                              <Text style={styles.textStyle}>Abrir PDF</Text>
+                            </TouchableHighlight>
+                            <Text style={styles.textStyleButton}>Certificado carregado!</Text>
+                        </View>
+                    )}
               </View>
       </ContainerMain>
 
@@ -214,6 +151,13 @@ const styles = StyleSheet.create({
       flex: 1,
       justifyContent: 'flex-start',
       margin: 20,
+  },
+
+  containerRow: {
+    flex: 1,
+    //backgroundColor :'#CC0000',
+    flexDirection: 'column',
+    margin: 20,
   },
 
   pdf: {
@@ -262,6 +206,13 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "bold",
     textAlign: "center"
+  },
+
+  textStyleButton: {
+    color: "#F0B42F",
+    fontWeight: "bold",
+    textAlign: "center",
+    marginTop:20
   }
 
 });

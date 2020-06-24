@@ -41,7 +41,7 @@ const api = axios.create({
 
 api.interceptors.response.use(
   response => {
-    console.log('interceptors.response = ', response);
+    //console.log('interceptors.response = ', response);
 
     // Do something with response data
 
@@ -86,7 +86,7 @@ api.interceptors.response.use(
 
 api.interceptors.request.use(
   config => {
-    console.log('interceptors.request = ', config);
+    //console.log('interceptors.request = ', config);
     return Promise.resolve(config)
     /**
     return getUser()

@@ -71,25 +71,13 @@ export default function ViewData({ navigator, route }) {
 
  */
 
-  async function getDataForConfig() {
-    setLoading(true);
 
-    let res = await PhotoService.getDataForConfig('/image/getDataForConfig', '6sn96FINoUghUbh');
-
-    if (res) {
-      setLoading(false);
-      console.log(`Status code: ${res.status}`);
-      console.log(`Status text: ${res.statusText}`);
-      console.log(`Request method: ${res.request.method}`);
-      console.log(`Path: ${res.request.path}`);
-
-      console.log(`Date: ${res.headers.date}`);
-      console.log(`Data: ${res.data}`);
-    }
-  }
 
   async function getDataForConfigToObj() {
     setLoading(true);
+    setResponseData(null);
+    setImageBase64(null);
+
     let res = await PhotoService.getDataForConfig('/image/getDataForConfig', '6sn96FINoUghUbh');
 
     if (res) {
@@ -105,7 +93,6 @@ export default function ViewData({ navigator, route }) {
   }
 
   function getDataPopulate() {
-    console.log(responseData);
 
     if (responseData) {
       return (
@@ -196,12 +183,6 @@ export default function ViewData({ navigator, route }) {
         <SafeAreaView style={styles.safeAreaViewCmp}>
 
           <ScrollView style={styles.scrollView}>
-              {/**
-              <TouchableOpacity onPress={() => getDataForConfigToObj()} style={styles.capture}>
-                <Icon name="refresh" size={25} color={"#F0B42F"} />
-              </TouchableOpacity>
-              */}
-
               <View style={styles.viewCabecalho}>
                 {imageBase64 && (
                         <Image
@@ -209,7 +190,7 @@ export default function ViewData({ navigator, route }) {
                           style={{
                             width: 51,
                             height: 51,
-                            paddingBottom: 20,
+                            paddingBottom: 40,
                             resizeMode: 'contain'
                           }}
                           />
@@ -221,19 +202,20 @@ export default function ViewData({ navigator, route }) {
 
               {getDataPopulate()}
 
-              <View style={styles.viewCabecalho}>
-                  <TouchableOpacity onPress={() => navigation.navigate('PdfCertificate')} style={styles.capture}>
-                    <Image
-                          source={require('../../assets/picture_as_pdf.png')}
-                          style={{
-                            width: 51,
-                            height: 51,
-                            paddingBottom: 20,
-                            resizeMode: 'contain'
-                          }}
-                    />
-                  </TouchableOpacity>
-              </View>
+              {responseData && (
+                  <View style={styles.viewRodape}>
+                      <TouchableOpacity onPress={() => navigation.navigate('PdfCertificate')}>
+                        <Image
+                              source={require('../../assets/picture_as_pdf.png')}
+                              style={{
+                                width: 40,
+                                height: 45,
+                                resizeMode: 'contain'
+                              }}
+                        />
+                      </TouchableOpacity>
+                  </View>
+              )}
 
             </ScrollView>
           </SafeAreaView>
@@ -276,9 +258,22 @@ const styles = StyleSheet.create({
   viewCabecalho: {
     flex: 1,
     flexDirection: "row",
+    alignItems: 'center',
     backgroundColor: "#FFF",
     ...Platform.select({
       android: { paddingTop: 10 },
+      default: null,
+    }),
+  },
+
+  viewRodape: {
+    flex:1,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+
+    backgroundColor: "#FFF",
+    ...Platform.select({
+      android: { paddingTop: 10, paddingBottom:10 },
       default: null,
     }),
   },
