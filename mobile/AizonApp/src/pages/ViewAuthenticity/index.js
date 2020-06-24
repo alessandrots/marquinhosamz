@@ -1,24 +1,17 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { Alert, StatusBar, StyleSheet, SafeAreaView, View, Text, RefreshControl } from 'react-native';
+import { Alert, StatusBar, StyleSheet, SafeAreaView, View, Text, TouchableHighlight,
+Modal } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 import { AuthContext } from '../../contexts/auth';
 import Header from '../../components/Header';
-//import Footer from '../../components/Footer';
 import ImageList from "../../components/ImageList/ImageList";
 import PhotoService from '../../services/photo/PhotoService';
 
-import ImageView from "react-native-image-viewing";
-import CheckBox from '@react-native-community/checkbox';
-
-
-//import { ImageURISource, ImageRequireSource } from "react-native";
-
+import { WebView } from 'react-native-webview';
 import { Background, ContainerHeader, ContainerFooter, ContainerMain} from '../Home/styles';
 
 import {  Link, LinkText, SubmitButtonUpload, SubmitText} from '../SignIn/styles';
-
-//const ImageSource = ImageURISource | ImageRequireSource;
 
 export default function ViewAuthenticity({ navigator, route }) {
 
@@ -74,6 +67,7 @@ export default function ViewAuthenticity({ navigator, route }) {
   const { user } = useContext(AuthContext);
 
   const navigation = useNavigation();
+  const [modalVisible, setModalVisible] = useState(false);
 
   //const architecture = [];
 
@@ -372,139 +366,79 @@ export default function ViewAuthenticity({ navigator, route }) {
 
 
  return (
-    <Background>
-      <ContainerHeader>
-        <Header titlePage="Visualizar Autenticidade"/>
-      </ContainerHeader>
+  <View style={styles.centeredView}>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          Alert.alert("Modal has been closed.");
+        }}
+      >
+        <WebView style={styles.modalView} source={{ uri: 'https://telemedicina.unifesp.br/pub/SBIS/CBIS2004/trabalhos/arquivos/330.pdf' }} />
 
-      <ContainerMain>
-        {/**
-         * <Link onPress={ () => navigation.navigate('Photo')}>
-            <LinkText>PHOTO 2</LinkText>
-        </Link>
-         *
-         */}
+          <TouchableHighlight
+            style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
+            onPress={() => {
+              setModalVisible(!modalVisible);
+            }}
+          >
+            <Text style={styles.textStyle}>Hide Modal</Text>
+          </TouchableHighlight>
+      </Modal>
 
-        <View style={styles.myViewHead}>
-          <CheckBox
-              style={styles.myCheck}
-              disabled={false}
-              value={toggleCheckBox}
-              onValueChange={() => toggleCheckBox ? setToggleCheckBox(false) : setToggleCheckBox(true)}
-            />
-            <Text style={styles.myTextView}>Rotina Temporária</Text>
-            <Link onPress={ () => refreshTela()}>
-                <LinkText>Refresh</LinkText>
-            </Link>
-        </View>
-
-         { toggleCheckBox && (
-
-            <View  style={styles.myView}>
-              <SubmitButtonUpload onPress={ () => showImagesTemp()}>
-                  <SubmitText>Exibir Imgs TMP</SubmitText>
-              </SubmitButtonUpload>
-
-              <SubmitButtonUpload onPress={ () => uploadBase64ToAizonViaBody3()}>
-                  <SubmitText>UPLOAD TEMP</SubmitText>
-              </SubmitButtonUpload>
-            </View>
-         )}
-
-        { !toggleCheckBox && (
-
-          <View style={styles.myViewMain}>
-            <View  style={styles.myView}>
-              {/** onPress={getLoadFrontPhoto64} */}
-              <SubmitButtonUpload onPress={ () => navigation.navigate('Photo', { side: '0' })}>
-                  <SubmitText>Foto Frontal</SubmitText>
-              </SubmitButtonUpload>
-
-              {/** onPress={getLoadVersoPhoto64} */}
-              <SubmitButtonUpload onPress={ () => navigation.navigate('Photo', { side: 1 })}>
-                  <SubmitText>Foto Verso</SubmitText>
-              </SubmitButtonUpload>
-            </View>
-
-            <View style={styles.myView}>
-              <SubmitButtonUpload onPress={ () => showImages()}>
-                  <SubmitText>Exibir Imgs </SubmitText>
-              </SubmitButtonUpload>
-
-              <SubmitButtonUpload onPress={ () => uploadBase64ToAizonViaBody()}>
-                  <SubmitText>UPLOAD</SubmitText>
-              </SubmitButtonUpload>
-            </View>
-          </View>
-
-        )}
-
-      </ContainerMain>
-
-      <SafeAreaView style={styles.root}>
-      {visibleList && (
-          <ImageList
-            images={images.map((image) => image.thumbnail)}
-            onPress={(index) => onSelect(images, index)}
-            shift={0.75}
-          />
-      )}
-
-          <ImageView
-            images={imagesOriginal}
-            imageIndex={currentImageIndex}
-            visible={visible}
-            onRequestClose={() => setIsVisible(false)}
-          />
-        </SafeAreaView>
-
-{/**
-        <SubmitButton onPress={getLoadFrontPhoto64}>
-            <SubmitText>Upload Foto Front</SubmitText>
-        </SubmitButton>
-
-        <SubmitButton onPress={getLoadVersoPhoto64}>
-            <SubmitText>Upload Foto Verso</SubmitText>
-        </SubmitButton>
-
-      <ContainerFooter>
-        <Footer titlePage="AIZON"/>
-      </ContainerFooter>
-*/}
-
-    </Background>
-  );
+      <TouchableHighlight
+        style={styles.openButton}
+        onPress={() => {
+          setModalVisible(true);
+        }}
+      >
+        <Text style={styles.textStyle}>Show Modal</Text>
+      </TouchableHighlight>
+    </View>
+ );
 }
 
 const styles = StyleSheet.create({
-  root: {
+
+  centeredView: {
     flex: 1,
-    backgroundColor: "#FFF",
-    ...Platform.select({
-      android: { paddingTop: StatusBar.currentHeight },
-      default: null,
-    }),
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 10
   },
-  myViewMain: {
+  modalView: {
     flex: 1,
-    flexDirection:'column',
-    justifyContent: 'center',
+    justifyContent: "center",
+    alignItems: "center",
+    margin: 10,
+    backgroundColor: "white",
+    borderRadius: 10,
+    padding: 100,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5
   },
-  myViewHead: {
-    flex: 1,
-    flexDirection:'row',
-    justifyContent: 'flex-start',
+  openButton: {
+    backgroundColor: "#F194FF",
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2
   },
-  myView: {
-    flex: 1,
-    flexDirection:'row',
-    justifyContent: 'center',
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center"
   },
-  myCheck: {
-    marginTop:1,
-  },
-  myTextView: {
-    marginTop:10,
-  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center"
+  }
 
 });

@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { StatusBar, StyleSheet, SafeAreaView, TouchableOpacity,
-  View, Text, ScrollView, Image } from 'react-native';
+  View, Text, ScrollView, Image, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 import { AuthContext } from '../../contexts/auth';
@@ -28,6 +28,7 @@ export default function ViewData({ navigator, route }) {
 
   let [responseData, setResponseData] = useState('');
   const [imageBase64, setImageBase64] = useState();
+  const [loading, setLoading] = useState(false);
 
 
   useEffect(() => {
@@ -71,9 +72,12 @@ export default function ViewData({ navigator, route }) {
  */
 
   async function getDataForConfig() {
+    setLoading(true);
+
     let res = await PhotoService.getDataForConfig('/image/getDataForConfig', '6sn96FINoUghUbh');
 
     if (res) {
+      setLoading(false);
       console.log(`Status code: ${res.status}`);
       console.log(`Status text: ${res.statusText}`);
       console.log(`Request method: ${res.request.method}`);
@@ -85,44 +89,18 @@ export default function ViewData({ navigator, route }) {
   }
 
   async function getDataForConfigToObj() {
+    setLoading(true);
     let res = await PhotoService.getDataForConfig('/image/getDataForConfig', '6sn96FINoUghUbh');
 
     if (res) {
       //console.log('Data: ', res.data.data_extract.data_extract);
       res.data.data_extract.data_extract['identificacaoDocumento'] = '6sn96FINoUghUbh';
       setResponseData(res.data.data_extract.data_extract);
+      setLoading(false);
 
       let img = await PhotoService.getImageBase64();
       //console.log(img);
       setImageBase64(img);
-
-      /**
-      dataExtract['identificacaoDocumento'] = '6sn96FINoUghUbh';
-      //setIdentificacaoDocumento('6sn96FINoUghUbh');
-      dataExtract['carteira_de_identidade'] = res.data.data_extract.data_extract.carteira_de_identidade;
-      dataExtract['cpf'] = res.data.data_extract.data_extract.cpf;
-      dataExtract['data_de_nascimento'] = res.data.data_extract.data_extract.data_de_nascimento;
-      dataExtract['data_expedicao'] = res.data.data_extract.data_extract.data_expedicao;
-      dataExtract['doc_origem'] = res.data.data_extract.data_extract.doc_origem;
-      dataExtract['estado'] = res.data.data_extract.data_extract.estado;
-      dataExtract['filiacao'] = res.data.data_extract.data_extract.filiacao;
-      dataExtract['filiacao_mae'] = res.data.data_extract.data_extract.filiacao_mae;
-      dataExtract['filiacao_pai'] = res.data.data_extract.data_extract.filiacao_pai;
-      dataExtract['instituto'] = res.data.data_extract.data_extract.instituto;
-      dataExtract['lei'] = res.data.data_extract.data_extract.lei;
-      dataExtract['naturalidade'] = res.data.data_extract.data_extract.naturalidade;
-      dataExtract['nome_pessoa'] = res.data.data_extract.data_extract.nome_pessoa;
-      dataExtract['numeracao_espelho_a_direita_superior'] = res.data.data_extract.data_extract.numeracao_espelho_a_direita_superior;
-      dataExtract['numeracao_espelho_a_esquerda_inferior'] = res.data.data_extract.data_extract.numeracao_espelho_a_esquerda_inferior;
-      dataExtract['numero_rg'] = res.data.data_extract.data_extract.numero_rg;
-      dataExtract['republica'] = res.data.data_extract.data_extract.republica;
-      dataExtract['secretaria'] = res.data.data_extract.data_extract.secretaria;
-      dataExtract['uf'] = res.data.data_extract.data_extract.uf;
-      dataExtract['validade'] = res.data.data_extract.data_extract.validade;
-
-      console.log('dataExtract = ', dataExtract);
-      //setDataObj(dataExtract);
-       */
     }
   }
 
@@ -212,6 +190,8 @@ export default function ViewData({ navigator, route }) {
       </ContainerHeader>
 
       <ContainerMain>
+
+        <ActivityIndicator size="large" color="#0EABB5" animating={loading}/>
 
         <SafeAreaView style={styles.safeAreaViewCmp}>
 

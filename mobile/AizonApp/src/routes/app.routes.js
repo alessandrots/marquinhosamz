@@ -114,17 +114,6 @@ function AppRoutes(){
             options={{ title: 'Visualizar Dados' }}/>
 
           <AppDrawer.Screen
-            name="Verificar_Autenticidade"
-            component={ViewAuthenticity}
-            options={{ title: 'Verificar Autenticidade' }}/>
-
-
-          <AppDrawer.Screen
-            name="CertifyProcess"
-            component={Profile}
-            options={{ title: 'Certificação do Processo' }}/>
-
-          <AppDrawer.Screen
             name="Profile"
             component={Profile}
             options={{ title: 'Perfil' }}/>
@@ -142,6 +131,13 @@ function AppRoutes(){
           <AppDrawer.Screen
               name="PdfCertificate"
               component={PdfView}
+              options={{ title: 'Certificado' }}
+              />
+
+        <AppDrawer.Screen
+              name="ViewAuthenticity"
+              component={ViewAuthenticity}
+              options={{ title: 'ViewAuthenticity' }}
               />
 
       </AppDrawer.Navigator>
