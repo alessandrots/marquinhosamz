@@ -241,6 +241,20 @@ export default function ViewData({ navigator, route }) {
 
               {getDataPopulate()}
 
+              <View style={styles.viewCabecalho}>
+                  <TouchableOpacity onPress={() => navigation.navigate('PdfCertificate')} style={styles.capture}>
+                    <Image
+                          source={require('../../assets/picture_as_pdf.png')}
+                          style={{
+                            width: 51,
+                            height: 51,
+                            paddingBottom: 20,
+                            resizeMode: 'contain'
+                          }}
+                    />
+                  </TouchableOpacity>
+              </View>
+
             </ScrollView>
           </SafeAreaView>
       </ContainerMain>

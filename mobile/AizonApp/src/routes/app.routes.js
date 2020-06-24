@@ -25,7 +25,10 @@ import PhotoView from '../pages/PhotoView';
 import ViewAuthenticity from '../pages/ViewAuthenticity';
 import SendDocument from '../pages/SendDocument';
 import SendDocInfo from '../pages/SendDocInfo';
-import PhotoManager from '../pages/PhotoManager'
+import PhotoManager from '../pages/PhotoManager';
+import PdfView from '../pages/PdfView';
+
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 import { AuthContext } from '../contexts/auth';
 
@@ -135,6 +138,12 @@ function AppRoutes(){
               name="Photo"
               component={PhotoView}
               />
+
+          <AppDrawer.Screen
+              name="PdfCertificate"
+              component={PdfView}
+              />
+
       </AppDrawer.Navigator>
   );
 }
