@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { StatusBar, StyleSheet, SafeAreaView, TouchableOpacity,
-  View, Text, ScrollView, Image} from 'react-native';
+  View, Text, ScrollView, ActivityIndicator, Image} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 import { AuthContext } from '../../contexts/auth';
@@ -10,7 +10,7 @@ import Footer from '../../components/Footer';
 import PhotoService from '../../services/photo/PhotoService';
 import { WebView } from 'react-native-webview';
 
-import { Background, ContainerHeader, ContainerFooter, ContainerMain} from '../Home/styles';
+import { Background, ContainerHeader, ContainerFooter, ContainerMain, Link, LinkText} from './styles';
 
 export default function PdfView({ navigator, route }) {
 
@@ -20,6 +20,7 @@ export default function PdfView({ navigator, route }) {
 
   let [responseData, setResponseData] = useState('');
   const [imageBase64, setImageBase64] = useState();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     getDataForConfigToObj();
@@ -61,32 +62,85 @@ export default function PdfView({ navigator, route }) {
 
  */
   async function getDataForConfigToObj() {
+    setLoading(true);
     let res = await PhotoService.getDataForConfig('/image/getDataForConfig', '6sn96FINoUghUbh');
 
-    console.log('res = ', 'data:application/octet-stream;base64,' + res.data.certification);
+    //console.log('res = ', 'data:application/pdf;base64,' + res.data.certification);
 
     if (res) {
       //setResponseData(res.data.data_extract.data_extract);
 
       //let img = await PhotoService.getImageBase64();
-      setImageBase64('data:application/octet-stream;base64,' + res.data.certification);
+      setImageBase64('data:application/pdf;base64,' + res.data.certification);
+      setLoading(false);
+
+
 
       //setImageBase64(img);
     }
   }
 
+  function getUriPdf() {
+    if (!imageBase64) {
+        alertMessageUpload('PDF não carregado', false);
+    }
+
+    /**
+     * <WebView
+                source={{
+                    uri: `${imageBase64}`
+                }}
+                style={{ marginTop: 20 }}
+            />
+     */
+    return (
+        <Image source={{uri: `${imageBase64}`}} style={{ height: 400, width: 300, }} />
+    )
+    //console.log('res 2 = ', imageBase64);
+    //return imageBase64
+  }
+
+  function alertMessageUpload( msg, sendForPage) {
+    let arr =[
+      {
+        text: "Ok",
+        style: "ok"
+      }
+    ]
+
+    if (sendForPage) {
+      arr = [
+        {
+          text: "Ok",
+          onPress: () => goToDataVisualization(),
+          style: "ok"
+        }
+      ]
+    }
+
+    Alert.alert(
+        "AIZON - UPLOAD",
+        msg,
+        arr,
+        { cancelable: false }
+    );
+  }
+
  return (
     <Background>
-      <ContainerHeader>
-        <Header titlePage="Autenticidade de Certificado"/>
+        <ContainerHeader>
+        <Header titlePage="Certificado"/>
 
       </ContainerHeader>
 
       <ContainerMain>
+        <ActivityIndicator size="large" color="#0EABB5" animating={loading}/>
+
         <SafeAreaView style={styles.safeAreaViewCmp}>
 
           <ScrollView style={styles.scrollView}>
               <View style={styles.viewCabecalho}>
+                  {/**
                 {imageBase64 && (
                     <WebView
                         source={{
@@ -95,6 +149,23 @@ export default function PdfView({ navigator, route }) {
                         style={{ marginTop: 20 }}
                     />
                 )}
+
+                <Link onPress={ () => getUriPdf}>
+                    <LinkText>PDF</LinkText>
+                </Link>
+                 */}
+
+
+                {imageBase64 && (
+                        <Image
+                          source={{uri: `${imageBase64}`}}
+                          style={{
+                            width: 350,
+                            height: 300,
+                            resizeMode: 'contain'
+                          }}
+                          />
+                    )}
               </View>
 
             </ScrollView>
