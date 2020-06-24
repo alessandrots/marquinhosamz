@@ -17,7 +17,6 @@
     "@react-navigation/native": "^5.4.2",
     "@react-navigation/stack": "^5.3.9",
     "axios": "^0.19.2",
-    "base64topdf": "^1.1.8",
     "firebase": "^7.14.5",
     "react": "16.11.0",
     "react-native": "0.62.2",
@@ -26,11 +25,13 @@
     "react-native-elements": "^2.0.0",
     "react-native-gesture-handler": "^1.6.1",
     "react-native-image-viewing": "^0.2.0",
+    "react-native-pdf": "^6.1.2",
     "react-native-reanimated": "^1.8.0",
     "react-native-safe-area-context": "^1.0.2",
     "react-native-screens": "^2.7.0",
     "react-native-vector-icons": "^6.6.0",
     "react-native-webview": "^10.3.1",
+    "rn-fetch-blob": "^0.12.0",
     "styled-components": "^5.1.0"
   },
   "devDependencies": {

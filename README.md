@@ -53,6 +53,12 @@ npm install axios --save
 
 https://github.com/jobtoday/react-native-image-viewing
 
+https://github.com/wonday/react-native-pdf/blob/master/README.md
+
+https://github.com/react-native-community/react-native-webview
+
+https://github.com/joltup/rn-fetch-blob
+
 
 #### PRA PRODUÇÃO
 $ rm android/app/src/main/assets/index.android.bundle

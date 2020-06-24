@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { StatusBar, StyleSheet, SafeAreaView, TouchableOpacity,
-  View, Text, ScrollView, ActivityIndicator, Image} from 'react-native';
+  View, Text, ScrollView, ActivityIndicator, Image, Dimensions, TouchableHighlight,
+  Modal} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 import { AuthContext } from '../../contexts/auth';
@@ -8,7 +9,8 @@ import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 
 import PhotoService from '../../services/photo/PhotoService';
-import { WebView } from 'react-native-webview';
+//import { WebView } from 'react-native-webview';
+import Pdf from 'react-native-pdf';
 
 import { Background, ContainerHeader, ContainerFooter, ContainerMain, Link, LinkText} from './styles';
 
@@ -21,6 +23,7 @@ export default function PdfView({ navigator, route }) {
   let [responseData, setResponseData] = useState('');
   const [imageBase64, setImageBase64] = useState();
   const [loading, setLoading] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
     getDataForConfigToObj();
@@ -94,7 +97,21 @@ export default function PdfView({ navigator, route }) {
             />
      */
     return (
-        <Image source={{uri: `${imageBase64}`}} style={{ height: 400, width: 300, }} />
+      <View style={styles.container}>
+          <Pdf
+              source={imageBase64}
+              onLoadComplete={(numberOfPages, filePath) => {
+                  console.log(`number of pages: ${numberOfPages}`);
+              }}
+              onPageChanged={(page, numberOfPages) => {
+                  console.log(`current page: ${page}`);
+              }}
+              onError={error => {
+                  console.log(error);
+              }}
+              style={styles.pdf}
+          />
+      </View>
     )
     //console.log('res 2 = ', imageBase64);
     //return imageBase64
@@ -136,40 +153,50 @@ export default function PdfView({ navigator, route }) {
       <ContainerMain>
         <ActivityIndicator size="large" color="#0EABB5" animating={loading}/>
 
-        <SafeAreaView style={styles.safeAreaViewCmp}>
-
-          <ScrollView style={styles.scrollView}>
-              <View style={styles.viewCabecalho}>
-                  {/**
-                {imageBase64 && (
-                    <WebView
-                        source={{
-                            uri: `${imageBase64}`
-                        }}
-                        style={{ marginTop: 20 }}
-                    />
-                )}
-
-                <Link onPress={ () => getUriPdf}>
-                    <LinkText>PDF</LinkText>
-                </Link>
-                 */}
-
-
-                {imageBase64 && (
-                        <Image
-                          source={{uri: `${imageBase64}`}}
-                          style={{
-                            width: 350,
-                            height: 300,
-                            resizeMode: 'contain'
-                          }}
+        <View style={styles.container}>
+                    <Modal
+                      animationType="slide"
+                      transparent={true}
+                      visible={modalVisible}
+                      onRequestClose={() => {
+                        Alert.alert("Modal has been closed.");
+                      }}
+                    >
+                      <View style={styles.modalView}>
+                          <Pdf
+                              source={{ uri: imageBase64 }}
+                              onLoadComplete={(numberOfPages, filePath) => {
+                                  console.log(`number of pages: ${numberOfPages}`);
+                              }}
+                              onPageChanged={(page, numberOfPages) => {
+                                  console.log(`current page: ${page}`);
+                              }}
+                              onError={error => {
+                                  console.log(error);
+                              }}
+                              style={styles.pdf}
                           />
-                    )}
-              </View>
+                      </View>
+                        <TouchableHighlight
+                          style={styles.closeButton}
+                          onPress={() => {
+                            setModalVisible(!modalVisible);
+                          }}
+                        >
+                          <Text style={styles.textStyle}>Fechar</Text>
+                        </TouchableHighlight>
 
-            </ScrollView>
-          </SafeAreaView>
+                    </Modal>
+
+                    <TouchableHighlight
+                      style={styles.openButton}
+                      onPress={() => {
+                        setModalVisible(true);
+                      }}
+                    >
+                      <Text style={styles.textStyle}>Abrir PDF</Text>
+                    </TouchableHighlight>
+              </View>
       </ContainerMain>
 
       <ContainerFooter>
@@ -181,95 +208,60 @@ export default function PdfView({ navigator, route }) {
 }
 
 const styles = StyleSheet.create({
-  root: {
+
+
+  container: {
+      flex: 1,
+      justifyContent: 'flex-start',
+      margin: 20,
+  },
+
+  pdf: {
+      flex:1,
+      width:Dimensions.get('window').width,
+      height:Dimensions.get('window').height,
+  },
+
+  modalView: {
     flex: 1,
-    backgroundColor: "#FFF",
-    ...Platform.select({
-      android: { paddingTop: StatusBar.currentHeight },
-      default: null,
-    }),
+    justifyContent: "center",
+    alignItems: "center",
+    margin: 20,
+    backgroundColor: "transparent",
+    borderRadius: 10,
+    padding: 10,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5
+  },
+  openButton: {
+    backgroundColor: "#0EABB5",
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2
   },
 
-  safeAreaViewCmp: {
-    flex: 1,
-    //marginTop: Constants.statusBarHeight,
-    marginTop: 10,
+  closeButton: {
+    backgroundColor: "#0EABB5",
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+    width: 130,
+    height: 40,
+    marginLeft: 120,
+    marginRight: 20,
+    marginBottom: 35,
   },
-
-  scrollView: {
-    backgroundColor: "#FFF",
-    marginHorizontal: 15,
-  },
-
-  viewPrincipal:{
-    flex:1,
-    flexDirection: "column",
-  },
-
-  viewCabecalho: {
-    flex: 1,
-    flexDirection: "row",
-    backgroundColor: "#FFF",
-    ...Platform.select({
-      android: { paddingTop: 10 },
-      default: null,
-    }),
-  },
-
-  viewLine1: {
-    flex: 1,
-    flexDirection: "row",
-    backgroundColor: "#a0efef",
-    ...Platform.select({
-      android: { paddingTop: 10, paddingBottom: 10 },
-      default: null,
-    }),
-  },
-  viewLine2: {
-    flex: 1,
-    flexDirection: "row",
-    backgroundColor: "#FFF",
-    ...Platform.select({
-      android: { paddingTop: 10, paddingBottom: 10},
-      default: null,
-    }),
-  },
-
-  textTitleMain: {
-    fontSize: 20,
+  textStyle: {
+    color: "white",
     fontWeight: "bold",
-    color: "#F0B42F",
-    paddingLeft:20,
-    paddingBottom: 10,
-  },
-
-  textTitleFirst: {
-    fontSize: 14,
-    color: "#F0B42F",
-    fontWeight: "bold",
-    marginLeft: 10,
-    marginRight: 80,
-  },
-
-  textTitleSecond: {
-    fontSize: 14,
-    color: "#F0B42F",
-    fontWeight: "bold",
-
-  },
-  textDataFirst: {
-    fontSize: 12,
-    fontWeight: "bold",
-    color: "#000",
-    marginLeft: 10,
-
-  },
-  textDataSecond: {
-    fontSize: 12,
-    fontWeight: "bold",
-    color: "#000",
-    marginLeft: 80,
-    marginRight: 10,
+    textAlign: "center"
   }
 
 });

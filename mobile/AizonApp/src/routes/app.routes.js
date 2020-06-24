@@ -90,18 +90,6 @@ function AppRoutes(){
             options={{ title: 'Orientações' }}
             />
 
-{/**
-          <AppDrawer.Screen
-            name="Visualizar_Dados"
-            component={ViewData}
-            options={{ title: 'Visualizar Dados' }}/>
-
-          <AppDrawer.Screen
-            name="Home"
-            component={Home}
-            options={{ title: 'Home' }}/>
- */}
-
           <AppDrawer.Screen
               name="PhotoManager"
               component={PhotoManager}
@@ -114,14 +102,10 @@ function AppRoutes(){
             options={{ title: 'Visualizar Dados' }}/>
 
           <AppDrawer.Screen
-            name="Profile"
-            component={Profile}
-            options={{ title: 'Perfil' }}/>
-
-          <AppDrawer.Screen
-            name="Home"
-            component={Home}
-            options={{ title: 'Home' }}/>
+              name="PdfCertificate"
+              component={PdfView}
+              options={{ title: 'Certificado' }}
+              />
 
           <AppDrawer.Screen
               name="Photo"
@@ -129,16 +113,20 @@ function AppRoutes(){
               />
 
           <AppDrawer.Screen
-              name="PdfCertificate"
-              component={PdfView}
-              options={{ title: 'Certificado' }}
-              />
+            name="Profile"
+            component={Profile}
+            options={{ title: 'Perfil' }}/>
 
-        <AppDrawer.Screen
+          <AppDrawer.Screen
               name="ViewAuthenticity"
               component={ViewAuthenticity}
               options={{ title: 'ViewAuthenticity' }}
               />
+
+          <AppDrawer.Screen
+            name="Home"
+            component={Home}
+            options={{ title: 'Home' }}/>
 
       </AppDrawer.Navigator>
   );

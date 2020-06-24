@@ -5,6 +5,8 @@ import { useNavigation } from '@react-navigation/native';
 
 import { AuthContext } from '../../contexts/auth';
 import Header from '../../components/Header';
+import Footer from '../../components/Footer';
+
 import ImageList from "../../components/ImageList/ImageList";
 import PhotoService from '../../services/photo/PhotoService';
 
@@ -15,7 +17,9 @@ import {  Link, LinkText, SubmitButtonUpload, SubmitText} from '../SignIn/styles
 
 export default function ViewAuthenticity({ navigator, route }) {
 
+
   useEffect(() => {
+
     console.log('route ViewAuthenticity = ', route);
     if (route.params?.post) {
       // Post updated, do something with `route.params.post`
@@ -366,36 +370,49 @@ export default function ViewAuthenticity({ navigator, route }) {
 
 
  return (
-  <View style={styles.centeredView}>
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
-        }}
-      >
-        <WebView style={styles.modalView} source={{ uri: 'https://telemedicina.unifesp.br/pub/SBIS/CBIS2004/trabalhos/arquivos/330.pdf' }} />
 
-          <TouchableHighlight
-            style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
-            onPress={() => {
-              setModalVisible(!modalVisible);
-            }}
-          >
-            <Text style={styles.textStyle}>Hide Modal</Text>
-          </TouchableHighlight>
-      </Modal>
+  <Background>
+      <ContainerHeader>
+        <Header titlePage="WEB VIEW - MODAL"/>
 
-      <TouchableHighlight
-        style={styles.openButton}
-        onPress={() => {
-          setModalVisible(true);
-        }}
-      >
-        <Text style={styles.textStyle}>Show Modal</Text>
-      </TouchableHighlight>
-    </View>
+      </ContainerHeader>
+            <View style={styles.centeredView}>
+                <Modal
+                  animationType="slide"
+                  transparent={true}
+                  visible={modalVisible}
+                  onRequestClose={() => {
+                    Alert.alert("Modal has been closed.");
+                  }}
+                >
+                  <WebView style={styles.modalView} source={{ uri: 'https://www.uol.com.br' }} />
+
+                    <TouchableHighlight
+                      style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
+                      onPress={() => {
+                        setModalVisible(!modalVisible);
+                      }}
+                    >
+                      <Text style={styles.textStyle}>Hide Modal</Text>
+                    </TouchableHighlight>
+                </Modal>
+
+                <TouchableHighlight
+                  style={styles.openButton}
+                  onPress={() => {
+                    setModalVisible(true);
+                  }}
+                >
+                  <Text style={styles.textStyle}>Show Modal</Text>
+                </TouchableHighlight>
+              </View>
+
+
+      <ContainerFooter>
+        <Footer titlePage="AIZON"/>
+      </ContainerFooter>
+
+    </Background>
  );
 }
 
