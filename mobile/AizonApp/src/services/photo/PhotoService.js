@@ -236,7 +236,6 @@ const PhotoService = {
     // /image/getDataForConfig/6sn96FINoUghUbh
     getDataForConfig: async function (url, id) {
 
-        console.log(' ==> getDataForConfig ==> ANTES DO POST 1 = ', url);
 
         // VER https://stackoverflow.com/questions/47630163/axios-post-request-to-send-form-data
 
@@ -276,8 +275,6 @@ const PhotoService = {
         };
 
         url = url + '/' + id;
-
-        console.log(' ==> getDataForConfig ==> ANTES DO POST 2 = ', url);
 
         let res = await api.post(url, body, { headers: headersImg })
                 .catch(function (error) {

@@ -131,7 +131,7 @@ function AuthProvider({ children }){
     }
 
     return(
-     <AuthContext.Provider value={{ signed: true , user, loading, signUp, signIn, signOut, savePhoto }}>
+     <AuthContext.Provider value={{ signed: true , user, loading, signUp, signIn, signOut, savePhoto, menuItem:false }}>
          {children}
      </AuthContext.Provider>
     );

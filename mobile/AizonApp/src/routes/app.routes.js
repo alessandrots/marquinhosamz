@@ -32,9 +32,8 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 
 import { AuthContext } from '../contexts/auth';
 
-
-
 const AppDrawer = createDrawerNavigator();
+
 
 //options={{ headerTitle: props => <LogoAtavar {...props} /> }}
 /**
@@ -50,6 +49,7 @@ const AppDrawer = createDrawerNavigator();
   }}
  */
 function AppRoutes(){
+  const { user, menuItem } = useContext(AuthContext);
 
   return(
 
@@ -107,6 +107,7 @@ function AppRoutes(){
               options={{ title: 'Certificado' }}
               />
 
+
           <AppDrawer.Screen
               name="Photo"
               component={PhotoView}
@@ -127,6 +128,7 @@ function AppRoutes(){
             name="Home"
             component={Home}
             options={{ title: 'Home' }}/>
+
 
       </AppDrawer.Navigator>
   );
