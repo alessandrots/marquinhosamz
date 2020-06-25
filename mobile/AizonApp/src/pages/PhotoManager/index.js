@@ -375,6 +375,7 @@ export default function PhotoManager({ navigator, route }) {
     setToggleCheckBox(true);
     setImageFrontal(null);
     setImageVerso(null);
+    setLoading(false);
   }
 
   function alertMessageUpload( msg, sendForPage) {

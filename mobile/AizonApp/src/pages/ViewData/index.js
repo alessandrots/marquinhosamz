@@ -75,7 +75,7 @@ export default function ViewData({ navigator, route }) {
 
   async function getDataForConfigToObj() {
     setLoading(true);
-    setResponseData(null);
+    //setResponseData(null);
     setImageBase64(null);
 
     let res = await PhotoService.getDataForConfig('/image/getDataForConfig', '6sn96FINoUghUbh');
@@ -91,6 +91,29 @@ export default function ViewData({ navigator, route }) {
       setImageBase64(img);
     }
   }
+
+
+
+  function getPdfButton() {
+
+    if (responseData) {
+      return (
+        <View style={styles.viewRodape}>
+            <TouchableOpacity onPress={() => navigation.navigate('PdfCertificate')}>
+              <Image
+                    source={require('../../assets/picture_as_pdf.png')}
+                    style={{
+                      width: 40,
+                      height: 45,
+                      resizeMode: 'contain'
+                    }}
+              />
+            </TouchableOpacity>
+        </View>
+      );
+    }
+  }
+
 
   function getDataPopulate() {
 
@@ -202,6 +225,8 @@ export default function ViewData({ navigator, route }) {
 
               {getDataPopulate()}
 
+              {getPdfButton()}
+              {/**
               {responseData && (
                   <View style={styles.viewRodape}>
                       <TouchableOpacity onPress={() => navigation.navigate('PdfCertificate')}>
@@ -216,6 +241,7 @@ export default function ViewData({ navigator, route }) {
                       </TouchableOpacity>
                   </View>
               )}
+               */}
 
             </ScrollView>
           </SafeAreaView>
