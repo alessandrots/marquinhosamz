@@ -39,7 +39,7 @@ function PhotoMain(props) {
   useEffect(() => {
     //console.log('\n\n props PhotoMain objParams = ', props);
 
-    if (props?.objParams?.route) {
+    if (props?.objParams?.route?.params) {
       console.log('\n\n props.objParams.route.params.side = ', props.objParams.route.params.side);
       setSidePhoto(props.objParams.route.params.side);
     }

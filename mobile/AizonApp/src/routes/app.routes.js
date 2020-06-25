@@ -112,7 +112,7 @@ function AppRoutes(){
               name="Photo"
               component={PhotoView}
               />
-
+{/**
           <AppDrawer.Screen
             name="Profile"
             component={Profile}
@@ -128,6 +128,7 @@ function AppRoutes(){
             name="Home"
             component={Home}
             options={{ title: 'Home' }}/>
+             */}
 
 
       </AppDrawer.Navigator>
