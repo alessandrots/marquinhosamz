@@ -9,35 +9,18 @@ import {RNCamera} from 'react-native-camera';
 
 import Icon from "react-native-vector-icons/MaterialIcons";
 
-//import api from '../../services/api';
-
-//import { StackActions } from '@react-navigation/native';
-
-
-
-import {
-  ModalButtons,
-  CameraButtonContainer,
-  CancelButtonText,
-  ContinueButtonText,
-} from './styles';
-
 function PhotoMain(props) {
 
   {/***/}
   const [images, setImages] = useState({});
   const [dataImage, setDataImage] = useState({});
-  //const [cameraModalOpened, setCameraModalOpened] = useState(true);
-  //const [dataModalOpened, setDataModalOpened] = useState(true);
   const [photoShot, setPhotoShot] = useState(false);
   const [loading, setLoading] = useState(false);
   const [sidePhoto, setSidePhoto] = useState({});
-
   const [camera, setCamera] = useState();
 
 
   useEffect(() => {
-    //console.log('\n\n props PhotoMain objParams = ', props);
 
     if (props?.objParams?.route?.params) {
       console.log('\n\n props.objParams.route.params.side = ', props.objParams.route.params.side);
@@ -62,14 +45,7 @@ function PhotoMain(props) {
 
   async function handleTakePicture2(camera) {
     setLoading(true);
-    //camera.pausePreview();
-    //https://stackoverflow.com/questions/12345731/android-take-picture-on-paused-preview
-
-    //console.log('cameraModalOpened = ', cameraModalOpened);
-    //console.log('dataModalOpened = ', dataModalOpened);
-
     /**
-     * colocar um loading TODO
      *
      * https://medium.com/@andrew.smith_84400/how-to-build-an-image-recognition-app-in-react-native-in-30-minutes-f9fa5f7d7532
      *
@@ -78,7 +54,6 @@ function PhotoMain(props) {
      */
     const options = {quality: 0.5, base64: true, forceUpOrientation: true, fixOrientation: true,};
     const data = await camera.takePictureAsync(options);
-    //alert('alessandro3 => data.uri = '+ data.uri);
 
     let objImage = {};
     objImage['uri'] = data.uri;
@@ -90,47 +65,11 @@ function PhotoMain(props) {
   }
 
   function identifyImage(camera, imageData) {
-
-    /**
-		// Initialise Clarifai api
-		const Clarifai = require('clarifai');
-
-		const app = new Clarifai.App({
-			apiKey: 'Your API key'
-		});
-
-		// Identify the image
-		app.models.predict(Clarifai.GENERAL_MODEL, {base64: imageData})
-			.then((response) => this.displayAnswer(response.outputs[0].data.concepts[0].name)
-			.catch((err) => alert(err))
-    );
-    */
-
     displayAnswer(camera, imageData)
 	}
 
 	function displayAnswer(camera, identifiedImage) {
     setLoading(false);
-
-    //console.log('identifiedImage = ', identifiedImage);
-
-		// Show an alert with the answer on
-    /**
-    Alert.alert(
-      "AIZON",
-      "[Foto] = " + identifiedImage.uri,
-      [
-        {
-          text: "OK",
-          onPress: () => {return null},
-          style: "cancel"
-        }
-      ],
-      { cancelable: false }
-  );
- */
-		// Resume the preview
-		//camera.resumePreview();
 	}
 
   //Botão Cancelar
@@ -142,26 +81,14 @@ function PhotoMain(props) {
 
   //Botão Continuar
   function handleCameraForward() {
-    //setDataModalOpened(!dataModalOpened);
-    //setCameraModalOpened(false);
     setImages(null);
     setPhotoShot(false);
-    //savePhoto(dataImage);
-    //console.log('cameraModalOpened = ', cameraModalOpened);
-    //console.log('dataModalOpened = ', dataModalOpened);
     returnPageInitial(dataImage);
   }
 
   function returnPageInitial(dataImage) {
-    //const popAction = StackActions.pop(1);
-    //console.log('returnPageInitial -popAction = ', popAction);
-    //navigation.goBack();
-
-     // Pass params back to home screen
-     navigation.navigate('PhotoManager', { post: dataImage, side: sidePhoto});
-
-     //https://reactnavigation.org/docs/params
-
+    navigation.pop();
+    navigation.navigate('PhotoManager', { post: dataImage, side: sidePhoto});
   }
 
 

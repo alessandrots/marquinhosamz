@@ -1,181 +1,69 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { View, Text, Button, Image } from 'react-native';
 
 import { AuthContext } from '../../contexts/auth';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
-import api from '../../services/api'
 
 import PhotoService from '../../services/photo/PhotoService';
 
-import { Background, ContainerHeader, ContainerFooter, ContainerMain } from './styles';
+import FotoCmp from '../../components/FotoCmp';
+//import PhotoMain  from '../../components/Photo';
+
+import { Background, ContainerHeader } from '../Home/styles';
 import { SubmitButton, SubmitText } from '../SignIn/styles';
 
-export default function Home() {
+export default function Home(props) {
 
   const { user } = useContext(AuthContext);
 
   const [imageBase64, setImageBase64] = useState();
+  const [showPhoto, setShowPhoto] = useState(false);
+  const [showPhotoSideOne, setShowPhotoSideOne] = useState(false);
 
-  async function getJson(){
-    //const response = await api.get('/v1/cdn/stories/health?version=published&token=wANpEQEsMYGOwLxwXQ76Ggtt');
-    //console.log('getJson = ', response.data)
-
-    let img = await PhotoService.getImageBase64();
-    //console.log(img);
-    setImageBase64(img);
-
+  function showNewCompPhoto() {
+    setShowPhoto(true);
   }
 
-  async function getDataForConfig() {
-    console.log(' ==> getDataForConfig ==> ANTES DO POST 1 = ', url);
-
-    let res = await PhotoService.getDataForConfig('/image/getDataForConfig', '6sn96FINoUghUbh');
-    //let res = await PhotoService.realGetDataForConfig('/image/getDataForConfig', '6sn96FINoUghUbh');
-
-    if (res) {
-      console.log(`Status code: ${res.status}`);
-      console.log(`Status text: ${res.statusText}`);
-      console.log(`Request method: ${res.request.method}`);
-      console.log(`Path: ${res.request.path}`);
-
-      console.log(`Date: ${res.headers.date}`);
-      console.log(`Data: ${res.data}`);
-    }
+  function showNewCompPhotoSideOne() {
+    setShowPhotoSideOne(true);
   }
 
-  async function getJsonFromPhotoService(){
-    const dataFromResponse = await PhotoService.getJson('/v91/cdn/stories/health?version=published&token=wANpEQEsMYGOwLxwXQ76Ggtt');
+  useEffect(() => {
+    console.log('\n\n route PhotoView = ', props);
 
-    if (dataFromResponse) {
-      console.log('getJsonFromPhotoService() = ', dataFromResponse)
-    }
-  }
 
-  async function postJsonFromPhotoService(){
-    const res = await PhotoService.makePostRequest('posts');
 
-    if (res) {
-      console.log(`Status code: ${res.status}`);
-      console.log(`Status text: ${res.statusText}`);
-      console.log(`Request method: ${res.request.method}`);
-      console.log(`Path: ${res.request.path}`);
+  }, []);
 
-      console.log(`Date: ${res.headers.date}`);
-      console.log(`Data: ${res.data}`);
-    }
-  }
-
-  async function postFormDataFromPhotoService(){
-    const res = await PhotoService.makePostFormData();
-
-    if (res) {
-      console.log('Status code: ',res.status);
-      console.log('Status text: ',res.statusText);
-      console.log('Request method: ',res.request.method);
-      console.log('Path: ',res.request.path);
-
-      console.log('Date: ',res.headers.date);
-      console.log('Data: ',res.data);
-    }
-  }
-
-  async function uploadBase64ToAizonViaFormData(){
-    const res = await PhotoService.uploadBase64ToAizonViaFormData('/image/upload');
-
-    if (res) {
-      console.log(`Status code: ${res.status}`);
-      console.log(`Status text: ${res.statusText}`);
-      console.log(`Request method: ${res.request.method}`);
-      console.log(`Path: ${res.request.path}`);
-
-      console.log(`Date: ${res.headers.date}`);
-      console.log(`Data: ${res.data}`);
-    }
-  }
-
-  async function uploadBase64ToAizonViaBody() {
-    console.log('uploadBase64ToAizonViaBody ...');
-    const res = await PhotoService.uploadBase64ToAizonViaBody('/image/upload2');
-
-    if (res) {
-      console.log('Status code: ',res.status);
-      console.log('Status text: ',res.statusText);
-      console.log('Request method: ',res.request.method);
-      console.log('Path: ',res.request.path);
-
-      console.log('Date: ',res.headers.date);
-      console.log('Data: ',res.data);
-    }
-  }
-
-  //let one = "https://api.storyblok.com/v1/cdn/stories/health?version=published&token=wANpEQEsMYGOwLxwXQ76Ggtt"
+  //para atualizar a foto após ser retirado
+  //const encodedData = 'R0lGODlhAQABAIAAAAAA...7';
+  //<Image source={{uri: `data:image/gif;base64,${encodedData}`}} />
+  //https://medium.com/@awesomejerry/image-with-react-native-98e7363f6dfe
 
  return (
     <Background>
       <ContainerHeader>
-        <Header titlePage="Home de Testes"/>
+        <Header titlePage="Foto2 de Documento"/>
       </ContainerHeader>
 
-      {/** trocar VIew por ImageBackground
-       * TODO importante
-       *  source={require('../../assets/home-background.png')}
-       *  styles={styles.container}
-       *  imageStyle={{width:74, height:383}}
-      */}
+      <SubmitButton onPress={showNewCompPhoto}>
+          <SubmitText>Get PHOTO SIDE 0</SubmitText>
+      </SubmitButton>
 
-      <ContainerMain>
-        <Text>MAIN</Text>
-
-        {imageBase64 && (
-          <Image
-            source={{uri: `${imageBase64}`}}
-            style={{
-              width: 51,
-              height: 51,
-              resizeMode: 'contain'
-            }}
-            />
-        )}
+      <SubmitButton onPress={showNewCompPhotoSideOne}>
+          <SubmitText>Get PHOTO SIDE 1</SubmitText>
+      </SubmitButton>
 
 
-        <SubmitButton onPress={getJson}>
-            <SubmitText>Get IMAGE</SubmitText>
-        </SubmitButton>
-
-        <SubmitButton onPress={getDataForConfig}>
-            <SubmitText>Get DATA CONFIG</SubmitText>
-        </SubmitButton>
-
-        <SubmitButton onPress={uploadBase64ToAizonViaBody}>
-            <SubmitText>Upload Foto Body</SubmitText>
-        </SubmitButton>
-
-      {/**
-        <SubmitButton onPress={getJsonFromPhotoService}>
-            <SubmitText>Get Service Foto</SubmitText>
-        </SubmitButton>
-
-        <SubmitButton onPress={postJsonFromPhotoService}>
-            <SubmitText>Post Service Foto</SubmitText>
-        </SubmitButton>
-
-        <SubmitButton onPress={postFormDataFromPhotoService}>
-            <SubmitText>Post Form Service Foto</SubmitText>
-        </SubmitButton>
-
-        <SubmitButton onPress={uploadBase64ToAizonViaFormData}>
-            <SubmitText>Upload Foto FormData</SubmitText>
-        </SubmitButton>
-      */}
+      {showPhoto && (
+          <FotoCmp side="0"/>
+      )}
 
 
-
-      </ContainerMain>
-
-      <ContainerFooter>
-        <Footer titlePage="AIZON"/>
-      </ContainerFooter>
+      {showPhotoSideOne && (
+        <FotoCmp side="1"/>
+      )}
 
     </Background>
   );
