@@ -9,10 +9,6 @@ import {RNCamera} from 'react-native-camera';
 
 import Icon from "react-native-vector-icons/MaterialIcons";
 
-import Header from '../Header';
-import { Background, ContainerHeader } from '../../pages/Home/styles';
-import { SubmitButton, SubmitText } from '../../pages/SignIn/styles';
-
 export default function FotoCmp(props) {
  //const navigation = useNavigation();
 
@@ -221,3 +217,5 @@ const styles = StyleSheet.create({
    margin: 10,
  },
 });
+
+

@@ -1,6 +1,8 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { Alert, StatusBar, StyleSheet, SafeAreaView,
-  View, Text, RefreshControl, Image, ActivityIndicator, TouchableOpacity} from 'react-native';
+  View, Text, RefreshControl, Image, ActivityIndicator,
+  TouchableOpacity, Modal, Dimensions } from 'react-native';
+
 import { useNavigation } from '@react-navigation/native';
 
 import { AuthContext } from '../../contexts/auth';
@@ -11,11 +13,13 @@ import PhotoService from '../../services/photo/PhotoService';
 
 import ImageView from "react-native-image-viewing";
 import Icon from "react-native-vector-icons/MaterialIcons";
+import FotoCmp from '../../components/FotoCmp';
 
 import { Background, ContainerMain, SendImageBackground,
   ContainerImageRight, ContainerImageLeft, ContainerImagens,ContainerDadosView,
   ContainerScreenButton, SubmitButton, SubmitText,
   TitleText, ItemText, Link, LinkText } from './styles';
+
 import { ContainerHeader, ContainerFooter } from '../Home/styles';
 
 export default function PhotoManager({ navigator, route }) {
@@ -32,6 +36,11 @@ export default function PhotoManager({ navigator, route }) {
 
   const [toggleCheckBox, setToggleCheckBox] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const [modalVisibleSideZero, setModalVisibleSideZero] = useState(false);
+  const [modalVisibleSideUm, setModalVisibleSideUm] = useState(false);
+  const [sidePhoto, setSidePhoto] = useState(0);
+
 
   useEffect(() => {
     //console.log('route PhotoManager = ', route);
@@ -90,21 +99,11 @@ export default function PhotoManager({ navigator, route }) {
 
   const navigation = useNavigation();
 
-  //const architecture = [];
-
-  //arr = [];
-
-  //const arrayImagesOriginal = [];
-
-
-
   const onSelect = (images, index) => {
     setImageIndex(index);
     setImagesOriginal(images);
     setIsVisible(true);
   };
-
-
 
   async function showImages () {
 
@@ -116,31 +115,20 @@ export default function PhotoManager({ navigator, route }) {
       imgObjFrontal['thumbnail'] = 'data:image/jpeg;base64,' + imageFrontal;
       imgObjFrontal['uri'] = 'data:image/jpeg;base64,' + imageFrontal;
 
-      //imgObjFrontal['thumbnail'] = imageFrontal;
-      //imgObjFrontal['uri'] = imageFrontal;
       arr.push(imgObjFrontal);
 
       let imgObjVerso = {};
       imgObjVerso['thumbnail'] = 'data:image/jpeg;base64,' + imageVerso;
       imgObjVerso['uri'] = 'data:image/jpeg;base64,' + imageVerso;
 
-      //imgObjVerso['thumbnail'] = imageVerso;
-      //imgObjVerso['uri'] = imageVerso;
       arr.push(imgObjVerso);
 
       setImages(arr);
-      //console.log(images);
       setIsVisibleList(true);
     }
   }
 
   async function getLoadFrontPhoto64(arr) {
-
-    /**
-    let myImages = images;
-    let fnSetImages = setImages;
-    let fnSetIsVisibleList = setIsVisibleList
-    */
 
     return await new Promise((resolve, reject) => {
 
@@ -227,6 +215,8 @@ export default function PhotoManager({ navigator, route }) {
     setImageFrontal(null);
     setImageVerso(null);
     setLoading(false);
+    setModalVisibleSideUm(false);
+    setModalVisibleSideZero(false);
   }
 
   function alertMessageUpload( msg, sendForPage) {
@@ -259,46 +249,38 @@ export default function PhotoManager({ navigator, route }) {
     navigation.navigate('ViewData', { side: '0'});
   }
 
-  function isShowImageList() {
-    //console.log('\n\n 1) isShowImageList route = ', route)
-    if (route.params?.post) {
-      // Post updated, do something with `route.params.post`
-      // For example, send the post to the server
 
-      console.log('\n\n PhotoManager route.params.post = ', route.params.post);
-      //console.log('\n\n PhotoManager route.params.side = ', route.params.side);
+  function showNewCompPhotoSideZero() {
+    setSidePhoto(0);
+    setModalVisibleSideZero(true);
+  }
 
-      if (route.params.side == 0) {
-        new Promise((resolve, reject) => {
-          setImageFrontal(route.params.post.base64);
-          resolve(true);
-        })
-        .then((ret) => {
-          console.log('\n vai chamar o FRONT ret= ', imageFrontal);
-          if (ret) {
-            showImages();
-          }
-        })
-        .catch(() => {
-            console.log('\n Deu pau na rotina de frente \n ');
-        })
-      } else {
-        new Promise((resolve, reject) => {
-          setImageVerso(route.params.post.base64);
-          resolve(true);
-        })
-        .then((ret) => {
-          console.log('\n vai chamar o VERSO ret= ', imageVerso);
-          if (ret) {
-            showImages();
-          }
-        })
-        .catch(() => {
-            console.log('\n Deu pau na rotina de frente \n ');
-        })
-      }
-    }
-    return false;
+  function showNewCompPhotoSideOne() {
+    setSidePhoto(1);
+    setModalVisibleSideUm(true);
+  }
+
+  function getModalPhoto () {
+    return  (
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisibleSideZero || modalVisibleSideUm}
+          onRequestClose={() => {
+            Alert.alert("Modal has been closed.");
+          }}
+        >
+          <View style={styles.modalView}>
+            <FotoCmp side={sidePhoto} onClose= {() => closeModalPhoto() }/>
+          </View>
+        </Modal>
+    );
+  }
+
+
+  function closeModalPhoto() {
+    setModalVisibleSideUm(false);
+    setModalVisibleSideZero(false);
   }
 
  return (
@@ -314,7 +296,7 @@ export default function PhotoManager({ navigator, route }) {
 
                     <ContainerDadosView>
                       <TitleText>Primeira Fotografia: </TitleText>
-                      <SubmitButton onPress={ () => navigation.navigate('Photo', { side: '0', visible: true })}>
+                      <SubmitButton onPress={ () => showNewCompPhotoSideZero()}>
                           <SubmitText>Frontal</SubmitText>
                       </SubmitButton>
                     </ContainerDadosView>
@@ -346,7 +328,7 @@ export default function PhotoManager({ navigator, route }) {
                 <ContainerImageLeft>
                   <ContainerDadosView>
                     <TitleText>Segunda Fotografia: </TitleText>
-                    <SubmitButton onPress={ () => navigation.navigate('Photo', { side: 1, visible: true })}>
+                    <SubmitButton onPress={ () => showNewCompPhotoSideOne()}>
                         <SubmitText>Verso</SubmitText>
                     </SubmitButton>
                   </ContainerDadosView>
@@ -416,6 +398,8 @@ export default function PhotoManager({ navigator, route }) {
                   </SubmitButton>
                 </ContainerScreenButton>
 
+                {  getModalPhoto() }
+
               </ContainerMain>
             {/**</SendImageBackground>*/}
 
@@ -465,5 +449,75 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     margin: 10,
   },
+
+  //PHOTO MODAL
+  container: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    margin: 20,
+  },
+
+  containerRow: {
+    flex: 1,
+    //backgroundColor :'#CC0000',
+    flexDirection: 'column',
+    margin: 20,
+  },
+
+  pdf: {
+      flex:1,
+      width:Dimensions.get('window').width,
+      height:Dimensions.get('window').height,
+  },
+
+  modalView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    margin: 20,
+    backgroundColor: "transparent",
+    borderRadius: 10,
+    padding: 10,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5
+  },
+  openButton: {
+    backgroundColor: "#0EABB5",
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2
+  },
+
+  closeButton: {
+    backgroundColor: "#0EABB5",
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+    width: 130,
+    height: 40,
+    marginLeft: 120,
+    marginRight: 20,
+    marginBottom: 35,
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center"
+  },
+
+  textStyleButton: {
+    color: "#F0B42F",
+    fontWeight: "bold",
+    textAlign: "center",
+    marginTop:20
+  }
+
 
 });
