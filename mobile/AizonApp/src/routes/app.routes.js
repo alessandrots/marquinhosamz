@@ -108,12 +108,13 @@ function AppRoutes(){
               options={{ title: 'Certificado' }}
           />
 
+          {/**
           <AppDrawer.Screen
             name="Home"
             component={Home}
             options={{ title: 'Home' }}/>
 
-          {/**
+
           <AppDrawer.Screen
               name="Photo"
               component={FotoCmp}
