@@ -50,6 +50,7 @@ export default function FotoCmp(props) {
  const navigation = useNavigation();
 
  async function handleTakePicture2(camera) {
+
    setLoading(true);
    /**
     *
@@ -93,6 +94,7 @@ export default function FotoCmp(props) {
  }
 
  function returnPageInitial(dataImage) {
+    props.onClose();
     //navigation.pop();
     navigation.navigate('PhotoManager', { post: dataImage, side: props.side});
  }
@@ -116,11 +118,6 @@ export default function FotoCmp(props) {
 
 
  return (
-
-  <Background>
-      <ContainerHeader>
-        <Header titlePage="Foto2 de Documento"/>
-      </ContainerHeader>
 
       <View style={styles.container}>
             <RNCamera
@@ -155,7 +152,7 @@ export default function FotoCmp(props) {
                             <TouchableOpacity onPress={() => handleTakePicture2(camera)} style={styles.capture}>
                               <Icon name="camera-alt" size={60} color={"#F0B42F"} />
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={() => handleCameraDiscard()} style={styles.buttonCloseCamera}>
+                            <TouchableOpacity onPress={() => props.onClose()} style={styles.buttonCloseCamera}>
                               <Icon name="cancel" size={40} color={"#0EABB5"} />
                             </TouchableOpacity>
                           </View>
@@ -163,7 +160,7 @@ export default function FotoCmp(props) {
                       } else {
                         return (
                           <View style={styles.viewPhotoTaked}>
-                            <TouchableOpacity onPress={() => handleCameraDiscard()} style={styles.capture2}>
+                            <TouchableOpacity onPress={() => props.onClose()} style={styles.capture2}>
                               <Icon name="cancel" size={60} color={"#0EABB5"} />
                             </TouchableOpacity>
                             <TouchableOpacity onPress={() => handleCameraForward()} style={styles.capture2}>
@@ -175,8 +172,6 @@ export default function FotoCmp(props) {
                   }}
           </RNCamera>
     </View>
-
-  </Background>
 
  );
 }

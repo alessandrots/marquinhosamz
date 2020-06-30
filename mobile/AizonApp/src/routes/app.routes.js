@@ -106,19 +106,19 @@ function AppRoutes(){
               name="PdfCertificate"
               component={PdfView}
               options={{ title: 'Certificado' }}
-              />
-
-
-          <AppDrawer.Screen
-              name="Photo"
-              component={FotoCmp}
-              />
+          />
 
           <AppDrawer.Screen
             name="Home"
             component={Home}
             options={{ title: 'Home' }}/>
-{/**
+
+          {/**
+          <AppDrawer.Screen
+              name="Photo"
+              component={FotoCmp}
+              />
+
           <AppDrawer.Screen
             name="Profile"
             component={Profile}
