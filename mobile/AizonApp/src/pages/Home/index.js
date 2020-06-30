@@ -1,11 +1,11 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { View, Text, Button, Image } from 'react-native';
 
 import { AuthContext } from '../../contexts/auth';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 
-import PhotoService from '../../services/photo/PhotoService';
+import {  View, Text, StyleSheet, Image,
+  Dimensions, TouchableHighlight, Modal} from 'react-native';
 
 import FotoCmp from '../../components/FotoCmp';
 //import PhotoMain  from '../../components/Photo';
@@ -20,13 +20,22 @@ export default function Home(props) {
   const [imageBase64, setImageBase64] = useState();
   const [showPhoto, setShowPhoto] = useState(false);
   const [showPhotoSideOne, setShowPhotoSideOne] = useState(false);
+  const [modalVisibleSideZero, setModalVisibleSideZero] = useState(false);
+  const [modalVisibleSideUm, setModalVisibleSideUm] = useState(false);
+  const [sidePhoto, setSidePhoto] = useState(0);
 
   function showNewCompPhoto() {
-    setShowPhoto(true);
+    //setShowPhoto(true);
+    setSidePhoto(0);
+    //setModalVisibleSideUm(false);
+    setModalVisibleSideZero(true);
   }
 
   function showNewCompPhotoSideOne() {
-    setShowPhotoSideOne(true);
+    //setShowPhotoSideOne(true);
+    setSidePhoto(1);
+    //setModalVisibleSideZero(false);
+    setModalVisibleSideUm(true);
   }
 
   useEffect(() => {
@@ -35,6 +44,32 @@ export default function Home(props) {
 
 
   }, []);
+
+
+  function getModalPhoto () {
+    console.log('\n\n getModalPhoto modalVisibleSideUm = ', modalVisibleSideUm);
+
+    console.log('\n\n getModalPhoto modalVisibleSideZero = ', modalVisibleSideZero);
+    return  (
+        <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisibleSideZero || modalVisibleSideUm}
+        onRequestClose={() => {
+          Alert.alert("Modal has been closed.");
+        }}
+      >
+        <View style={styles.modalView}>
+          <FotoCmp side={sidePhoto} onClose= {() => {
+              setModalVisibleSideUm(false);
+              setModalVisibleSideZero(false);
+            }}/>
+        </View>
+
+        </Modal>
+    );
+  }
+
 
   //para atualizar a foto após ser retirado
   //const encodedData = 'R0lGODlhAQABAIAAAAAA...7';
@@ -55,16 +90,83 @@ export default function Home(props) {
           <SubmitText>Get PHOTO SIDE 1</SubmitText>
       </SubmitButton>
 
+      {  getModalPhoto() }
 
-      {showPhoto && (
-          <FotoCmp side="0"/>
-      )}
-
-
-      {showPhotoSideOne && (
-        <FotoCmp side="1"/>
-      )}
+      {/**showPhotoSideOne && getModalPhoto(1)  */ }
 
     </Background>
   );
 }
+
+const styles = StyleSheet.create({
+
+
+  container: {
+      flex: 1,
+      justifyContent: 'flex-start',
+      margin: 20,
+  },
+
+  containerRow: {
+    flex: 1,
+    //backgroundColor :'#CC0000',
+    flexDirection: 'column',
+    margin: 20,
+  },
+
+  pdf: {
+      flex:1,
+      width:Dimensions.get('window').width,
+      height:Dimensions.get('window').height,
+  },
+
+  modalView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    margin: 20,
+    backgroundColor: "transparent",
+    borderRadius: 10,
+    padding: 10,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5
+  },
+  openButton: {
+    backgroundColor: "#0EABB5",
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2
+  },
+
+  closeButton: {
+    backgroundColor: "#0EABB5",
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+    width: 130,
+    height: 40,
+    marginLeft: 120,
+    marginRight: 20,
+    marginBottom: 35,
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center"
+  },
+
+  textStyleButton: {
+    color: "#F0B42F",
+    fontWeight: "bold",
+    textAlign: "center",
+    marginTop:20
+  }
+
+});

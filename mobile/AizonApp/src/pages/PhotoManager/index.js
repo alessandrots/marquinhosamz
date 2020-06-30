@@ -104,86 +104,6 @@ export default function PhotoManager({ navigator, route }) {
     setIsVisible(true);
   };
 
-  /**
-  function getLoadFrontPhoto() {
-    let thumb = {
-      thumbnail:
-        "https://images.unsplash.com/photo-1518005020951-eccb494ad742?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=992&q=80",
-      uri:
-        "https://images.unsplash.com/photo-1518005020951-eccb494ad742?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=992&q=80"
-    };
-
-    let arr = null;
-    if (images && images.length > 0) {
-      console.log('1');
-      arr = images;
-    } else {
-      arr = [];
-      console.log('2');
-    }
-
-    arr.push(thumb);
-    setImages(arr);
-
-    if (images && images.length == 2) {
-      setIsVisibleList(true);
-    }
-  }
-
-  function getLoadVersoPhoto() {
-    let thumb = {
-      thumbnail:
-      "https://images.unsplash.com/photo-1486718448742-163732cd1544?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=934&q=80",
-      uri:
-      "https://images.unsplash.com/photo-1486718448742-163732cd1544?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=934&q=80"
-    };
-
-    let arr = null;
-    if (images && images.length > 0) {
-      arr = images;
-      console.log('1 = ', arr);
-    } else {
-      arr = [];
-      console.log('2');
-    }
-    arr.push(thumb);
-    setImages(arr);
-
-    if (images && images.length == 2) {
-      setIsVisibleList(true);
-    }
-  }
-   */
-
-  function showImagesTemp () {
-    let arr = [];
-
-    let prom1 = getLoadFrontPhoto64(arr);
-
-    prom1
-    .then((arr) => {
-        console.log('\n vai chamar o VERSO \n ');
-        //arr.push(imageFrontal);
-
-        let prom2 = getLoadVersoPhoto64(arr);
-
-        prom2
-        .then((arr) => {
-            console.log('\n MOSTRRA AS IMAGENSSS \n ');
-            //arr.push(imgVerso);
-
-            console.log(arr);
-            setImages(arr);
-            setIsVisibleList(true);
-        })
-        .catch(() => {
-            console.log('\n Deu pau na rotina de VERSO \n ');
-        })
-    })
-    .catch(() => {
-        console.log('\n Deu pau na rotina de frente \n ');
-    });
-  }
 
 
   async function showImages () {
@@ -230,34 +150,12 @@ export default function PhotoManager({ navigator, route }) {
       thumb['uri'] = PhotoService.getRGAlexandreFrontBase64();
       arr.push(thumb);
 
-      /**
-      let arr = null;
-      if (myImages && myImages.length > 0) {
-        console.log('1');
-        arr = myImages;
-      } else {
-        arr = [];
-        console.log('2');
-      }
 
-      arr.push(thumb);
-      fnSetImages(arr);
-
-      if (myImages && myImages.length == 2) {
-        fnSetIsVisibleList(true);
-      }
-      */
       resolve(arr);
     });
   }
 
   async function getLoadVersoPhoto64(arr) {
-
-    /**
-    let myImages = images;
-    let fnSetImages = setImages;
-    let fnSetIsVisibleList = setIsVisibleList
-    */
 
     return await new Promise((resolve, reject) => {
 
@@ -266,41 +164,14 @@ export default function PhotoManager({ navigator, route }) {
       thumb['thumbnail'] = PhotoService.getRGAlexandreVersoBase64();
       thumb['uri'] = PhotoService.getRGAlexandreVersoBase64();
       arr.push(thumb);
-      /**
-      let arr = null;
-      if (myImages && myImages.length > 0) {
-        console.log('1');
-        arr = myImages;
-      } else {
-        arr = [];
-        console.log('2');
-      }
 
-      arr.push(thumb);
-      fnSetImages(arr);
-
-      // ESSA LÓGICA ABAIXO PASSARIA PRA O BOTÃO
-
-      if (myImages && myImages.length == 2) {
-        fnSetIsVisibleList(true);
-      }
-      */
-     resolve(arr);
+      resolve(arr);
     });
   }
 
   async function uploadBase64ToAizonViaBody3() {
     console.log('uploadBase64ToAizonViaBody3 ...');
     const res = await PhotoService.uploadBase64ToAizonViaBody3('/image/upload3');
-
-      /** fazer a solução que pegue do array de imagens..
-       * Primeiro a partir do emulador fazendo o botão chamar o showImagesTemp
-       * para preencher o array
-       *
-       * depois fazer na vera utilizando o mobile mesmo com o app instalado
-       *
-       * */
-
 
     if (res) {
       console.log('Status code: ',res.status);
@@ -333,23 +204,10 @@ export default function PhotoManager({ navigator, route }) {
 
     const res = await PhotoService.uploadBase64ToAizonViaBody('/image/upload3', fileImageFront, fileImageVerso);
 
-      /** fazer a solução que pegue do array de imagens..
-       * Primeiro a partir do emulador fazendo o botão chamar o showImagesTemp
-       * para preencher o array
-       *
-       * depois fazer na vera utilizando o mobile mesmo com o app instalado
-       *
-       * */
-
-
     if (res) {
       setLoading(false);
-      console.log('Status code: ',res.status);
-      //console.log('Status text: ',res.statusText);
-      //console.log('Request method: ',res.request.method);
-      //console.log('Path: ',res.request.path);
-      //console.log('Date: ',res.headers.date);
-      console.log('Data: ',res.data);
+      //console.log('Status code: ',res.status);
+      //console.log('Data: ',res.data);
       let data = res.data;
       let msg = "Processamento realizado com sucesso. ID: " + data.id; //+ ' => Data: '+ data.date_time;
       alertMessageUpload(msg, true);
@@ -360,13 +218,6 @@ export default function PhotoManager({ navigator, route }) {
   function refreshTela() {
     console.log(images);
     showImages ();
-    /**
-    if (!images || images.length < 2) {
-      alertMessageUpload('É preciso fotografar frente e verso do documento!', false);
-      return;
-    }
-
-    */
   }
 
   function limparTela() {
