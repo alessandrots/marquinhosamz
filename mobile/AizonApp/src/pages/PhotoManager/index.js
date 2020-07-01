@@ -40,6 +40,9 @@ export default function PhotoManager({ navigator, route }) {
   const [modalVisibleSideZero, setModalVisibleSideZero] = useState(false);
   const [modalVisibleSideUm, setModalVisibleSideUm] = useState(false);
   const [sidePhoto, setSidePhoto] = useState(0);
+  const [idUpload, setIdUpload] = useState(0);
+
+  const { storageIdUpload } = useContext(AuthContext);
 
 
   useEffect(() => {
@@ -94,8 +97,6 @@ export default function PhotoManager({ navigator, route }) {
    * aí vẽ se as imagens das identidades do Alexandre são mostradas
    *
    */
-
-  const { user } = useContext(AuthContext);
 
   const navigation = useNavigation();
 
@@ -197,8 +198,12 @@ export default function PhotoManager({ navigator, route }) {
       //console.log('Status code: ',res.status);
       //console.log('Data: ',res.data);
       let data = res.data;
+      setIdUpload(data.id);
+
+      storageIdUpload(data.id);
+
       let msg = "Processamento realizado com sucesso. ID: " + data.id; //+ ' => Data: '+ data.date_time;
-      alertMessageUpload(msg, true);
+      alertMessageUpload(msg, true, data);
 
     }
   }
@@ -219,7 +224,7 @@ export default function PhotoManager({ navigator, route }) {
     setModalVisibleSideZero(false);
   }
 
-  function alertMessageUpload( msg, sendForPage) {
+  function alertMessageUpload( msg, sendForPage, data) {
     let arr =[
       {
         text: "Ok",
@@ -231,7 +236,7 @@ export default function PhotoManager({ navigator, route }) {
       arr = [
         {
           text: "Ok",
-          onPress: () => goToDataVisualization(),
+          onPress: () => goToDataVisualization(data),
           style: "ok"
         }
       ]
@@ -245,8 +250,11 @@ export default function PhotoManager({ navigator, route }) {
     );
   }
 
-  function goToDataVisualization() {
-    navigation.navigate('ViewData', { side: '0'});
+  function goToDataVisualization(data) {
+    console.log('====================================');
+    console.log(data.id);
+    console.log('====================================');
+    navigation.navigate('ViewData', { side: '0', 'identificacaoDocumento': data.id});
   }
 
 

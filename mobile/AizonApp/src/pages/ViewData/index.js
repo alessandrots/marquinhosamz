@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { StatusBar, StyleSheet, SafeAreaView, TouchableOpacity,
-  View, Text, ScrollView, Image, ActivityIndicator } from 'react-native';
+  View, Text, ScrollView, Image, ActivityIndicator, Alert} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 import { AuthContext } from '../../contexts/auth';
@@ -22,13 +22,14 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 
 export default function ViewData({ navigator, route }) {
 
-  const { user } = useContext(AuthContext);
+  const { loadStorageIdUpload } = useContext(AuthContext);
 
   const navigation = useNavigation();
 
-  let [responseData, setResponseData] = useState('');
+  let [responseData, setResponseData] = useState(null);
   const [imageBase64, setImageBase64] = useState();
   const [loading, setLoading] = useState(false);
+  const [dataErro, setDataErro] = useState(null);
 
 
   useEffect(() => {
@@ -74,28 +75,57 @@ export default function ViewData({ navigator, route }) {
 
 
   async function getDataForConfigToObj() {
+    console.log('\n\n route ViewData = ', route);
     setLoading(true);
     //setResponseData(null);
     setImageBase64(null);
 
-    let res = await PhotoService.getDataForConfig('/image/getDataForConfig', '6sn96FINoUghUbh');
+    let arr =[
+      {
+        text: "Ok",
+        style: "ok"
+      }
+    ]
+
+    const msg = await loadStorageIdUpload();
+
+    /**
+    Alert.alert(
+      "AIZON - VIEW DATA",
+      msg,
+      arr,
+      { cancelable: false }
+    );
+     */
+
+     console.log('====================================');
+     console.log('ID = ', msg);
+     console.log('====================================');
+
+    let res = await PhotoService.getDataForConfig('/image/getDataForConfig', route.params.identificacaoDocumento);
 
     if (res) {
-      //console.log('Data: ', res.data.data_extract.data_extract);
-      res.data.data_extract.data_extract['identificacaoDocumento'] = '6sn96FINoUghUbh';
-      setResponseData(res.data.data_extract.data_extract);
-      setLoading(false);
+      console.log('\n\n res = ', res.data.data_extract);
+      console.log('\n\n res = ', res.data.Erro);
 
-      let img = await PhotoService.getImageBase64();
-      //console.log(img);
-      setImageBase64(img);
+      if (res.data) {
+        if (res.data.data_extract) {
+          setLoading(false);
+          res.data.data_extract.data_extract['identificacaoDocumento'] = route.params.identificacaoDocumento;
+          setResponseData(res.data.data_extract.data_extract);
+
+          let img = await PhotoService.getImageBase64();
+          //console.log(img);
+          setImageBase64(img);
+        } else if (res.data.Erro) {
+          setLoading(false);
+          setDataErro(res.data.Erro)
+        }
+      }
     }
   }
 
-
-
   function getPdfButton() {
-
     if (responseData) {
       return (
         <View style={styles.viewRodape}>
@@ -126,7 +156,7 @@ export default function ViewData({ navigator, route }) {
               </View>
 
               <View style={styles.viewLine2}>
-                <Text  style={styles.textDataFirst}> {responseData.identificacaoDocumento }</Text>
+                <Text  style={styles.textDataFirst}> {route.params.identificacaoDocumento }</Text>
                 <Text  style={styles.textDataSecond}> {responseData.uf }</Text>
               </View>
 
@@ -188,6 +218,18 @@ export default function ViewData({ navigator, route }) {
                 <Text style={styles.textDataFirst}> {responseData.cpf }</Text>
               </View>
       </View>)
+    } else if (dataErro) {
+      return (
+        <View style={styles.viewPrincipal}>
+          <View style={styles.viewLine2}>
+                <Text  style={styles.textDataFirst}> Documento: </Text>
+                <Text  style={styles.textDataFirst}> {route.params.identificacaoDocumento }</Text>
+         </View>
+          <View style={styles.viewLine1}>
+            <Text style={styles.textTitleError}> Problemas ao carregar dados! Erro: {dataErro}</Text>
+          </View>
+        </View>
+      )
     }
 
   }
@@ -219,29 +261,14 @@ export default function ViewData({ navigator, route }) {
                           />
                       )}
 
-                  <Text style={styles.textTitleMain}> Detalhes do Documento</Text>
+                        <Text style={styles.textTitleMain}> Detalhes do Documento</Text>
 
               </View>
 
               {getDataPopulate()}
 
               {getPdfButton()}
-              {/**
-              {responseData && (
-                  <View style={styles.viewRodape}>
-                      <TouchableOpacity onPress={() => navigation.navigate('PdfCertificate')}>
-                        <Image
-                              source={require('../../assets/picture_as_pdf.png')}
-                              style={{
-                                width: 40,
-                                height: 45,
-                                resizeMode: 'contain'
-                              }}
-                        />
-                      </TouchableOpacity>
-                  </View>
-              )}
-               */}
+
 
             </ScrollView>
           </SafeAreaView>
@@ -358,6 +385,13 @@ const styles = StyleSheet.create({
     color: "#000",
     marginLeft: 80,
     marginRight: 10,
-  }
+  },
+  textTitleError: {
+    fontSize: 14,
+    color: "#CC0000",
+    fontWeight: "bold",
+    marginLeft: 10,
+    marginRight: 80,
+  },
 
 });
