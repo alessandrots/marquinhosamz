@@ -117,6 +117,17 @@ function AuthProvider({ children }){
         await AsyncStorage.setItem('Auth_user', JSON.stringify(data));
     }
 
+    async function storageIdUpload(id){
+        console.log('storageIdUpload ');
+        await AsyncStorage.setItem('CURRENT_ID_UPLOAD', JSON.stringify(id));
+    }
+
+    async function loadStorageIdUpload(){
+        console.log('loadStorageIdUpload ');
+        const storageUser = await AsyncStorage.getItem('CURRENT_ID_UPLOAD');
+        return storageUser;
+    }
+
     async function signOut(){
         await firebase.auth().signOut();
         await AsyncStorage.clear()
@@ -131,7 +142,8 @@ function AuthProvider({ children }){
     }
 
     return(
-     <AuthContext.Provider value={{ signed: true , user, loading, signUp, signIn, signOut, savePhoto, menuItem:false }}>
+     <AuthContext.Provider value={{ signed: true , user, loading, signUp,
+     signIn, signOut, savePhoto, storageIdUpload, loadStorageIdUpload }}>
          {children}
      </AuthContext.Provider>
     );
