@@ -15,6 +15,8 @@ import ImageView from "react-native-image-viewing";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import FotoCmp from '../../components/FotoCmp';
 
+import CameraOverlay from '../../components/CameraOverlay';
+
 import { Background, ContainerMain, SendImageBackground,
   ContainerImageRight, ContainerImageLeft, ContainerImagens,ContainerDadosView,
   ContainerScreenButton, SubmitButton, SubmitText,
@@ -260,6 +262,7 @@ export default function PhotoManager({ navigator, route }) {
     setModalVisibleSideUm(true);
   }
 
+
   function getModalPhoto () {
     return  (
         <Modal
@@ -272,6 +275,12 @@ export default function PhotoManager({ navigator, route }) {
         >
           <View style={styles.modalView}>
             <FotoCmp side={sidePhoto} onClose= {() => closeModalPhoto() }/>
+            {/**
+             * https://medium.com/reactbrasil/criando-mascara-sobre-a-c%C3%A2mera-no-react-native-usando-svg-8353677a85c4
+             *
+             * <CameraOverlay />
+             */}
+
           </View>
         </Modal>
     );

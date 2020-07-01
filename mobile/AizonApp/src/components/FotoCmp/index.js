@@ -167,6 +167,7 @@ export default function FotoCmp(props) {
                       }
                   }}
           </RNCamera>
+
     </View>
 
  );
