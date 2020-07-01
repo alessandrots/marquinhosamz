@@ -16,7 +16,7 @@ import { Background, ContainerHeader, ContainerFooter, ContainerMain, Link, Link
 
 export default function PdfView({ navigator, route }) {
 
-  const { user } = useContext(AuthContext);
+  const { loadStorageIdUpload } = useContext(AuthContext);
 
   const navigation = useNavigation();
 
@@ -24,6 +24,8 @@ export default function PdfView({ navigator, route }) {
   const [imageBase64, setImageBase64] = useState();
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [dataErro, setDataErro] = useState(null);
+  const [idUpload, setIdUpload] = useState(null);
 
   useEffect(() => {
     getDataForConfigToObj();
@@ -67,13 +69,53 @@ export default function PdfView({ navigator, route }) {
   async function getDataForConfigToObj() {
     setImageBase64(null);
     setLoading(true);
-    let res = await PhotoService.getDataForConfig('/image/getDataForConfig', '6sn96FINoUghUbh');
 
-    if (res) {
-      setImageBase64('data:application/pdf;base64,' + res.data.certification);
-      setLoading(false);
+    const id = await loadStorageIdUpload();
+
+     console.log('====================================');
+     console.log(' PdfView ID = ', id);
+     console.log('====================================');
+
+    let res = await PhotoService.getDataForConfig('/image/getDataForConfig', id);
+
+    console.log('res = ', res);
+
+    if (res && res.data) {
+      if (res.data.data_extract) {
+        setImageBase64('data:application/pdf;base64,' + res.data.certification);
+        setLoading(false);
+      } else if (res.data.Erro) {
+        setLoading(false);
+        setImageBase64(null);
+        setDataErro(res.data.Erro)
+        setIdUpload(id);
+      }
     }
   }
+
+  function getDataErro() {
+
+    if (dataErro) {
+
+      return (
+        <SafeAreaView style={styles.safeAreaViewCmp}>
+
+          <ScrollView style={styles.scrollView}>
+            <View style={styles.viewPrincipal}>
+              <View style={styles.viewLine2}>
+                    <Text  style={styles.textDataFirst}> Documento: </Text>
+                    <Text  style={styles.textDataFirst}> {idUpload}</Text>
+              </View>
+              <View style={styles.viewLine1}>
+                <Text style={styles.textTitleError}> Problemas ao carregar dados! Erro: {dataErro}</Text>
+              </View>
+            </View>
+          </ScrollView>
+        </SafeAreaView>
+      )
+    }
+  }
+
 
  return (
     <Background>
@@ -85,55 +127,60 @@ export default function PdfView({ navigator, route }) {
       <ContainerMain>
         <ActivityIndicator size="large" color="#0EABB5" animating={loading}/>
 
-        <View style={styles.container}>
-                    <Modal
-                      animationType="slide"
-                      transparent={true}
-                      visible={modalVisible}
-                      onRequestClose={() => {
-                        Alert.alert("Modal has been closed.");
-                      }}
-                    >
-                      <View style={styles.modalView}>
-                          <Pdf
-                              source={{ uri: imageBase64 }}
-                              onLoadComplete={(numberOfPages, filePath) => {
-                                  console.log(`number of pages: ${numberOfPages}`);
-                              }}
-                              onPageChanged={(page, numberOfPages) => {
-                                  console.log(`current page: ${page}`);
-                              }}
-                              onError={error => {
-                                  console.log(error);
-                              }}
-                              style={styles.pdf}
-                          />
-                      </View>
-                        <TouchableHighlight
-                          style={styles.closeButton}
-                          onPress={() => {
-                            setModalVisible(!modalVisible);
-                          }}
-                        >
-                          <Text style={styles.textStyle}>Fechar</Text>
-                        </TouchableHighlight>
-
-                    </Modal>
-
-                    {imageBase64 && (
-                        <View style={styles.containerRow}>
-                            <TouchableHighlight
-                              style={styles.openButton}
-                              onPress={() => {
-                                setModalVisible(true);
-                              }}
-                            >
-                              <Text style={styles.textStyle}>Abrir PDF</Text>
-                            </TouchableHighlight>
-                            <Text style={styles.textStyleButton}>Certificado carregado!</Text>
+        {imageBase64 && (
+          <View style={styles.container}>
+                      <Modal
+                        animationType="slide"
+                        transparent={true}
+                        visible={modalVisible}
+                        onRequestClose={() => {
+                          Alert.alert("Modal has been closed.");
+                        }}
+                      >
+                        <View style={styles.modalView}>
+                            <Pdf
+                                source={{ uri: imageBase64 }}
+                                onLoadComplete={(numberOfPages, filePath) => {
+                                    console.log(`number of pages: ${numberOfPages}`);
+                                }}
+                                onPageChanged={(page, numberOfPages) => {
+                                    console.log(`current page: ${page}`);
+                                }}
+                                onError={error => {
+                                    console.log(error);
+                                }}
+                                style={styles.pdf}
+                            />
                         </View>
-                    )}
-              </View>
+                          <TouchableHighlight
+                            style={styles.closeButton}
+                            onPress={() => {
+                              setModalVisible(!modalVisible);
+                            }}
+                          >
+                            <Text style={styles.textStyle}>Fechar</Text>
+                          </TouchableHighlight>
+
+                      </Modal>
+
+
+                          <View style={styles.containerRow}>
+                              <TouchableHighlight
+                                style={styles.openButton}
+                                onPress={() => {
+                                  setModalVisible(true);
+                                }}
+                              >
+                                <Text style={styles.textStyle}>Abrir PDF</Text>
+                              </TouchableHighlight>
+                              <Text style={styles.textStyleButton}>Certificado carregado!</Text>
+                          </View>
+
+                </View>
+              )}
+
+              {getDataErro()}
+
       </ContainerMain>
 
       <ContainerFooter>
@@ -213,6 +260,57 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
     marginTop:20
-  }
+  },
+
+  viewPrincipal:{
+    flex:1,
+    flexDirection: "column",
+  },
+
+  viewLine1: {
+    flex: 1,
+    flexDirection: "row",
+    backgroundColor: "#a0efef",
+    ...Platform.select({
+      android: { paddingTop: 10, paddingBottom: 10 },
+      default: null,
+    }),
+  },
+  viewLine2: {
+    flex: 1,
+    flexDirection: "row",
+    backgroundColor: "#FFF",
+    ...Platform.select({
+      android: { paddingTop: 10, paddingBottom: 10},
+      default: null,
+    }),
+  },
+
+  safeAreaViewCmp: {
+    flex: 1,
+    //marginTop: Constants.statusBarHeight,
+    marginTop: 10,
+  },
+
+  scrollView: {
+    backgroundColor: "#FFF",
+    marginHorizontal: 15,
+  },
+
+  textDataFirst: {
+    fontSize: 12,
+    fontWeight: "bold",
+    color: "#000",
+    marginLeft: 10,
+
+  },
+
+  textTitleError: {
+    fontSize: 14,
+    color: "#CC0000",
+    fontWeight: "bold",
+    marginLeft: 10,
+    marginRight: 80,
+  },
 
 });

@@ -87,7 +87,7 @@ export default function ViewData({ navigator, route }) {
       }
     ]
 
-    const msg = await loadStorageIdUpload();
+    const id = await loadStorageIdUpload();
 
     /**
     Alert.alert(
@@ -99,7 +99,7 @@ export default function ViewData({ navigator, route }) {
      */
 
      console.log('====================================');
-     console.log('ID = ', msg);
+     console.log('ID = ', id);
      console.log('====================================');
 
     let res = await PhotoService.getDataForConfig('/image/getDataForConfig', route.params.identificacaoDocumento);
