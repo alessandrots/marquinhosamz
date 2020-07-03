@@ -187,13 +187,17 @@ export default function PhotoManager({ navigator, route }) {
 
     setLoading(true);
 
-    console.log('uploadBase64ToAizonViaBody = ');
+
     let fileImageFront = images[0]['uri'];
     let fileImageVerso = images[1]['uri'];
 
-    const res = await PhotoService.uploadBase64ToAizonViaBody('/image/upload3', fileImageFront, fileImageVerso);
+    const resposta = await PhotoService.uploadBase64ToAizonViaBody('/image/upload3', fileImageFront, fileImageVerso);
 
-    if (res) {
+    console.log('uploadBase64ToAizonViaBody resposta = ', resposta);
+
+    const res = resposta.res
+
+    if (!res.isErro) {
       setLoading(false);
       //console.log('Status code: ',res.status);
       //console.log('Data: ',res.data);
@@ -205,7 +209,25 @@ export default function PhotoManager({ navigator, route }) {
       let msg = "Processamento realizado com sucesso. ID: " + data.id; //+ ' => Data: '+ data.date_time;
       alertMessageUpload(msg, true, data);
 
-    }
+    } else {
+      let error = res.error;
+      if (error.response) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
+          console.log('error.response.data = ', error.response.data);
+          console.log('error.response.status = ', error.response.status);
+          console.log('error.response.headers = ', error.response.headers);
+      } else if (error.request) {
+          // The request was made but no response was received
+          // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+          // http.ClientRequest in node.js
+          console.log('error.request = ', error.request);
+      } else {
+          // Something happened in setting up the request that triggered an Error
+          console.log('Error GENERAL = ', error.message);
+      }
+          console.log('error.config = ', error.config);
+      }
   }
 
   function refreshTela() {
