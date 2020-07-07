@@ -316,7 +316,7 @@ export default function PhotoManager({ navigator, route }) {
  return (
       <Background>
             <ContainerHeader>
-              <Header titlePage="Orientações"/>
+              <Header titlePage="Foto de Documento"/>
             </ContainerHeader>
 
               <ContainerMain>

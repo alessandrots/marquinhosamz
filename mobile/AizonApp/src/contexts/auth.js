@@ -50,26 +50,37 @@ function AuthProvider({ children }){
     async function signIn(email, password){
         console.log('email = ', email);
         console.log('password = ', password);
-        await firebase.auth().signInWithEmailAndPassword(email,password)
-        .then(async (value)=>{
-            console.log('uid = ', uid);
-            let uid = value.user.uid;
-            await firebase.database().ref('users').child(uid).once('value')
-            .then((snapshot)=>{
-                let data = {
-                  uid: uid,
-                  nome: snapshot.val().nome,
-                  email: value.user.email,
-                };
+        /**
+         *
+         await firebase.auth().signInWithEmailAndPassword(email,password)
+         .then(async (value)=>{
+             console.log('uid = ', uid);
+             let uid = value.user.uid;
+             await firebase.database().ref('users').child(uid).once('value')
+             .then((snapshot)=>{
+                 let data = {
+                   uid: uid,
+                   nome: snapshot.val().nome,
+                   email: value.user.email,
+                 };
 
-                console.log('usuario = ', data);
-                setUser(data);
-                storageUser(data);
-            })
-        })
-        .catch((error)=> {
-            alert(error.code);
-        });
+                 console.log('usuario = ', data);
+                 setUser(data);
+                 storageUser(data);
+             })
+         })
+         .catch((error)=> {
+             alert(error.code);
+         });
+         */
+
+        let data = {
+            uid: 8388,
+            nome: 'Alessandro',
+            email: 'ats@mail.com',
+        };
+        setUser(data);
+        storageUser(data);
     }
 
     //Cadastrar usuario
@@ -129,11 +140,15 @@ function AuthProvider({ children }){
     }
 
     async function signOut(){
-        await firebase.auth().signOut();
-        await AsyncStorage.clear()
-        .then( () => {
-           setUser(null);
-        })
+        /**
+         *
+         await firebase.auth().signOut();
+         await AsyncStorage.clear()
+         .then( () => {
+            setUser(null);
+         })
+         */
+        setUser(null);
     }
 
     async function savePhoto(photo) {
@@ -142,7 +157,7 @@ function AuthProvider({ children }){
     }
 
     return(
-     <AuthContext.Provider value={{ signed: true , user, loading, signUp,
+     <AuthContext.Provider value={{ signed: !!user, user, loading, signUp,
      signIn, signOut, savePhoto, storageIdUpload, loadStorageIdUpload }}>
          {children}
      </AuthContext.Provider>
