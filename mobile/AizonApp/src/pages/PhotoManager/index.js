@@ -11,6 +11,8 @@ import Footer from '../../components/Footer';
 import ImageList from "../../components/ImageList/ImageList";
 import PhotoService from '../../services/photo/PhotoService';
 
+import PhotoBase64Service from '../../services/photoBase64/PhotoBase64Service';
+
 import ImageView from "react-native-image-viewing";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import FotoCmp from '../../components/FotoCmp';
@@ -187,7 +189,6 @@ export default function PhotoManager({ navigator, route }) {
 
     setLoading(true);
 
-
     let fileImageFront = images[0]['uri'];
     let fileImageVerso = images[1]['uri'];
 
@@ -233,6 +234,7 @@ export default function PhotoManager({ navigator, route }) {
   function refreshTela() {
     console.log(images);
     showImages ();
+    //showImagesBase64();
   }
 
   function limparTela() {
@@ -311,6 +313,44 @@ export default function PhotoManager({ navigator, route }) {
   function closeModalPhoto() {
     setModalVisibleSideUm(false);
     setModalVisibleSideZero(false);
+  }
+
+  async function showImagesBase64 () {
+
+    new Promise((resolve, reject) => {
+      setImageFrontal(PhotoBase64Service.getRGAlexandreFrontBase64());
+      setImageVerso(PhotoBase64Service.getRGAlexandreVersoBase64());
+
+      resolve(true);
+    })
+    .then((ret) => {
+      //console.log('\n vai chamar o FRONT ret= ', imageFrontal);
+      if (ret) {
+        if (imageFrontal && imageVerso) {
+          let arr = [];
+          console.log('\n\n showImages 2= ');
+
+          let imgObjFrontal = {};
+          imgObjFrontal['thumbnail'] = 'data:image/jpeg;base64,' + PhotoBase64Service.getRGAlexandreFrontBase64();
+          imgObjFrontal['uri'] = 'data:image/jpeg;base64,' + PhotoBase64Service.getRGAlexandreFrontBase64();
+
+          arr.push(imgObjFrontal);
+
+          let imgObjVerso = {};
+          imgObjVerso['thumbnail'] = 'data:image/jpeg;base64,' + PhotoBase64Service.getRGAlexandreVersoBase64();
+          imgObjVerso['uri'] = 'data:image/jpeg;base64,' + PhotoBase64Service.getRGAlexandreVersoBase64()
+
+          arr.push(imgObjVerso);
+
+          setImages(arr);
+          setIsVisibleList(true);
+        }
+      }
+    })
+
+
+
+
   }
 
  return (
