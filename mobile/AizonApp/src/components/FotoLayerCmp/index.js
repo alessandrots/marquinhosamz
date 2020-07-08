@@ -11,7 +11,7 @@ import CameraOverlay from '../CameraOverlay';
 
 import Icon from "react-native-vector-icons/MaterialIcons";
 
-export default function FotoCmp(props) {
+export default function FotoLayerCmp(props) {
  //const navigation = useNavigation();
 
  {/***/}
@@ -96,8 +96,6 @@ export default function FotoCmp(props) {
     //navigation.pop();
     navigation.navigate('PhotoManager', { post: dataImage, side: props.side});
  }
-
-
 
  function PendingView  () {
    return  (

@@ -1,8 +1,16 @@
-import React from 'react';
-import { Dimensions, View, Text, Alert } from 'react-native';
+import React , {useState} from 'react';
+
+import { Dimensions, StyleSheet, Text, TouchableOpacity,
+  View, ActivityIndicator, Alert} from 'react-native';
+
+
 import Svg, { Circle, Defs, Rect, Mask, Ellipse } from 'react-native-svg';
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 export default function CameraOverlay(props) {
+
+  const [photoShot, setPhotoShot] = useState(false);
+  const [loading, setLoading] = useState(false);
 
 //    const CameraOverlay = () => {
   const { height, width } = Dimensions.get('window');
@@ -45,6 +53,7 @@ export default function CameraOverlay(props) {
               height={height/2}
               width={width/2}
               fill="#000" />
+
             {/**
               <Ellipse
                 rx={circleRadius}
@@ -65,7 +74,57 @@ export default function CameraOverlay(props) {
         />
       </Svg>
 
-      { alertMessage(height, width)}
     </View>
   );
-};
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    backgroundColor: 'black',
+    alignItems: 'center'
+  },
+  camera: {
+   position: "absolute",
+   flex: 1,
+   width: Dimensions.get("window").width,
+   height: Dimensions.get("window").height,
+ },
+  viewPhoto: {
+    flex: 1,
+    flexDirection: 'column',
+    backgroundColor: 'transparent',
+    justifyContent:'flex-end'
+  },
+
+  capture: {
+    backgroundColor:  'transparent',
+    borderRadius: 5,
+    paddingHorizontal: 20,
+    alignSelf: 'center',
+    margin: 10,
+  },
+
+  buttonCloseCamera: {
+    flex: 0,
+    position: "absolute",
+    top: 20,
+    left: 40
+  },
+
+  viewPhotoTaked: {
+    flex: 1,
+    flexDirection: 'row',
+    backgroundColor: 'transparent',
+    justifyContent:'flex-end'
+  },
+
+  capture2: {
+    borderRadius: 5,
+    paddingHorizontal: 20,
+    alignSelf:'flex-end',
+    margin: 10,
+  },
+ });

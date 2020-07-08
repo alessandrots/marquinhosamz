@@ -13,7 +13,8 @@ import PhotoService from '../../services/photo/PhotoService';
 
 import ImageView from "react-native-image-viewing";
 import Icon from "react-native-vector-icons/MaterialIcons";
-import FotoCmp from '../../components/FotoCmp';
+//import FotoCmp from '../../components/FotoCmp';
+import FotoLayerCmp from '../../components/FotoCmp';
 import CameraOverlay from '../../components/CameraOverlay';
 
 import { Background, ContainerMain, SendImageBackground,
@@ -145,39 +146,6 @@ export default function PhotoManager({ navigator, route }) {
   }
 
   /**
-  async function getLoadVersoPhoto64(arr) {
-
-    return await new Promise((resolve, reject) => {
-
-      console.log('\n getLoadVersoPhoto64 \n ');
-      let thumb = {};
-      thumb['thumbnail'] = PhotoService.getRGAlexandreVersoBase64();
-      thumb['uri'] = PhotoService.getRGAlexandreVersoBase64();
-      arr.push(thumb);
-
-      resolve(arr);
-    });
-  }
-
-  async function uploadBase64ToAizonViaBody3() {
-    console.log('uploadBase64ToAizonViaBody3 ...');
-    const res = await PhotoService.uploadBase64ToAizonViaBody3('/image/upload3');
-
-    if (res) {
-      console.log('Status code: ',res.status);
-      console.log('Status text: ',res.statusText);
-      console.log('Request method: ',res.request.method);
-      console.log('Path: ',res.request.path);
-
-      console.log('Date: ',res.headers.date);
-      console.log('Data: ',res.data);
-      let data = res.data;
-      alertMessageUpload(data, true);
-    }
-  }
- */
-
-  /**
    * Após o clique do showImages ou showImagesTemp
    */
   async function uploadBase64ToAizonViaBody() {
@@ -264,6 +232,20 @@ export default function PhotoManager({ navigator, route }) {
 
   function getModalPhoto() {
     return  (
+
+      <Background>
+        <ContainerHeader>
+          <Header titlePage="Foto de Documento"/>
+        </ContainerHeader>
+
+        <FotoLayerCmp side={sidePhoto} onClose= {() => closeModalPhoto() }/>
+
+      </Background>
+    );
+  }
+
+  function getModalPhotoOld() {
+    return  (
         <Modal
           animationType="slide"
           transparent={true}
@@ -273,153 +255,156 @@ export default function PhotoManager({ navigator, route }) {
           }}
         >
           <View style={styles.modalView}>
-            <FotoCmp side={sidePhoto} onClose= {() => closeModalPhoto() }/>
+            <FotoLayerCmp side={sidePhoto} onClose= {() => closeModalPhoto() }/>
           </View>
         </Modal>
     );
   }
-
-
-  function getModalPhoto2() {
-    return  (
-      <View style={styles.modalView}>
-        <FotoCmp side={sidePhoto} onClose= {() => closeModalPhoto() }/>
-      </View>
-    );
-  }
-
 
   function closeModalPhoto() {
     setModalVisibleSideUm(false);
     setModalVisibleSideZero(false);
   }
 
- return (
+  function getMontagemTela() {
+    if (!modalVisibleSideUm && !modalVisibleSideZero){
+      return getMainScreen();
+    } else {
+      return getModalPhoto();
+    }
+  }
+
+  function getMainScreen() {
+    return (
+
       <Background>
-            <ContainerHeader>
-              <Header titlePage="Orientações"/>
-            </ContainerHeader>
+        <ContainerHeader>
+          <Header titlePage="Orientações"/>
+        </ContainerHeader>
 
-              <ContainerMain>
+          <ContainerMain>
 
-                <ActivityIndicator size="large" color="#0EABB5" animating={loading}/>
-                <ContainerImageRight>
+            <ActivityIndicator size="large" color="#0EABB5" animating={loading}/>
+            <ContainerImageRight>
 
-                    <ContainerDadosView>
-                      <TitleText>Primeira Fotografia: </TitleText>
-                      <SubmitButton onPress={ () => showNewCompPhotoSideZero()}>
-                          <SubmitText>Frontal</SubmitText>
-                      </SubmitButton>
-                    </ContainerDadosView>
+                <ContainerDadosView>
+                  <TitleText>Primeira Fotografia: </TitleText>
+                  <SubmitButton onPress={ () => showNewCompPhotoSideZero()}>
+                      <SubmitText>Frontal</SubmitText>
+                  </SubmitButton>
+                </ContainerDadosView>
 
-                    {imageFrontal && (
-                        <Image
-                          source={{uri: `data:image/gif;base64,${imageFrontal}`}}
-                          style={{
-                            width: 150,
-                            height: 100,
-                            resizeMode: 'contain'
-                          }}
-                          />
-                    )}
-
-                    {!imageFrontal && (
-                        <Image
-                          source={require('../../assets/IdentidadeFrente.png')}
-                          style={{
-                            width: 150,
-                            height: 150,
-                            resizeMode: 'contain'
-                          }}
-                          />
-                    )}
-
-                </ContainerImageRight>
-
-                <ContainerImageLeft>
-                  <ContainerDadosView>
-                    <TitleText>Segunda Fotografia: </TitleText>
-                    <SubmitButton onPress={ () => showNewCompPhotoSideOne()}>
-                        <SubmitText>Verso</SubmitText>
-                    </SubmitButton>
-                  </ContainerDadosView>
-
-                  {imageVerso && (
-                        <Image
-                          source={{uri: `data:image/gif;base64,${imageVerso}`}}
-                          style={{
-                            width: 150,
-                            height: 100,
-                            marginTop: 10,
-                            resizeMode: 'contain'
-                          }}
-                          />
-                    )}
-
-                    {!imageVerso && (
-                        <Image
-                          source={require('../../assets/IdentidadeTras.png')}
-                          style={{
-                            width: 150,
-                            height: 150,
-                            resizeMode: 'contain'
-                          }}
-                          />
-                    )}
-                </ContainerImageLeft>
-
-                <ContainerImagens>
-                    <SafeAreaView>
-                      {visibleList && (
-                          <ImageList
-                            images={images.map((image) => image.thumbnail)}
-                            onPress={(index) => onSelect(images, index)}
-                            shift={0.75}
-                          />
-                      )}
-
-                      {!visibleList && (
-
-                          <TouchableOpacity onPress={() => refreshTela()} style={styles.capture}>
-                            <Icon name="refresh" size={50} color={"#F0B42F"} />
-                          </TouchableOpacity>
-                      )}
-
-                      <ImageView
-                        images={imagesOriginal}
-                        imageIndex={currentImageIndex}
-                        visible={visible}
-                        onRequestClose={() => setIsVisible(false)}
-                        style={{
-                          width: 150,
-                          height: 120,
-                          resizeMode: 'contain'
-                        }}
+                {imageFrontal && (
+                    <Image
+                      source={{uri: `data:image/gif;base64,${imageFrontal}`}}
+                      style={{
+                        width: 150,
+                        height: 100,
+                        resizeMode: 'contain'
+                      }}
                       />
-                    </SafeAreaView>
-                </ContainerImagens>
+                )}
 
-                <ContainerScreenButton>
-                  <SubmitButton onPress={ () => uploadBase64ToAizonViaBody()}>
-                      <SubmitText>Upload</SubmitText>
-                  </SubmitButton>
+                {!imageFrontal && (
+                    <Image
+                      source={require('../../assets/IdentidadeFrente.png')}
+                      style={{
+                        width: 150,
+                        height: 150,
+                        resizeMode: 'contain'
+                      }}
+                      />
+                )}
 
-                  <SubmitButton onPress={ () => limparTela()}>
-                      <SubmitText>Limpar</SubmitText>
-                  </SubmitButton>
-                </ContainerScreenButton>
+            </ContainerImageRight>
 
-                {  getModalPhoto() }
+            <ContainerImageLeft>
+              <ContainerDadosView>
+                <TitleText>Segunda Fotografia: </TitleText>
+                <SubmitButton onPress={ () => showNewCompPhotoSideOne()}>
+                    <SubmitText>Verso</SubmitText>
+                </SubmitButton>
+              </ContainerDadosView>
 
-              </ContainerMain>
-            {/**</SendImageBackground>*/}
+              {imageVerso && (
+                    <Image
+                      source={{uri: `data:image/gif;base64,${imageVerso}`}}
+                      style={{
+                        width: 150,
+                        height: 100,
+                        marginTop: 10,
+                        resizeMode: 'contain'
+                      }}
+                      />
+                )}
 
-            <ContainerFooter>
-              <Footer titlePage="AIZON"/>
-            </ContainerFooter>
+                {!imageVerso && (
+                    <Image
+                      source={require('../../assets/IdentidadeTras.png')}
+                      style={{
+                        width: 150,
+                        height: 150,
+                        resizeMode: 'contain'
+                      }}
+                      />
+                )}
+            </ContainerImageLeft>
 
-          </Background>
-    )
+            <ContainerImagens>
+                <SafeAreaView>
+                  {visibleList && (
+                      <ImageList
+                        images={images.map((image) => image.thumbnail)}
+                        onPress={(index) => onSelect(images, index)}
+                        shift={0.75}
+                      />
+                  )}
+
+                  {!visibleList && (
+
+                      <TouchableOpacity onPress={() => refreshTela()} style={styles.capture}>
+                        <Icon name="refresh" size={50} color={"#F0B42F"} />
+                      </TouchableOpacity>
+                  )}
+
+                  <ImageView
+                    images={imagesOriginal}
+                    imageIndex={currentImageIndex}
+                    visible={visible}
+                    onRequestClose={() => setIsVisible(false)}
+                    style={{
+                      width: 150,
+                      height: 120,
+                      resizeMode: 'contain'
+                    }}
+                  />
+                </SafeAreaView>
+            </ContainerImagens>
+
+            <ContainerScreenButton>
+              <SubmitButton onPress={ () => uploadBase64ToAizonViaBody()}>
+                  <SubmitText>Upload</SubmitText>
+              </SubmitButton>
+
+              <SubmitButton onPress={ () => limparTela()}>
+                  <SubmitText>Limpar</SubmitText>
+              </SubmitButton>
+            </ContainerScreenButton>
+
+          </ContainerMain>
+
+        <ContainerFooter>
+          <Footer titlePage="AIZON"/>
+        </ContainerFooter>
+
+      </Background>
+    );
+  }
+
+ return (
+    getMontagemTela()
+ )
+
 
 }
 
