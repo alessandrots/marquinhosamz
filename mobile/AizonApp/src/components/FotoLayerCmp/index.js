@@ -112,6 +112,9 @@ export default function FotoLayerCmp(props) {
    );
  }
 
+ const { height, width } = Dimensions.get('window');
+
+
 
  return (
 
@@ -121,6 +124,9 @@ export default function FotoLayerCmp(props) {
                 type={RNCamera.Constants.Type.back}
                 autoFocus={RNCamera.Constants.AutoFocus.on}
                 flashMode={RNCamera.Constants.FlashMode.off}
+
+
+
                 androidCameraPermissionOptions={{
                   title: 'Permission to use camera',
                   message: 'We need your permission to use your camera',
@@ -144,7 +150,7 @@ export default function FotoLayerCmp(props) {
                       if (!photoShot) {
                         return (
                           <View style={styles.cameraElements}>
-                            <View style={{ flex: 8}}/>
+                            <View style={{ flex: 90}}/>
                             <View style={styles.viewPhotoTakedOverlay}>
 
                                 <View style={styles.viewPhotoTaked} visible={photoShot}>
@@ -164,7 +170,7 @@ export default function FotoLayerCmp(props) {
                       } else {
                         return (
                           <View style={styles.cameraElements}>
-                            <View style={{ flex: 8 }}/>
+                            <View style={{ flex: 90 }}/>
                             <View style={styles.viewPhotoTakedOverlay}>
 
                               <View style={styles.viewPhotoTaked}>
@@ -193,17 +199,20 @@ export default function FotoLayerCmp(props) {
 
 const styles = StyleSheet.create({
  container: {
-   flex: 1,
    flexDirection: 'column',
    justifyContent: 'flex-start',
    backgroundColor: 'black',
-   alignItems: 'center'
+   alignItems: 'center',
+   top:(Dimensions.get("window").width * 0.25),
+   left:(Dimensions.get("window").width * 0.2),
+   width: (Dimensions.get("window").width/2),
+   height: (Dimensions.get("window").height/2),
  },
  camera: {
   position: "absolute",
   flex: 1,
-  width: Dimensions.get("window").width,
-  height: Dimensions.get("window").height,
+  width: (Dimensions.get("window").width/2),
+  height: (Dimensions.get("window").height/2),
 },
  viewPhoto: {
    flex: 1,

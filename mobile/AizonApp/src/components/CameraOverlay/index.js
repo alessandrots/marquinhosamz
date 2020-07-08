@@ -46,23 +46,13 @@ export default function CameraOverlay(props) {
       >
         <Defs>
           <Mask id="mask">
-            <Rect height={height} width={width} fill="#fff" />
+            <Rect height={height} width={width} fill="#000" />
             <Rect
               x={0.25 * width}
               y={0.2 * height}
               height={height/2}
               width={width/2}
               fill="#000" />
-
-            {/**
-              <Ellipse
-                rx={circleRadius}
-                ry={(height)/2.5}
-                cx={width/2}
-                cy={(height / 2) + 10}
-                fill="#000"
-              />
-             */}
           </Mask>
         </Defs>
 

@@ -14,8 +14,7 @@ import PhotoService from '../../services/photo/PhotoService';
 import ImageView from "react-native-image-viewing";
 import Icon from "react-native-vector-icons/MaterialIcons";
 //import FotoCmp from '../../components/FotoCmp';
-import FotoLayerCmp from '../../components/FotoCmp';
-import CameraOverlay from '../../components/CameraOverlay';
+import FotoLayerCmp from '../../components/FotoLayerCmp';
 
 import { Background, ContainerMain, SendImageBackground,
   ContainerImageRight, ContainerImageLeft, ContainerImagens,ContainerDadosView,
