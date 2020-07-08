@@ -14,7 +14,6 @@ import PhotoService from '../../services/photo/PhotoService';
 import ImageView from "react-native-image-viewing";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import FotoCmp from '../../components/FotoCmp';
-
 import CameraOverlay from '../../components/CameraOverlay';
 
 import { Background, ContainerMain, SendImageBackground,
@@ -145,6 +144,7 @@ export default function PhotoManager({ navigator, route }) {
     });
   }
 
+  /**
   async function getLoadVersoPhoto64(arr) {
 
     return await new Promise((resolve, reject) => {
@@ -175,6 +175,7 @@ export default function PhotoManager({ navigator, route }) {
       alertMessageUpload(data, true);
     }
   }
+ */
 
   /**
    * Após o clique do showImages ou showImagesTemp
@@ -206,7 +207,6 @@ export default function PhotoManager({ navigator, route }) {
   }
 
   function refreshTela() {
-    console.log(images);
     showImages ();
   }
 
@@ -262,8 +262,7 @@ export default function PhotoManager({ navigator, route }) {
     setModalVisibleSideUm(true);
   }
 
-
-  function getModalPhoto () {
+  function getModalPhoto() {
     return  (
         <Modal
           animationType="slide"
@@ -275,14 +274,17 @@ export default function PhotoManager({ navigator, route }) {
         >
           <View style={styles.modalView}>
             <FotoCmp side={sidePhoto} onClose= {() => closeModalPhoto() }/>
-            {/**
-             * https://medium.com/reactbrasil/criando-mascara-sobre-a-c%C3%A2mera-no-react-native-usando-svg-8353677a85c4
-             *
-             * <CameraOverlay />
-             */}
-
           </View>
         </Modal>
+    );
+  }
+
+
+  function getModalPhoto2() {
+    return  (
+      <View style={styles.modalView}>
+        <FotoCmp side={sidePhoto} onClose= {() => closeModalPhoto() }/>
+      </View>
     );
   }
 

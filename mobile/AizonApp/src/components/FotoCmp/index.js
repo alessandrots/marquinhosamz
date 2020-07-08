@@ -1,11 +1,13 @@
 import React, {useState, useContext, useEffect} from 'react';
 import { useNavigation } from '@react-navigation/native';
 
-import { StyleSheet, Text, TouchableOpacity, View, ActivityIndicator, Alert} from 'react-native';
+import { Dimensions, StyleSheet, Text, TouchableOpacity,
+  View, ActivityIndicator, Alert} from 'react-native';
 
 import { AuthContext } from '../../contexts/auth';
 
 import {RNCamera} from 'react-native-camera';
+import CameraOverlay from '../CameraOverlay';
 
 import Icon from "react-native-vector-icons/MaterialIcons";
 
@@ -117,7 +119,7 @@ export default function FotoCmp(props) {
 
       <View style={styles.container}>
             <RNCamera
-                style={{flex: 1}}
+                style={styles.camera}
                 type={RNCamera.Constants.Type.back}
                 autoFocus={RNCamera.Constants.AutoFocus.on}
                 flashMode={RNCamera.Constants.FlashMode.off}
@@ -167,7 +169,7 @@ export default function FotoCmp(props) {
                       }
                   }}
           </RNCamera>
-
+          <CameraOverlay />
     </View>
 
  );
@@ -182,6 +184,12 @@ const styles = StyleSheet.create({
    backgroundColor: 'black',
    alignItems: 'center'
  },
+ camera: {
+  position: "absolute",
+  flex: 1,
+  width: Dimensions.get("window").width,
+  height: Dimensions.get("window").height,
+},
  viewPhoto: {
    flex: 1,
    flexDirection: 'column',
