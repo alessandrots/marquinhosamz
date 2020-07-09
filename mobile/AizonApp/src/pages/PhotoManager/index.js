@@ -16,6 +16,8 @@ import PhotoBase64Service from '../../services/photoBase64/PhotoBase64Service';
 import ImageView from "react-native-image-viewing";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import FotoCmp from '../../components/FotoCmp';
+import FotoLayerCmp from '../../components/FotoLayerCmp';
+
 
 import { Background, ContainerMain, SendImageBackground,
   ContainerImageRight, ContainerImageLeft, ContainerImagens,ContainerDadosView,
@@ -233,8 +235,8 @@ export default function PhotoManager({ navigator, route }) {
 
   function refreshTela() {
     console.log(images);
-    //showImages ();
-    showImagesBase64();
+    showImages ();
+    //showImagesBase64();
   }
 
   function limparTela() {
@@ -292,7 +294,21 @@ export default function PhotoManager({ navigator, route }) {
     setModalVisibleSideUm(true);
   }
 
-  function getModalPhoto () {
+  function getModalPhoto() {
+    return  (
+
+      <Background>
+        <ContainerHeader>
+          <Header titlePage="Foto de Documento"/>
+        </ContainerHeader>
+
+        <FotoLayerCmp side={sidePhoto} onClose= {() => closeModalPhoto() }/>
+
+      </Background>
+    );
+  }
+
+  function getModalPhotoOLD () {
     return  (
         <Modal
           animationType="slide"
@@ -346,105 +362,110 @@ export default function PhotoManager({ navigator, route }) {
           setIsVisibleList(true);
         }
       }
-    })
-
-
-
-
+    });
   }
 
- return (
+  function getMontagemTela() {
+    if (!modalVisibleSideUm && !modalVisibleSideZero){
+      return getMainScreen();
+    } else {
+      return getModalPhoto();
+    }
+  }
+
+  function getMainScreen() {
+    return (
+
       <Background>
-            <ContainerHeader>
-              <Header titlePage="Foto de Documento"/>
-            </ContainerHeader>
+        <ContainerHeader>
+          <Header titlePage="Orientações"/>
+        </ContainerHeader>
 
-              <ContainerMain>
+          <ContainerMain>
 
-                <ActivityIndicator size="large" color="#0EABB5" animating={loading}/>
-                <ContainerImageRight>
+            <ActivityIndicator size="large" color="#0EABB5" animating={loading}/>
+            <ContainerImageRight>
 
-                    <ContainerDadosView>
-                      <TitleText>Primeira Fotografia: </TitleText>
-                      <SubmitButton onPress={ () => showNewCompPhotoSideZero()}>
-                          <SubmitText>Frontal</SubmitText>
-                      </SubmitButton>
-                    </ContainerDadosView>
+                <ContainerDadosView>
+                  <TitleText>Primeira Fotografia: </TitleText>
+                  <SubmitButton onPress={ () => showNewCompPhotoSideZero()}>
+                      <SubmitText>Frontal</SubmitText>
+                  </SubmitButton>
+                </ContainerDadosView>
 
-                    {imageFrontal && (
-                        <Image
-                          source={{uri: `data:image/gif;base64,${imageFrontal}`}}
-                          style={{
-                            width: 150,
-                            height: 100,
-                            resizeMode: 'contain'
-                          }}
-                          />
-                    )}
+                {imageFrontal && (
+                    <Image
+                      source={{uri: `data:image/gif;base64,${imageFrontal}`}}
+                      style={{
+                        width: 150,
+                        height: 100,
+                        resizeMode: 'contain'
+                      }}
+                      />
+                )}
 
-                    {!imageFrontal && (
-                        <Image
-                          source={require('../../assets/IdentidadeFrente.png')}
-                          style={{
-                            width: 150,
-                            height: 150,
-                            resizeMode: 'contain'
-                          }}
-                          />
-                    )}
+                {!imageFrontal && (
+                    <Image
+                      source={require('../../assets/IdentidadeFrente.png')}
+                      style={{
+                        width: 150,
+                        height: 150,
+                        resizeMode: 'contain'
+                      }}
+                      />
+                )}
 
-                </ContainerImageRight>
+            </ContainerImageRight>
 
-                <ContainerImageLeft>
-                  <ContainerDadosView>
-                    <TitleText>Segunda Fotografia: </TitleText>
-                    <SubmitButton onPress={ () => showNewCompPhotoSideOne()}>
-                        <SubmitText>Verso</SubmitText>
-                    </SubmitButton>
-                  </ContainerDadosView>
+            <ContainerImageLeft>
+              <ContainerDadosView>
+                <TitleText>Segunda Fotografia: </TitleText>
+                <SubmitButton onPress={ () => showNewCompPhotoSideOne()}>
+                    <SubmitText>Verso</SubmitText>
+                </SubmitButton>
+              </ContainerDadosView>
 
-                  {imageVerso && (
-                        <Image
-                          source={{uri: `data:image/gif;base64,${imageVerso}`}}
-                          style={{
-                            width: 150,
-                            height: 100,
-                            marginTop: 10,
-                            resizeMode: 'contain'
-                          }}
-                          />
-                    )}
+              {imageVerso && (
+                    <Image
+                      source={{uri: `data:image/gif;base64,${imageVerso}`}}
+                      style={{
+                        width: 150,
+                        height: 100,
+                        marginTop: 10,
+                        resizeMode: 'contain'
+                      }}
+                      />
+                )}
 
-                    {!imageVerso && (
-                        <Image
-                          source={require('../../assets/IdentidadeTras.png')}
-                          style={{
-                            width: 150,
-                            height: 150,
-                            resizeMode: 'contain'
-                          }}
-                          />
-                    )}
-                </ContainerImageLeft>
+                {!imageVerso && (
+                    <Image
+                      source={require('../../assets/IdentidadeTras.png')}
+                      style={{
+                        width: 150,
+                        height: 150,
+                        resizeMode: 'contain'
+                      }}
+                      />
+                )}
+            </ContainerImageLeft>
 
-                <ContainerImagens>
-                    <SafeAreaView>
-                      {visibleList && (
-                          <ImageList
-                            images={images.map((image) => image.thumbnail)}
-                            onPress={(index) => onSelect(images, index)}
-                            shift={0.75}
-                          />
-                      )}
+            <ContainerImagens>
+                <SafeAreaView>
+                  {visibleList && (
+                      <ImageList
+                        images={images.map((image) => image.thumbnail)}
+                        onPress={(index) => onSelect(images, index)}
+                        shift={0.75}
+                      />
+                  )}
 
-                      {!visibleList && (
+                  <TouchableOpacity onPress={() => refreshTela()} style={styles.capture}>
+                    <Icon name="refresh" size={20} color={"#F0B42F"} />
+                  </TouchableOpacity>
 
-                          <TouchableOpacity onPress={() => refreshTela()} style={styles.capture}>
-                            <Icon name="refresh" size={50} color={"#F0B42F"} />
-                          </TouchableOpacity>
-                      )}
+                  {visibleList && (
 
-                      <ImageView
+                    <ImageView
                         images={imagesOriginal}
                         imageIndex={currentImageIndex}
                         visible={visible}
@@ -455,30 +476,34 @@ export default function PhotoManager({ navigator, route }) {
                           resizeMode: 'contain'
                         }}
                       />
-                    </SafeAreaView>
-                </ContainerImagens>
+                  )}
 
-                <ContainerScreenButton>
-                  <SubmitButton onPress={ () => uploadBase64ToAizonViaBody()}>
-                      <SubmitText>Upload</SubmitText>
-                  </SubmitButton>
+                </SafeAreaView>
+            </ContainerImagens>
 
-                  <SubmitButton onPress={ () => limparTela()}>
-                      <SubmitText>Limpar</SubmitText>
-                  </SubmitButton>
-                </ContainerScreenButton>
+            <ContainerScreenButton>
+              <SubmitButton onPress={ () => uploadBase64ToAizonViaBody()}>
+                  <SubmitText>Upload</SubmitText>
+              </SubmitButton>
 
-                {  getModalPhoto() }
+              <SubmitButton onPress={ () => limparTela()}>
+                  <SubmitText>Limpar</SubmitText>
+              </SubmitButton>
+            </ContainerScreenButton>
 
-              </ContainerMain>
-            {/**</SendImageBackground>*/}
+          </ContainerMain>
 
-            <ContainerFooter>
-              <Footer titlePage="AIZON"/>
-            </ContainerFooter>
+        <ContainerFooter>
+          <Footer titlePage="AIZON"/>
+        </ContainerFooter>
 
-          </Background>
-    )
+      </Background>
+    );
+  }
+
+ return (
+    getMontagemTela()
+ )
 
 }
 
