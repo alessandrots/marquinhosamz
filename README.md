@@ -1,5 +1,5 @@
 # marquinhosamz
-Novo Component Photo 
+Branch Alexandre 
 
 https://stackoverflow.com/questions/44506207/reactjs-lifecycle-method-inside-a-function-component
 https://www.youtube.com/watch?v=jcc9T-5inrk&vl=pt
