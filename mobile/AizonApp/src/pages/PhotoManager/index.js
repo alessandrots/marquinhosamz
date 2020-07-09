@@ -233,8 +233,8 @@ export default function PhotoManager({ navigator, route }) {
 
   function refreshTela() {
     console.log(images);
-    showImages ();
-    //showImagesBase64();
+    //showImages ();
+    showImagesBase64();
   }
 
   function limparTela() {
