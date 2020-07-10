@@ -77,3 +77,8 @@ Inside your project directory.
 npx react-native init YourProjectName
 mv YourProjectName/ios ios
 rm -rf YourProjectName
+
+#Document Scanner
+https://github.com/Michaelvilleneuve/react-native-document-scanner
+
+
