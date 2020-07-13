@@ -7,6 +7,11 @@ import Footer from '../../components/Footer';
 import {  View, Text, StyleSheet, Image,
   Dimensions, TouchableHighlight, Modal} from 'react-native';
 
+import Orientation from 'react-native-orientation-locker'
+
+import Camera from '../../components/Camera'
+
+
 import FotoCmp from '../../components/FotoCmp';
 //import PhotoMain  from '../../components/Photo';
 
@@ -14,6 +19,10 @@ import { Background, ContainerHeader } from '../Home/styles';
 import { SubmitButton, SubmitText } from '../SignIn/styles';
 
 export default function Home(props) {
+
+  useEffect(() => {
+    Orientation.lockToPortrait()
+  }, [])
 
   const { user } = useContext(AuthContext);
 
@@ -76,25 +85,28 @@ export default function Home(props) {
   //<Image source={{uri: `data:image/gif;base64,${encodedData}`}} />
   //https://medium.com/@awesomejerry/image-with-react-native-98e7363f6dfe
 
+  {/**
+      <Background>
+        <ContainerHeader>
+          <Header titlePage="Foto2 de Documento"/>
+        </ContainerHeader>
+        <SubmitButton onPress={showNewCompPhoto}>
+            <SubmitText>Get PHOTO SIDE 0</SubmitText>
+        </SubmitButton>
+
+        <SubmitButton onPress={showNewCompPhotoSideOne}>
+            <SubmitText>Get PHOTO SIDE 1</SubmitText>
+        </SubmitButton>
+
+        {  getModalPhoto() }
+
+        showPhotoSideOne && getModalPhoto(1)
+
+
+        </Background>
+      */ }
  return (
-    <Background>
-      <ContainerHeader>
-        <Header titlePage="Foto2 de Documento"/>
-      </ContainerHeader>
-
-      <SubmitButton onPress={showNewCompPhoto}>
-          <SubmitText>Get PHOTO SIDE 0</SubmitText>
-      </SubmitButton>
-
-      <SubmitButton onPress={showNewCompPhotoSideOne}>
-          <SubmitText>Get PHOTO SIDE 1</SubmitText>
-      </SubmitButton>
-
-      {  getModalPhoto() }
-
-      {/**showPhotoSideOne && getModalPhoto(1)  */ }
-
-    </Background>
+    <Camera />
   );
 }
 

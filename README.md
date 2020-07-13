@@ -84,3 +84,8 @@ https://github.com/Michaelvilleneuve/react-native-document-scanner
 #OpenCV
 https://medium.com/@henriqueassunodossantos/react-native-document-scanner-opencv-4-instala%C3%A7%C3%A3o-8f910cb9a893
 
+https://www.npmjs.com/package/react-native-image-crop-picker
+
+yarn add react-native-svg
+
+npm i react-native-orientation-locker
