@@ -89,3 +89,7 @@ https://www.npmjs.com/package/react-native-image-crop-picker
 yarn add react-native-svg
 
 npm i react-native-orientation-locker
+
+# atualizando projeto com a qualidade dos fontes.
+
+
