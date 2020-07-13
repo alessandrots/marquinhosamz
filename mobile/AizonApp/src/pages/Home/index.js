@@ -106,7 +106,17 @@ export default function Home(props) {
         </Background>
       */ }
  return (
+
+
+    <Background>
+    <ContainerHeader>
+      <Header titlePage="Foto2 de Documento"/>
+    </ContainerHeader>
+
     <Camera />
+
+
+    </Background>
   );
 }
 
