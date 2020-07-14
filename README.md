@@ -84,6 +84,11 @@ https://github.com/Michaelvilleneuve/react-native-document-scanner
 #OpenCV
 https://medium.com/@henriqueassunodossantos/react-native-document-scanner-opencv-4-instala%C3%A7%C3%A3o-8f910cb9a893
 
+https://brainhub.eu/blog/opencv-react-native-image-processing/
+
+https://github.com/brainhubeu/react-native-opencv-tutorial
+
+#CROP PICKER
 https://www.npmjs.com/package/react-native-image-crop-picker
 
 yarn add react-native-svg
@@ -91,5 +96,7 @@ yarn add react-native-svg
 npm i react-native-orientation-locker
 
 # atualizando projeto com a qualidade dos fontes.
+npm i react-native-easy-toast --save
+https://github.com/crazycodeboy/react-native-easy-toast
 
 

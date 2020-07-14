@@ -18,7 +18,7 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
-    
+
     squareMask: {
         width: width - 115,
         height: height - 300,
@@ -58,7 +58,7 @@ export const styles = StyleSheet.create({
         left: 0,
         bottom: 0,
         width: '100%',
-        height: 150,
+        height: 50,
         backgroundColor: '#000',
         alignItems: 'center',
         justifyContent: 'space-around',

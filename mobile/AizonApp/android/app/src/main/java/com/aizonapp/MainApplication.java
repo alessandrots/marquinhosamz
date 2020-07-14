@@ -11,7 +11,7 @@ import com.facebook.react.ReactPackage;
 import com.facebook.soloader.SoLoader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
-import org.reactnative.camera.RNCameraPackage;
+import com.reactlibrary.RNOpenCvLibraryPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -28,6 +28,7 @@ public class MainApplication extends Application implements ReactApplication {
           List<ReactPackage> packages = new PackageList(this).getPackages();
           // Packages that cannot be autolinked yet can be added manually here, for example:
           //packages.add(new RNCameraPackage());
+            packages.add(new RNOpenCvLibraryPackage());
           return packages;
         }
 

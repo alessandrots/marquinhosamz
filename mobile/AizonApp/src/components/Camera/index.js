@@ -51,7 +51,12 @@ function Camera() {
 
     function scanImage(image) {
         if(Platform.OS === 'android') {
-            OpenCV.scanImage(image, (err) => {
+            //OpenCV.scanImage(image,
+            console.log('====================================');
+            console.log(OpenCV);
+            console.log('====================================');
+            OpenCV.callAlessandro(image,
+            (err) => {
                 setImage(null)
                 setIsTakingPicture(false)
                 Alert.alert(
@@ -62,9 +67,13 @@ function Camera() {
                     ],
                     {cancelable: false},
                 )
-            },  (data) => {
-                setImage(data)
-                setIsTakingPicture(false)
+            },
+            (data) => {
+                console.log('image data = ', data);
+
+                // TODO
+                //setImage(data)
+                //setIsTakingPicture(false)
             })
         }
     }

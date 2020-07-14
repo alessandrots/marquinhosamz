@@ -63,6 +63,7 @@ function CameraScreen({
             ></Camera>
 
             <View style={styles.buttonContainer}>
+                {/**
                 <View style={styles.iconContainer}>
                     <TouchableOpacity
                         style={styles.galleryButton}
@@ -71,6 +72,7 @@ function CameraScreen({
                         <Icon name='gallery' fill='#FFF' width={28} height={28} />
                     </TouchableOpacity>
                 </View>
+                 */}
 
                 <TouchableOpacity
                     onPress={() => takingPicture()}
