@@ -89,3 +89,8 @@ https://www.npmjs.com/package/react-native-image-crop-picker
 yarn add react-native-svg
 
 npm i react-native-orientation-locker
+
+#Testando o plugin abaixo:
+https://github.com/HarvestProfit/react-native-rectangle-scanner
+
+
