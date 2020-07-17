@@ -15,6 +15,8 @@ import Camera from '../../components/Camera'
 import FotoCmp from '../../components/FotoCmp';
 //import PhotoMain  from '../../components/Photo';
 
+import NewDocScanner from '../../components/NewDocScanner';
+
 import { Background, ContainerHeader } from '../Home/styles';
 import { SubmitButton, SubmitText } from '../SignIn/styles';
 
@@ -102,6 +104,7 @@ export default function Home(props) {
 
         showPhotoSideOne && getModalPhoto(1)
 
+        <Camera />
 
         </Background>
       */ }
@@ -113,8 +116,7 @@ export default function Home(props) {
       <Header titlePage="Foto2 de Documento"/>
     </ContainerHeader>
 
-    <Camera />
-
+    <NewDocScanner/>
 
     </Background>
   );
