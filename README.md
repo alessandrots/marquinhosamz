@@ -94,3 +94,5 @@ npm i react-native-orientation-locker
 https://github.com/HarvestProfit/react-native-rectangle-scanner
 
 
+#
+https://github.com/Michaelvilleneuve/react-native-document-scanner
