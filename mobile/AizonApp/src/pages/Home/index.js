@@ -16,6 +16,7 @@ import FotoCmp from '../../components/FotoCmp';
 //import PhotoMain  from '../../components/Photo';
 
 import ScannerAizon from '../ScannerAizon';
+import DocumentScanner from '../../components/DocumentScanner';
 
 import { Background, ContainerHeader } from '../Home/styles';
 import { SubmitButton, SubmitText } from '../SignIn/styles';
@@ -105,6 +106,9 @@ export default function Home(props) {
         showPhotoSideOne && getModalPhoto(1)
 <Camera />
 
+
+
+<DocumentScanner/>
         </Background>
       */ }
  return (
@@ -112,11 +116,12 @@ export default function Home(props) {
 
     <Background>
     <ContainerHeader>
-      <Header titlePage="Foto2 de Documento"/>
+      <Header titlePage="TEST PAGE COMPs"/>
     </ContainerHeader>
 
 
-<ScannerAizon/>
+    <ScannerAizon/>
+
 
     </Background>
   );
