@@ -1,45 +1,3 @@
-{/**
-import React from "react";
-import { View, Image } from "react-native";
-
-import DocumentScanner from "react-native-document-scanner";
-
-export default function DocScanner () {
-
-    return (
-      <View>
-        <DocumentScanner
-          useBase64
-          saveInAppDocument={false}
-          onPictureTaken={data =>
-            this.setState({
-              image: data.croppedImage,
-              initialImage: data.initialImage,
-              rectangleCoordinates: data.rectangleCoordinates
-            })
-          }
-          overlayColor="rgba(255,130,0, 0.7)"
-          enableTorch={false}
-          brightness={0.3}
-          saturation={1}
-          contrast={1.1}
-          quality={0.5}
-          onRectangleDetect={({ stableCounter, lastDetectionType }) =>
-            this.setState({ stableCounter, lastDetectionType })
-          }
-          detectionCountBeforeCapture={5}
-          detectionRefreshRateInMS={50}
-          onPermissionsDenied={() => console.log("Permissions Denied")}
-        />
-          <Image
-            source={{ uri: `data:image/jpeg;base64,${this.state.image}` }}
-            resizeMode="contain"
-          />
-      </View>
-    );
-
-}
- */}
 
 import React, { useRef, useState, useEffect } from "react"
 import { View, StyleSheet, Text, TouchableOpacity, Image, Platform } from "react-native"
@@ -62,17 +20,35 @@ export default function DocScanner() {
   function handleOnPressRetry() {
     setData({})
   }
+
+  function handleDataAfterPress(data_) {
+
+    console.log("\n handleDataAfterPress aizon ==> data_ = ", data_);
+    //console.log("\n handleData aizon croppedImage ==> data_ = ", data_.croppedImage);
+    //console.log("\n handleData aizon initialImage ==> data_ = ", data_.initialImage);
+    //console.log("\n handleData aizon rectangleCoordinates ==> data_ = ", data_.rectangleCoordinates);
+
+    setData(data_);
+  }
+
+  function handleRectangle (stableCounter, lastDetectionType ) {
+    console.log("\n handleRectangle ==> stableCounter = ", stableCounter );
+    console.log("\n handleRectangle ==> lastDetectionType = ", lastDetectionType );
+  }
+
   function handleOnPress() {
     pdfScannerElement.current.capture()
   }
+
   if (!allowed) {
     console.log("You must accept camera permission")
     return (<View style={styles.permissions}>
       <Text>You must accept camera permission</Text>
     </View>)
   }
+
   if (data.croppedImage) {
-    console.log("data", data)
+    console.log("data", data);
     return (
       <React.Fragment>
         <Image source={{ uri: data.croppedImage }} style={styles.preview} />
@@ -82,20 +58,33 @@ export default function DocScanner() {
       </React.Fragment>
     )
   }
+
   return (
     <React.Fragment>
       <PDFScanner
         ref={pdfScannerElement}
         style={styles.scanner}
-        onPictureTaken={setData}
+        onPictureTaken={ (data) => handleDataAfterPress(data) }
+        onRectangleDetect={ (stableCounter, lastDetectionType ) => handleRectangle(stableCounter, lastDetectionType ) }
         overlayColor="rgba(255,130,0, 0.7)"
         enableTorch={false}
         quality={0.5}
-        detectionCountBeforeCapture={5}
+        useBase64={true}
         detectionRefreshRateInMS={50}
+        detectionCountBeforeCapture={10}
       />
+
+      {/**
       <TouchableOpacity onPress={handleOnPress} style={styles.button}>
         <Text style={styles.buttonText}>Take picture</Text>
+      </TouchableOpacity>
+     */}
+
+      <TouchableOpacity
+          onPress={() => handleOnPress()}
+          style={styles.buttonBorder}
+      >
+          <View style={styles.buttonCircle} />
       </TouchableOpacity>
     </React.Fragment>
   )
@@ -116,13 +105,30 @@ const styles = StyleSheet.create({
     fontSize: 32,
   },
   preview: {
-    flex: 1,
-    width: "100%",
-    resizeMode: "cover",
+    width: 150,
+    height: 150,
+    resizeMode: 'contain'
+
   },
   permissions: {
     flex:1,
     justifyContent: "center",
     alignItems: "center"
+  },
+  buttonBorder: {
+      width: 65,
+      height: 65,
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: 'transparent',
+      borderRadius: 32.5,
+      borderColor: '#FFF',
+      borderWidth: 1.2,
+  },
+  buttonCircle: {
+      width: 58,
+      height: 58,
+      backgroundColor: '#FFF',
+      borderRadius: 29,
   }
 })
