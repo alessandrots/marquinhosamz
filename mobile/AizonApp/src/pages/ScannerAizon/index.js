@@ -15,6 +15,7 @@ export default function ScannerAizon(props) {
     let camera = useRef(null);
 
     const [detectedRectangle, setDetectedRectangle] = useState(null);
+    const [rectangle, setRectangle] = useState(null);
 
     const [device, setDevice] = useState({
         initialized: false,
@@ -36,20 +37,41 @@ export default function ScannerAizon(props) {
 
     // The picture was captured but still needs to be processed.
     function onPictureTaken (data) {
-      console.log('\n ==================================== data = ');
-      console.log('Alessandro onPictureTaken = ', data);
-      console.log('====================================');
+      //console.log('\n ==================================== ');
+      //console.log('Alessandro onPictureTaken = ', data);
+      //console.log('==================================== \n ');
 
       //: 'file:///data/user/0/com.aizonapp/cache/RNRectangleScanner/O7f0a8548-e0dd-4a64-b33c-851743fa944f.png',
-      let initialImage = data.initialImage;
+      if (data && data.initialImage) {
+        let initialImage = data.initialImage;
+        console.log('\n frontal initialImage = ', initialImage);
 
-      RNFS.readFile(initialImage, 'base64')
-      .then(res =>{
-        console.log('initialImage = ', res);
-      });
+        RNFS.readFile(initialImage, 'base64')
+        .then(res =>{
+          console.log('\n frontal base64 initialImage = ', res);
+        })
+        .catch(err =>  {
+          console.log('\n frontal initialImage erro = ', err);
+        });
+      }
 
       //'file:///data/user/0/com.aizonapp/cache/RNRectangleScanner/Cb9baeb14-ea53-4ff7-bf76-d6daae66681b.png' }
-      let croppedImage = data.croppedImage;
+      if (data && data.croppedImage) {
+        let croppedImage = data.croppedImage;
+        console.log('\n frontal croppedImage = ', croppedImage);
+
+        RNFS.readFile(croppedImage, 'base64')
+        .then(res =>{
+          console.log('\n frontal base64 croppedImage = ', res);
+        })
+        .catch(err =>  {
+          console.log('\n frontal croppedImage erro = ', err);
+        });
+      }
+
+      console.log('\n ====================================');
+      console.log('frontal rectangle = ', rectangle);
+      console.log('====================================');
 
       //TODO
       //props.onPictureTaken(event); vai tá na classe chamadora
@@ -60,17 +82,20 @@ export default function ScannerAizon(props) {
       //TODO
       //props.onPictureProcessed(event);
 
-      console.log('\n ==================================== dataP = ');
-      console.log('Alessandro onPictureProcessed = ', datap);
-      console.log('====================================');
+      //console.log('\n ==================================== dataP = ');
+      //console.log('Alessandro onPictureProcessed = ', datap);
+      //console.log('====================================');
   }
 
   function drawRectangle(rect) {
-    console.log('\n ====================================');
-    console.log('Alessandro detectedRectangle = ', detectedRectangle);
-    console.log('====================================');
-    console.log('Alessandro drawRectangle = ', rect);
-    console.log('====================================');
+    //if (rect && rect.dimensions) {
+      //console.log('\n ====================================');
+      //console.log('frontal detectedRectangle = ', detectedRectangle);
+      console.log('\n ====================================');
+      console.log(' drawRectangle = ', rect);
+      console.log('====================================');
+      setRectangle(rect);
+    //}
   }
 
   function renderCameraView() {
