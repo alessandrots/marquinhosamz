@@ -89,3 +89,8 @@ https://www.npmjs.com/package/react-native-image-crop-picker
 yarn add react-native-svg
 
 npm i react-native-orientation-locker
+
+TODO:
+https://github.com/archriss/react-native-image-gallery
+
+https://github.com/crazycodeboy/react-native-splash-screen
