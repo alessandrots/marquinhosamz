@@ -90,6 +90,8 @@ yarn add react-native-svg
 
 npm i react-native-orientation-locker
 
+https://github.com/react-native-community/toolbar-android
+
 TODO:
 https://github.com/archriss/react-native-image-gallery
 

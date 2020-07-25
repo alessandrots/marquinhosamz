@@ -109,6 +109,11 @@ function AppRoutes(){
           />
 
           <AppDrawer.Screen
+            name="Profile"
+            component={Profile}
+            options={{ title: 'Perfil' }}/>
+
+          <AppDrawer.Screen
             name="Home"
             component={Home}
             options={{ title: 'Home' }}/>
@@ -120,10 +125,6 @@ function AppRoutes(){
               component={FotoCmp}
               />
 
-          <AppDrawer.Screen
-            name="Profile"
-            component={Profile}
-            options={{ title: 'Perfil' }}/>
 
           <AppDrawer.Screen
               name="ViewAuthenticity"
