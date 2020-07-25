@@ -11,6 +11,16 @@ import SignUp from '../pages/SignUp';
 
 const AuthStack = createStackNavigator();
 
+{/**
+ Colocar o Boarding aqui
+  talvez fazer um outro createStackNavigator ..
+  Aí fazer uma função q vai verificar se no AsyncStorage
+  import AsyncStorage from '@react-native-community/async-storage';
+  tem um boardingPage=1
+
+  se tiver então vai retornar o AuthStack senão tiver volta o Boarding
+
+*/}
  function AuthRoutes() {
  return (
     <AuthStack.Navigator>

@@ -92,7 +92,14 @@ npm i react-native-orientation-locker
 
 https://github.com/react-native-community/toolbar-android
 
-TODO:
+- Foto de Perfil
 https://github.com/archriss/react-native-image-gallery
 
+- Splash screen, nome app, ícone
 https://github.com/crazycodeboy/react-native-splash-screen
+Ao invés do plugin acima, fiz a configuração toda no Android:
+https://www.youtube.com/watch?v=3Gf9yb53bJM
+  https://apetools.webprofusion.com/#/
+
+- Boarding (tutorial page)
+https://github.com/leecade/react-native-swiper
