@@ -2,10 +2,13 @@ import React, { useContext, useState, useEffect } from 'react';
 
 import { AuthContext } from '../../contexts/auth';
 
-import {  View, Text, StyleSheet, Image,
-  Dimensions, TouchableHighlight, Modal} from 'react-native';
+import {  Text, StyleSheet, Image } from 'react-native';
 
 import Swiper from 'react-native-swiper';
+
+import { Background, Container2, Container1, Logo, AreaText,
+  AreaImage, ContainerMain, ContainerScreenImage,
+  ContainerScreenHeader, HeaderTitle } from './styles';
 
 export default function Boarding(props) {
 
@@ -21,16 +24,75 @@ export default function Boarding(props) {
 
  return (
 
-    <Swiper style={styles.wrapper} showsButtons={true}>
-        <View style={styles.slide1}>
-        <Text style={styles.text}>Hello Swiper</Text>
-        </View>
-        <View style={styles.slide2}>
-        <Text style={styles.text}>Beautiful</Text>
-        </View>
-        <View style={styles.slide3}>
-        <Text style={styles.text}>And simple</Text>
-        </View>
+    <Swiper style={styles.wrapper} showsButtons={true} loop={false}>
+        <Background>
+            <Container1
+              behavior={Platform.OS === 'ios' ? 'padding' : ''}
+              enabled
+            >
+              <AreaImage>
+                  <Logo source={require('../../assets/logo_aizon.png')}/>
+              </AreaImage>
+            </Container1>
+
+            <Container2>
+                  <AreaText>
+                      blabla
+                      blabla
+                      blabla
+                      blabla
+                      blabla
+                      blabla
+                      blabla
+                  </AreaText>
+            </Container2>
+      </Background>
+
+      <Background>
+
+          <ContainerMain>
+            <ContainerScreenHeader>
+
+              <HeaderTitle>Utilize sua identidade blabla ...  </HeaderTitle>
+            </ContainerScreenHeader>
+
+            <ContainerScreenImage>
+
+              <Image
+                source={require('../../assets/IdentidadeCPF.png')}
+                style={{
+                  width: 300,
+                  height: 200,
+                  resizeMode: 'contain'
+                }}
+                />
+            </ContainerScreenImage>
+
+          </ContainerMain>
+
+
+      </Background>
+
+      <Background>
+
+      <ContainerMain>
+        <ContainerScreenHeader>
+
+          <HeaderTitle>
+              blabla
+              blabla
+              blabla ...
+          </HeaderTitle>
+        </ContainerScreenHeader>
+
+        <ContainerScreenImage>
+          <Text style={styles.text}>1 - Beautiful</Text>
+        </ContainerScreenImage>
+
+      </ContainerMain>
+
+
+      </Background>
     </Swiper>
   );
 }
