@@ -4,93 +4,93 @@
      * rotas não logadas
     */
 }
-import React from 'react';
+import React, {useContext} from 'react';
 import { createStackNavigator} from '@react-navigation/stack';
 import SignIn from '../pages/SignIn';
 import SignUp from '../pages/SignUp';
 import Boarding from '../pages/Boarding';
 
-const AuthStack = createStackNavigator();
-const BoardingStack = createStackNavigator();
+import { AuthContext } from '../contexts/auth';
 
-{/**
- Colocar o Boarding aqui
-  talvez fazer um outro createStackNavigator ..
-  Aí fazer uma função q vai verificar se no AsyncStorage
-  import AsyncStorage from '@react-native-community/async-storage';
-  tem um boardingPage=1
+function AuthRoutes() {
+    const AuthStack = createStackNavigator();
+    const BoardingStack = createStackNavigator();
 
-  se tiver então vai retornar o AuthStack senão tiver volta o Boarding
+    const { boarding } = useContext(AuthContext);
 
-*/}
-
-function getAuthStack() {
-    return (
-        <AuthStack.Navigator>
-            <AuthStack.Screen
-                name="Login-Aizon"
-                component={SignIn}
-                options={{
-                    headerStyle: {
-                        backgroundColor: '#0EABB5',
-                    },
-                    headerTintColor: '#000',
-                    headerTitleStyle: {
-                        fontWeight: 'bold',
-                    },
-            }}
-            />
-
-            <AuthStack.Screen
-                name="SignUp"
-                component={SignUp}
-                options={{
-                    headerStyle:{
-                        backgroundColor: '#0EABB5',
-                        borderBottomWidth: 1,
-                        borderBottomColor: '#00b94a'
-                    },
-                    headerTintColor: '#000',
-                    headerTitleStyle: {
-                        fontWeight: 'bold',
-                    },
-                    headerBackTitleVisible: false,
-                    headerTitle: 'Voltar'
+    function getAuthStack() {
+        return (
+            <AuthStack.Navigator>
+                <AuthStack.Screen
+                    name="Login"
+                    component={SignIn}
+                    options={{
+                        headerStyle: {
+                            backgroundColor: '#0EABB5',
+                        },
+                        headerTintColor: '#000',
+                        headerTitleStyle: {
+                            fontWeight: 'bold',
+                        },
                 }}
-            />
-        </AuthStack.Navigator>
-    );
-}
+                />
 
-function getBoardingStack() {
+                <AuthStack.Screen
+                    name="SignUp"
+                    component={SignUp}
+                    options={{
+                        headerStyle:{
+                            backgroundColor: '#0EABB5',
+                            borderBottomWidth: 1,
+                            borderBottomColor: '#00b94a'
+                        },
+                        headerTintColor: '#000',
+                        headerTitleStyle: {
+                            fontWeight: 'bold',
+                        },
+                        headerBackTitleVisible: false,
+                        headerTitle: 'Voltar'
+                    }}
+                />
+            </AuthStack.Navigator>
+        );
+    }
+
+    function getBoardingStack() {
+        return (
+            <BoardingStack.Navigator>
+                <BoardingStack.Screen
+                    name="AIZON Documentos"
+                    component={Boarding}
+                    options={{
+                        headerStyle: {
+                            backgroundColor: '#0EABB5',
+                        },
+                        headerTintColor: '#000',
+                        headerTitleStyle: {
+                            fontWeight: 'bold',
+                        },
+                }}
+                />
+            </BoardingStack.Navigator>
+        );
+    }
+
+    function getMontagemTela() {
+        //const boardingPage = await AsyncStorage.getItem('boardingPage');
+        console.log('====================================');
+        console.log('\n boardingPage  = ', boarding);
+        console.log('\n ====================================');
+
+        if (boarding){
+            return getAuthStack();
+        } else {
+            return getBoardingStack();
+        }
+    }
+
     return (
-        <BoardingStack.Navigator>
-            <BoardingStack.Screen
-                name="AIZON Documentos"
-                component={Boarding}
-                options={{
-                    headerStyle: {
-                        backgroundColor: '#0EABB5',
-                    },
-                    headerTintColor: '#000',
-                    headerTitleStyle: {
-                        fontWeight: 'bold',
-                    },
-            }}
-            />
-
-
-        </BoardingStack.Navigator>
-    );
-}
-
-function getMontagemTela() {
-    return getAuthStack();
-}
-
- function AuthRoutes() {
-    return (
-        getBoardingStack()
+        getMontagemTela()
      )
 }
 

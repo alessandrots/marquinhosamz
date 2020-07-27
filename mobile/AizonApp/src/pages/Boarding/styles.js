@@ -77,3 +77,18 @@ export const AreaText = styled.Text`
     font-size: 20px;
     color: #131313;
 `;
+
+export const SubmitButton = styled.TouchableOpacity`
+    align-items: center;
+    justify-content: center;
+    background-color: #0EABB5;
+    width: 60%;
+    height: 45px;
+    border-radius: 7px;
+    margin-top: 10px;
+`;
+
+export const SubmitText = styled.Text`
+    font-size: 20px;
+    color: #131313;
+`;

@@ -27,6 +27,7 @@ function AuthProvider({ children }){
 
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [boarding, setBoarding] = useState(false);
 
     //pegar da tela de Imagem
     //const [imagesToUpload, setImagesToUpload] = useState(null); // TODO
@@ -35,9 +36,15 @@ function AuthProvider({ children }){
        async function loadStorage(){
            const storageUser = await AsyncStorage.getItem('Auth_user');
 
+           const boardingPage = await AsyncStorage.getItem('boardingPage');
+
            if(storageUser){
-               setUser(JSON.parse(storageUser));
-               setLoading(false);
+            setUser(JSON.parse(storageUser));
+            setLoading(false);
+           }
+
+           if (boardingPage) {
+            setBoarding(true);
            }
 
            setLoading(false);
@@ -158,7 +165,7 @@ function AuthProvider({ children }){
 
     return(
      <AuthContext.Provider value={{ signed: !!user, user, loading, signUp,
-     signIn, signOut, savePhoto, storageIdUpload, loadStorageIdUpload }}>
+     signIn, signOut, savePhoto, storageIdUpload, loadStorageIdUpload, boarding }}>
          {children}
      </AuthContext.Provider>
     );

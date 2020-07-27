@@ -8,19 +8,28 @@ import Swiper from 'react-native-swiper';
 
 import { Background, Container2, Container1, Logo, AreaText,
   AreaImage, ContainerMain, ContainerScreenImage,
-  ContainerScreenHeader, HeaderTitle } from './styles';
+  ContainerScreenHeader, HeaderTitle, SubmitButton, SubmitText } from './styles';
+
+import AsyncStorage from '@react-native-community/async-storage';
+
+import AuthRoutes from '../../routes/auth.routes';
 
 export default function Boarding(props) {
 
+  const { user, signed } = useContext(AuthContext);
 
+  //import AsyncStorage from '@react-native-community/async-storage';
+  //tem um boardingPage=1
+  async function handleApp() {
+    console.log('====================================');
+    console.log('\n Fazer o tratamento  \n');
+    console.log('====================================');
 
-  const { user } = useContext(AuthContext);
+    //await AsyncStorage.setItem('boardingPage', true);
+    await AsyncStorage.setItem('boardingPage', JSON.stringify(true));
 
-  //para atualizar a foto após ser retirado
-  //const encodedData = 'R0lGODlhAQABAIAAAAAA...7';
-  //<Image source={{uri: `data:image/gif;base64,${encodedData}`}} />
-  //https://medium.com/@awesomejerry/image-with-react-native-98e7363f6dfe
-
+    return   <AuthRoutes/>;
+  }
 
  return (
 
@@ -85,12 +94,28 @@ export default function Boarding(props) {
           </HeaderTitle>
         </ContainerScreenHeader>
 
-        <ContainerScreenImage>
-          <Text style={styles.text}>1 - Beautiful</Text>
-        </ContainerScreenImage>
+        <Container1>
+                  <AreaText>
+                      blabla
+                      blabla
+                      blabla
+                      blabla
+                      blabla
+                      blabla
+                      blabla
+                  </AreaText>
+
+
+        </Container1>
+
+        <Container2>
+
+          <SubmitButton onPress={handleApp}>
+              <SubmitText> Login </SubmitText>
+          </SubmitButton>
+        </Container2>
 
       </ContainerMain>
-
 
       </Background>
     </Swiper>
