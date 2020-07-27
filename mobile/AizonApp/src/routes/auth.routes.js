@@ -72,6 +72,39 @@ function AuthRoutes() {
                         },
                 }}
                 />
+
+                <BoardingStack.Screen
+                    name="Login"
+                    component={SignIn}
+                    options={{
+                        headerStyle: {
+                            backgroundColor: '#0EABB5',
+                        },
+                        headerTintColor: '#000',
+                        headerTitleStyle: {
+                            fontWeight: 'bold',
+                        },
+                        headerLeft: null
+                }}
+                />
+
+                <BoardingStack.Screen
+                    name="SignUp"
+                    component={SignUp}
+                    options={{
+                        headerStyle:{
+                            backgroundColor: '#0EABB5',
+                            borderBottomWidth: 1,
+                            borderBottomColor: '#00b94a'
+                        },
+                        headerTintColor: '#000',
+                        headerTitleStyle: {
+                            fontWeight: 'bold',
+                        },
+                        headerBackTitleVisible: false,
+                        headerTitle: 'Voltar'
+                    }}
+                />
             </BoardingStack.Navigator>
         );
     }
@@ -91,7 +124,7 @@ function AuthRoutes() {
 
     return (
         getMontagemTela()
-     )
+    )
 }
 
 export default AuthRoutes;
