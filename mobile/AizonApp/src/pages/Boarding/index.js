@@ -11,12 +11,14 @@ import { Background, Container2, Container1, Logo, AreaText,
   ContainerScreenHeader, HeaderTitle, SubmitButton, SubmitText } from './styles';
 
 import AsyncStorage from '@react-native-community/async-storage';
+import { useNavigation } from '@react-navigation/native';
 
-import AuthRoutes from '../../routes/auth.routes';
 
 export default function Boarding(props) {
 
   const { user, signed } = useContext(AuthContext);
+
+  const navigation = useNavigation();
 
   //import AsyncStorage from '@react-native-community/async-storage';
   //tem um boardingPage=1
@@ -28,7 +30,7 @@ export default function Boarding(props) {
     //await AsyncStorage.setItem('boardingPage', true);
     await AsyncStorage.setItem('boardingPage', JSON.stringify(true));
 
-    return   <AuthRoutes/>;
+    navigation.navigate('Login');
   }
 
  return (
