@@ -288,65 +288,6 @@ export default function ViewAuthenticity({ navigator, route }) {
     });
   }
 
-  async function uploadBase64ToAizonViaBody3() {
-    console.log('uploadBase64ToAizonViaBody3 ...');
-    const res = await PhotoService.uploadBase64ToAizonViaBody3('/image/upload3');
-
-      /** fazer a solução que pegue do array de imagens..
-       * Primeiro a partir do emulador fazendo o botão chamar o showImagesTemp
-       * para preencher o array
-       *
-       * depois fazer na vera utilizando o mobile mesmo com o app instalado
-       *
-       * */
-
-
-    if (res) {
-      console.log('Status code: ',res.status);
-      console.log('Status text: ',res.statusText);
-      console.log('Request method: ',res.request.method);
-      console.log('Path: ',res.request.path);
-
-      console.log('Date: ',res.headers.date);
-      console.log('Data: ',res.data);
-      let data = res.data;
-      alertMessageSucess(data);
-    }
-  }
-
-  /**
-   * Após o clique do showImages ou showImagesTemp
-   */
-  async function uploadBase64ToAizonViaBody() {
-    console.log('uploadBase64ToAizonViaBody = ');
-    let fileImageFront = images[0]['uri'];
-    let fileImageVerso = images[1]['uri'];
-
-    const res = await PhotoService.uploadBase64ToAizonViaBody('/image/upload3', fileImageFront, fileImageVerso);
-
-      /** fazer a solução que pegue do array de imagens..
-       * Primeiro a partir do emulador fazendo o botão chamar o showImagesTemp
-       * para preencher o array
-       *
-       * depois fazer na vera utilizando o mobile mesmo com o app instalado
-       *
-       * */
-
-
-    if (res) {
-      console.log('Status code: ',res.status);
-      console.log('Status text: ',res.statusText);
-      console.log('Request method: ',res.request.method);
-      console.log('Path: ',res.request.path);
-
-      console.log('Date: ',res.headers.date);
-      console.log('Data: ',res.data);
-      let data = res.data;
-      alertMessageSucess(data);
-
-    }
-  }
-
   function refreshTela() {
     setImages([]);
     setIsVisibleList(false);

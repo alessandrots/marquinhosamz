@@ -1,6 +1,7 @@
 import React, { useState, createContext, useEffect} from 'react';
 import firebase from '../configs/firebaseConnection';
 import AsyncStorage from '@react-native-community/async-storage';
+import SecurityService from '../services/security/SecurityService';
 
 export const AuthContext = createContext({});
 
@@ -57,35 +58,55 @@ function AuthProvider({ children }){
     async function signIn(email, password){
         console.log('email = ', email);
         console.log('password = ', password);
+
+        const resposta = await SecurityService.login('/auth/login', email, password);
+
+        console.log('signIn resposta = ', resposta);
+
+        const res = resposta.res;
+
+        let data = null;
+
+        if (!res.isErro) {
+            setLoading(false);
+            //console.log('Status code: ',res.status);
+            //console.log('Data: ',res.data);
+            data = res.data;
+            //setIdUpload(data.id);
+            //storageIdUpload(data.id);
+
+            let msg = "Processamento realizado com sucesso. ID: " + data.id; //+ ' => Data: '+ data.date_time;
+            alertMessageUpload(msg, true, data);
+
+        } else {
+            let error = res.error;
+
+            if (error.response) {
+                // The request was made and the server responded with a status code
+                // that falls out of the range of 2xx
+                console.log('error.response.data = ', error.response.data);
+                console.log('error.response.status = ', error.response.status);
+                console.log('error.response.headers = ', error.response.headers);
+            } else if (error.request) {
+                // The request was made but no response was received
+                // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+                // http.ClientRequest in node.js
+                console.log('error.request = ', error.request);
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                console.log('Error GENERAL = ', error.message);
+            }
+
+            console.log('error.config = ', error.config);
+        }
         /**
-         *
-         await firebase.auth().signInWithEmailAndPassword(email,password)
-         .then(async (value)=>{
-             console.log('uid = ', uid);
-             let uid = value.user.uid;
-             await firebase.database().ref('users').child(uid).once('value')
-             .then((snapshot)=>{
-                 let data = {
-                   uid: uid,
-                   nome: snapshot.val().nome,
-                   email: value.user.email,
-                 };
-
-                 console.log('usuario = ', data);
-                 setUser(data);
-                 storageUser(data);
-             })
-         })
-         .catch((error)=> {
-             alert(error.code);
-         });
-         */
-
-        let data = {
+        data = {
             uid: 8388,
             nome: 'Alessandro',
             email: 'ats@mail.com',
         };
+        */
+
         setUser(data);
         storageUser(data);
     }
@@ -104,31 +125,6 @@ function AuthProvider({ children }){
         setUser(data);
         storageUser(data);
 
-        /*
-        await firebase.auth().createUserWithEmailAndPassword(email,password)
-        .then(async (value)=>{
-            console.log('criado usuario na base do fire = ', value);
-            let uid = value.user.uid;
-
-            //adicionando o usuário na base users com a chave uid
-            await firebase.database().ref('users').child(uid).set({
-                saldo: 0,
-                nome: nome
-            })
-            .then(()=>{
-                let data = {
-                    uid: uid,
-                    nome: nome,
-                    email: value.user.email,
-                };
-                setUser(data);
-                storageUser(data);
-            })
-            .catch((error) => {
-                console.log('\n Deu pau no login =  ', error);
-            })
-        })
-        */
     }
 
     async function storageUser(data){

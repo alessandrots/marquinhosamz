@@ -4,7 +4,8 @@ import api from '../api'
  * https://stackoverflow.com/questions/35855781/having-services-in-react-application
  * ver o ValidationService
  */
-const PhotoService = {
+const SecurityService = {
+
     getJson: async function (url){
         const response = await api.get(url)
                                 .catch(function (error) {
@@ -35,36 +36,6 @@ const PhotoService = {
         return response.data;
     },
 
-    realGetDataForConfig: async function (url, id) {
-        url = url + '/' + id;
-        const response = await api.get(url)
-                                .catch(function (error) {
-                                    if (error.response) {
-                                    // The request was made and the server responded with a status code
-                                    // that falls out of the range of 2xx
-                                    console.log('error.response.data = ', error.response.data);
-                                    console.log('error.response.status = ', error.response.status);
-                                    console.log('error.response.headers = ', error.response.headers);
-                                    } else if (error.request) {
-                                    // The request was made but no response was received
-                                    // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-                                    // http.ClientRequest in node.js
-                                    console.log('error.request = ', error.request);
-                                    } else {
-                                    // Something happened in setting up the request that triggered an Error
-                                    console.log('Error GENERAL = ', error.message);
-                                    }
-                                    console.log('error.config = ', error.config);
-
-                                    return null;
-                                });
-
-        console.log('getJson response = ', response);
-
-        if (!response) return null;
-
-        return response.data;
-    },
 
     // /image/getDataForConfig/6sn96FINoUghUbh
     getDataForConfig: async function (url, id) {
@@ -132,15 +103,15 @@ const PhotoService = {
                 });
 
         return res;
+
+        return res;
     },
 
 
-    uploadBase64ToAizonViaBody: async function (url, fileImageFront, fileImageVerso){
 
-        let body = JSON.stringify({file1: fileImageFront, file2: fileImageVerso});
+    login: async function (url, email_, pwd){
 
-        //console.log('body = ', body);
-
+        let body = JSON.stringify({email: email_, password: pwd});
 
         let headersImg= {
             'Content-Type': 'application/json',
@@ -160,8 +131,8 @@ const PhotoService = {
         resposta['res'] = res;
 
         return resposta;
-},
+    },
 
 };
 
-export default PhotoService;
+export default SecurityService;

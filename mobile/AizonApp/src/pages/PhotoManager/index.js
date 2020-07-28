@@ -139,8 +139,8 @@ export default function PhotoManager({ navigator, route }) {
 
       console.log('\n getLoadFrontPhoto64 \n ');
       let thumb = {};
-      thumb['thumbnail'] = PhotoService.getRGAlexandreFrontBase64();
-      thumb['uri'] = PhotoService.getRGAlexandreFrontBase64();
+      thumb['thumbnail'] = PhotoBase64Service.getRGAlexandreFrontBase64();
+      thumb['uri'] = PhotoBase64Service.getRGAlexandreFrontBase64();
       arr.push(thumb);
 
 
@@ -154,29 +154,12 @@ export default function PhotoManager({ navigator, route }) {
 
       console.log('\n getLoadVersoPhoto64 \n ');
       let thumb = {};
-      thumb['thumbnail'] = PhotoService.getRGAlexandreVersoBase64();
-      thumb['uri'] = PhotoService.getRGAlexandreVersoBase64();
+      thumb['thumbnail'] = PhotoBase64Service.getRGAlexandreVersoBase64();
+      thumb['uri'] = PhotoBase64Service.getRGAlexandreVersoBase64();
       arr.push(thumb);
 
       resolve(arr);
     });
-  }
-
-  async function uploadBase64ToAizonViaBody3() {
-    console.log('uploadBase64ToAizonViaBody3 ...');
-    const res = await PhotoService.uploadBase64ToAizonViaBody3('/image/upload3');
-
-    if (res) {
-      console.log('Status code: ',res.status);
-      console.log('Status text: ',res.statusText);
-      console.log('Request method: ',res.request.method);
-      console.log('Path: ',res.request.path);
-
-      console.log('Date: ',res.headers.date);
-      console.log('Data: ',res.data);
-      let data = res.data;
-      alertMessageUpload(data, true);
-    }
   }
 
   /**
