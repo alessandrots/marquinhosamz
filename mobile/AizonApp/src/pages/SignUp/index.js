@@ -4,24 +4,30 @@ import { Platform } from 'react-native';
 
 import { AuthContext } from '../../contexts/auth';
 
-import { Background, Container2, Container1, Logo, AreaInput, Input, SubmitButton,
+import { Background, Container2, AreaInput, Input, SubmitButton,
 SubmitText} from '../SignIn/styles';
 
-{/* */}
+import { alertMessage } from '../../util/util'
+
 export default function SignUp() {
   const navigation = useNavigation();
 
-  const [nome, setNome] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [nome, setNome] = useState('Fillipe Freire');
+  const [email, setEmail] = useState('Fillipe.Freire@amazoninf.com.br');
+  const [username, setUsername] = useState('Fillipe.Freire');
+  const [password, setPassword] = useState('123456');
+  const [confirmPassword, setConfirmPassword] = useState('123456');
 
   const { user } = useContext(AuthContext);
   const { signUp } = useContext(AuthContext);
 
   function handleSignUp(){
-    signUp(email, password, nome);
-
-    console.log('SignUp => ', user);
+    if (password === confirmPassword) {
+      signUp(email, password, nome, username);
+    } else {
+      alertMessage( 'As senhas precisam ser iguais.', null, null, 'AIZON-CADASTRO')
+    }
+    //console.log('SignUp => ', user);
   }
 
 
@@ -31,7 +37,7 @@ export default function SignUp() {
         behavior={Platform.OS === 'ios' ? 'padding' : ''}
         enabled
       >
-      <AreaInput>
+         <AreaInput>
           <Input
           placeholder="Nome"
           autoCorrect={false}
@@ -53,11 +59,31 @@ export default function SignUp() {
 
         <AreaInput>
           <Input
+          placeholder="Username"
+          autoCorrect={false}
+          autoCapitalize="none"
+          value={username}
+          onChangeText={ (text) => setUsername(text) }
+          />
+        </AreaInput>
+
+        <AreaInput>
+          <Input
           placeholder="Senha"
           autoCorrect={false}
           autoCapitalize="none"
           value={password}
           onChangeText={ (text) => setPassword(text) }
+          />
+        </AreaInput>
+
+        <AreaInput>
+          <Input
+          placeholder="Confirmar Senha"
+          autoCorrect={false}
+          autoCapitalize="none"
+          value={confirmPassword}
+          onChangeText={ (text) => setConfirmPassword(text) }
           />
         </AreaInput>
 

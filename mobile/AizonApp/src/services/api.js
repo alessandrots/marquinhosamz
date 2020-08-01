@@ -1,6 +1,6 @@
 import axios from 'axios'
-
-import { Alert } from 'react-native'
+import { Alert } from 'react-native';
+import { getTokenUser } from '../util/util'
 
 //import { navigate } from '../util/util'
 
@@ -26,6 +26,7 @@ axios({ url: 'items', baseURL: 'http://new-url.com' })
 
  */
 
+
 const api = axios.create({
   //baseURL: 'https://api-jwt-tutorial.herokuapp.com',
   //baseURL: 'http://192.168.10.232:5000',
@@ -48,7 +49,7 @@ api.interceptors.response.use(
     return response
   },
   error => {
-    console.log('error interceptor api = ', error);
+    //console.log('error interceptor api = ', error);
 
     // Do something with response error
     // You can even test for a response code
@@ -86,21 +87,19 @@ api.interceptors.response.use(
 
 api.interceptors.request.use(
   config => {
-    //console.log('interceptors.request = ', config);
-    return Promise.resolve(config)
-    /**
-    return getUser()
-      .then(user => {
-        user = JSON.parse(user)
-        if (user && user.token)
-          config.headers.Authorization = `Bearer ${user.token}`
+
+    return getTokenUser().then((tokenBearer) => {
+      //console.log('\n vai chamar o FRONT ret= ', imageFrontal);
+      if (tokenBearer) {
+        config.headers.Authorization = `Bearer ${tokenBearer}`
+      }
+      console.log('interceptors.request = ', config);
+      return Promise.resolve(config)
+    })
+    .catch(() => {
+        console.log('\n Deu pau na recuperação do token \n ');
         return Promise.resolve(config)
-      })
-      .catch(error => {
-        console.log(error)
-        return Promise.resolve(config)
-      })
-      */
+    })
   },
   error => {
     return Promise.reject(error)
