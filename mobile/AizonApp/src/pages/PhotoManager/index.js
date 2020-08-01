@@ -19,12 +19,14 @@ import FotoCmp from '../../components/FotoCmp';
 import FotoLayerCmp from '../../components/FotoLayerCmp';
 
 
-import { Background, ContainerMain, SendImageBackground,
+import { Background, ContainerMain,
   ContainerImageRight, ContainerImageLeft, ContainerImagens,ContainerDadosView,
   ContainerScreenButton, SubmitButton, SubmitText,
-  TitleText, ItemText, Link, LinkText } from './styles';
+  TitleText } from './styles';
 
 import { ContainerHeader, ContainerFooter } from '../Home/styles';
+
+import { alertMessage } from '../../util/util';
 
 export default function PhotoManager({ navigator, route }) {
 
@@ -114,7 +116,6 @@ export default function PhotoManager({ navigator, route }) {
 
     if (imageFrontal && imageVerso) {
       let arr = [];
-      console.log('\n\n showImages 2= ');
 
       let imgObjFrontal = {};
       imgObjFrontal['thumbnail'] = 'data:image/jpeg;base64,' + imageFrontal;
@@ -168,7 +169,7 @@ export default function PhotoManager({ navigator, route }) {
   async function uploadBase64ToAizonViaBody() {
 
     if (!images || images.length < 2) {
-      alertMessageUpload('Clique no botão refresh!', false);
+      alertMessage('Clique no botão refresh!', null, null, 'AIZON-UPLOAD');
       return;
     }
 
@@ -183,43 +184,30 @@ export default function PhotoManager({ navigator, route }) {
 
     const res = resposta.res
 
-    if (!res.isErro) {
+    if (!resposta.isErro) {
       setLoading(false);
-      //console.log('Status code: ',res.status);
-      //console.log('Data: ',res.data);
+
       let data = res.data;
+
       setIdUpload(data.id);
 
       storageIdUpload(data.id);
 
       let msg = "Processamento realizado com sucesso. ID: " + data.id; //+ ' => Data: '+ data.date_time;
-      alertMessageUpload(msg, true, data);
+      //alertMessage(msg, true, data);
 
+      let fnGo = goToDataVisualization;
+
+      alertMessage(msg, fnGo, data, 'Aizon-Upload');
     } else {
-      let error = res.error;
-      if (error.response) {
-          // The request was made and the server responded with a status code
-          // that falls out of the range of 2xx
-          console.log('error.response.data = ', error.response.data);
-          console.log('error.response.status = ', error.response.status);
-          console.log('error.response.headers = ', error.response.headers);
-      } else if (error.request) {
-          // The request was made but no response was received
-          // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-          // http.ClientRequest in node.js
-          console.log('error.request = ', error.request);
-      } else {
-          // Something happened in setting up the request that triggered an Error
-          console.log('Error GENERAL = ', error.message);
-      }
-          console.log('error.config = ', error.config);
-      }
+      setLoading(false);
+      alertMessage( 'Houve erro no upload das imagens', null, null, 'AIZON-UPLOAD')
+    }
   }
 
   function refreshTela() {
     console.log(images);
     showImages ();
-    //showImagesBase64();
   }
 
   function limparTela() {
@@ -233,6 +221,7 @@ export default function PhotoManager({ navigator, route }) {
     setModalVisibleSideZero(false);
   }
 
+  /**
   function alertMessageUpload( msg, sendForPage, data) {
     let arr =[
       {
@@ -258,6 +247,7 @@ export default function PhotoManager({ navigator, route }) {
         { cancelable: false }
     );
   }
+  */
 
   function goToDataVisualization(data) {
     console.log('====================================');

@@ -17,6 +17,7 @@ import PhotoService from '../../services/photo/PhotoService';
 import { Background, ContainerHeader, ContainerFooter, ContainerMain} from '../Home/styles';
 
 import Icon from "react-native-vector-icons/MaterialIcons";
+import { alertMessage } from '../../util/util';
 
 //const ImageSource = ImageURISource | ImageRequireSource;
 
@@ -89,18 +90,11 @@ export default function ViewData({ navigator, route }) {
 
     const id = await loadStorageIdUpload();
 
-    /**
-    Alert.alert(
-      "AIZON - VIEW DATA",
-      msg,
-      arr,
-      { cancelable: false }
-    );
-     */
-
-     console.log('====================================');
-     console.log('ID = ', id);
-     console.log('====================================');
+    if (!route.params) {
+      alertMessage( 'Houve erro no detalhe do documento', null, null, 'AIZON-DETALHE');
+      setLoading(false);
+      return;
+    }
 
     let res = await PhotoService.getDataForConfig('/image/getDataForConfig', route.params.identificacaoDocumento);
 
@@ -156,7 +150,7 @@ export default function ViewData({ navigator, route }) {
               </View>
 
               <View style={styles.viewLine2}>
-                <Text  style={styles.textDataFirst}> {route.params.identificacaoDocumento }</Text>
+                <Text  style={styles.textDataFirst}> {route.params && route.params.identificacaoDocumento }</Text>
                 <Text  style={styles.textDataSecond}> {responseData.uf }</Text>
               </View>
 

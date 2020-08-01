@@ -12,8 +12,8 @@ https://medium.com/reactbrasil/consumindo-api-rest-com-autentica%C3%A7%C3%A3o-jw
 export default function SignIn() {
   const navigation = useNavigation();
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('Alexandre.Almeida@amazoninf.com.br');
+  const [password, setPassword] = useState('123456');
 
   const { user } = useContext(AuthContext);
 

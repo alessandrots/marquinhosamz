@@ -1,7 +1,10 @@
 import React, { useState, createContext, useEffect} from 'react';
-import firebase from '../configs/firebaseConnection';
 import AsyncStorage from '@react-native-community/async-storage';
 import SecurityService from '../services/security/SecurityService';
+
+import { storeTokenUser, deleteTokenUser, storageUser, alertMessage } from '../util/util';
+
+
 
 export const AuthContext = createContext({});
 
@@ -16,16 +19,8 @@ export const AuthContext = createContext({});
 */}
 
 function AuthProvider({ children }){
-    /*
     // Representação de um objeto logado .. ou seja como usuário na sessão
     // para simular um usuário logado
-
-    const [user, setUser] = useState({
-        nome: 'Alessandro',
-        uid: '19023091290312903901'
-    });
-    */
-
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [boarding, setBoarding] = useState(false);
@@ -54,81 +49,123 @@ function AuthProvider({ children }){
        loadStorage();
     }, []);
 
-    //Funcao para logar o usario
+    /** */
     async function signIn(email, password){
         console.log('email = ', email);
-        console.log('password = ', password);
+        console.log('signIn FAKE!');
 
-        const resposta = await SecurityService.login('/auth/login', email, password);
+        let data = {
+            uid: 8388,
+            nome: 'Alessandro Santos',
+            email: 'ats@mail.com',
+            username: 'atssantos2000'
+        };
+
+        setUser(data);
+
+        storageUser(data);
+    }
+
+
+    //Funcao para logar o usario
+    /**
+    async function signIn(email, password){
+        console.log(email, password);
+
+        const resposta = await SecurityService.login('/register/auth/login', email, password);
 
         console.log('signIn resposta = ', resposta);
 
         const res = resposta.res;
 
-        let data = null;
-
-        if (!res.isErro) {
+        if (!resposta.isErro) {
             setLoading(false);
-            //console.log('Status code: ',res.status);
-            //console.log('Data: ',res.data);
-            data = res.data;
-            //setIdUpload(data.id);
-            //storageIdUpload(data.id);
 
-            let msg = "Processamento realizado com sucesso. ID: " + data.id; //+ ' => Data: '+ data.date_time;
-            alertMessageUpload(msg, true, data);
+            let data = res.data;
 
-        } else {
-            let error = res.error;
-
-            if (error.response) {
-                // The request was made and the server responded with a status code
-                // that falls out of the range of 2xx
-                console.log('error.response.data = ', error.response.data);
-                console.log('error.response.status = ', error.response.status);
-                console.log('error.response.headers = ', error.response.headers);
-            } else if (error.request) {
-                // The request was made but no response was received
-                // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-                // http.ClientRequest in node.js
-                console.log('error.request = ', error.request);
+            //storeTokenUser(token);
+            if (data && data.token && data.id) {
+                storeTokenUser(data.token).then(() => {
+                    getUserForStorage(data.id);
+                  }).catch(() => {
+                      console.log('\n Deu pau na gravação do token \n ');
+                });
             } else {
-                // Something happened in setting up the request that triggered an Error
-                console.log('Error GENERAL = ', error.message);
+                alertMessage( 'Houve erro na geração do token de autenticação.', null, null, 'AIZON-LOGIN')
             }
-
-            console.log('error.config = ', error.config);
+        } else {
+            alertMessage( 'Houve erro na autenticação', null, null, 'AIZON-LOGIN');
         }
-        /**
-        data = {
-            uid: 8388,
-            nome: 'Alessandro',
-            email: 'ats@mail.com',
-        };
-        */
+    }
+    */
 
-        setUser(data);
-        storageUser(data);
+    async function getUserForStorage(idUser) {
+        const resposta = await SecurityService.getUserForID('/register/users', idUser);
+        console.log('====================================');
+        console.log(resposta);
+        console.log('====================================');
+
+        if (!resposta.isErro) {
+            data = respostaUser.data;
+
+            let user = {
+                id: idUser,
+                nome: data.nome,
+                email: data.mail,
+                username: data.username
+            };
+
+            //guardando o objeto user no state
+            setUser(user);
+
+            //guardando user no AsyncStorage
+            storageUser(user);
+        } else {
+            alertMessage( 'Houve erro na recuperação do usuário', null, null, 'AIZON-LOGIN')
+        }
     }
 
     //Cadastrar usuario
-    async function signUp(email, password, nome){
+    async function signUp(email, password, name, username){
         console.log('signUp ::: email => ', email);
         console.log('signUp ::: password => ', password);
-        console.log('signUp ::: nome => ', nome);
+        console.log('signUp ::: nome => ', name);
+        console.log('signUp ::: username => ', username);
 
         let data = {
-            uid: 8388,
-            nome: 'Alessandro',
-            email: 'ats@mail.com',
+            name: name,
+            username: username,
+            password: password,
+            email: email
         };
-        setUser(data);
-        storageUser(data);
 
+        saveUser(data);
     }
 
-    async function storageUser(data){
-        await AsyncStorage.setItem('Auth_user', JSON.stringify(data));
+    async function saveUser(data) {
+        const resposta = await SecurityService.registerNewUser('/register/users');
+        console.log(resposta);
+
+        if (!resposta.isErro) {
+            data = respostaUser.data;
+
+            let user = {
+                id: data.id,
+                nome: data.nome,
+                email: data.mail,
+                username: data.username
+            };
+
+
+        } else {
+            alertMessage( 'Houve erro no cadastro do usuário', null, null, 'AIZON-LOGIN')
+        }
+    }
+
+    async function signOut(){
+        deleteTokenUser();
+
+        setUser(null);
     }
 
     async function storageIdUpload(id){
@@ -142,28 +179,16 @@ function AuthProvider({ children }){
         return storageUser;
     }
 
-    async function signOut(){
-        /**
-         *
-         await firebase.auth().signOut();
-         await AsyncStorage.clear()
-         .then( () => {
-            setUser(null);
-         })
-         */
-        setUser(null);
-    }
-
     async function savePhoto(photo) {
         await console.log('objeto photo a ser salvo = ', photo);
         //!!user
     }
 
     return(
-     <AuthContext.Provider value={{ signed: !!user, user, loading, signUp,
-     signIn, signOut, savePhoto, storageIdUpload, loadStorageIdUpload, boarding }}>
-         {children}
-     </AuthContext.Provider>
+        <AuthContext.Provider value={{ signed: !!user, user, loading, signUp,
+        signIn, signOut, savePhoto, storageIdUpload, loadStorageIdUpload, boarding }}>
+            {children}
+        </AuthContext.Provider>
     );
 
 }
