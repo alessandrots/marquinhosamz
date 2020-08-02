@@ -112,13 +112,11 @@ function AppRoutes(){
             name="Profile"
             component={Profile}
             options={{ title: 'Perfil' }}/>
-
+{/**
           <AppDrawer.Screen
             name="Home"
             component={Home}
             options={{ title: 'Home' }}/>
-
-        {/**
 
           <AppDrawer.Screen
               name="Photo"

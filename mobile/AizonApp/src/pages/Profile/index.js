@@ -45,7 +45,7 @@ export default function Profile() {
 
       if (photoBase64) {
         setFileData(photoBase64);
-        alertMessage('Imagem Carregada com sucesso!', null, null, 'AIZON-PERFIL');
+        //alertMessage('Imagem Carregada com sucesso!', null, null, 'AIZON-PERFIL');
       }
     })
     .catch(() => {
@@ -118,7 +118,7 @@ function chooseImage () {
       setFileUri(response.uri);
 
       storagePhotoProfileUser(response.data, user.id).then((photoBase64) => {
-        console.log('\n storagePhotoProfileUser = ', response.data);
+        //console.log('\n storagePhotoProfileUser = ', response.data);
         alertMessage('Imagem Salva com sucesso!', null, null, 'AIZON-PERFIL');
       })
       .catch(() => {
@@ -142,88 +142,46 @@ function renderFileData() {
 
 function getDataPopulate() {
 
-  /**
-   * pegar do STORAGE
-   *
-   * let data = {
-            id: 8388,
-            name: 'Alessandro Santos',
-            email: 'ats@mail.com',
-            username: 'atssantos2000',
-            imageUserBase64: null
-        };
-   */
-
-  if (responseData) {
+  if (user) {
     return (
       <View style={styles.viewPrincipal}>
             <View style={styles.viewLine1}>
-              <Text style={styles.textTitleFirst}>Identificação Doc.</Text>
-              <Text style={styles.textTitleSecond}>UF</Text>
+              <Text style={styles.textTitleFirst}>Nome:</Text>
             </View>
 
             <View style={styles.viewLine2}>
-              <Text  style={styles.textDataFirst}> {route.params && route.params.identificacaoDocumento }</Text>
-              <Text  style={styles.textDataSecond}> {responseData.uf }</Text>
+              <Text  style={styles.textDataFirst}> {user.name }</Text>
             </View>
 
             <View style={styles.viewLine1}>
-              <Text style={styles.textTitleFirst}> Registro Geral</Text>
-              <Text style={styles.textTitleSecond}> Data de Expedição</Text>
+              <Text style={styles.textTitleFirst}> Username: </Text>
             </View>
 
             <View style={styles.viewLine2}>
-              <Text style={styles.textDataFirst}> {responseData.numero_rg }</Text>
-              <Text style={styles.textDataSecond}> {responseData.data_expedicao }</Text>
+              <Text style={styles.textDataFirst}> {user.username } </Text>
             </View>
 
             <View style={styles.viewLine1}>
-              <Text style={styles.textTitleFirst}> Nome</Text>
+              <Text style={styles.textTitleFirst}> Email: </Text>
             </View>
 
             <View style={styles.viewLine2}>
-              <Text style={styles.textDataFirst}> {responseData.nome_pessoa }</Text>
+              <Text style={styles.textDataFirst}> {user.email }</Text>
             </View>
 
             <View style={styles.viewLine1}>
-              <Text style={styles.textTitleFirst}> Filiação</Text>
+              <Text style={styles.textTitleFirst}> Grupo: </Text>
             </View>
 
             <View style={styles.viewLine2}>
-              <Text style={styles.textDataFirst}> {responseData.filiacao }</Text>
+              <Text style={styles.textDataFirst}> {user.grupo }</Text>
             </View>
 
-            <View style={styles.viewLine1}>
-              <Text style={styles.textTitleFirst}> Naturalidade</Text>
+            <View style={styles.viewLineCenter}>
+              <Text style={styles.textDataRodape}> Pontuação: xxxxxx </Text>
+              <Text style={styles.textDataRodape}> Sua Avaliação: yyyyy </Text>
             </View>
 
-            <View style={styles.viewLine2}>
-              <Text style={styles.textDataFirst}> {responseData.naturalidade }</Text>
-            </View>
-
-            <View style={styles.viewLine1}>
-              <Text style={styles.textTitleFirst}> Nascimento</Text>
-            </View>
-
-            <View style={styles.viewLine2}>
-              <Text style={styles.textDataFirst}> {responseData.data_de_nascimento }</Text>
-            </View>
-
-            <View style={styles.viewLine1}>
-              <Text style={styles.textTitleFirst}> Documento Origem</Text>
-            </View>
-
-            <View style={styles.viewLine2}>
-              <Text style={styles.textDataFirst}> {responseData.doc_origem }</Text>
-            </View>
-
-            <View style={styles.viewLine1}>
-              <Text style={styles.textTitleFirst}> CPF</Text>
-            </View>
-
-            <View style={styles.viewLine2}>
-              <Text style={styles.textDataFirst}> {responseData.cpf }</Text>
-            </View>
     </View>)
   }
 
@@ -240,6 +198,7 @@ function getDataPopulate() {
             <ContainerImageRight>
 
                   {renderFileData()}
+
                   <TitleText  style={{textAlign:'center'}}>FOTO DE PERFIL</TitleText>
 
                 <ContainerScreenButton>
@@ -251,54 +210,87 @@ function getDataPopulate() {
             </ContainerImageRight>
 
             <ContainerImageLeft>
-              <ContainerDadosView>
-              { getDataPopulate() }
-              </ContainerDadosView>
-
-
+            { getDataPopulate() }
             </ContainerImageLeft>
 
+        </ContainerMain>
 
-
-            </ContainerMain>
-            {/**</SendImageBackground>*/}
-
-            <ContainerFooter>
-                <Footer titlePage="AIZON"/>
-            </ContainerFooter>
-
-
-
-
-
-
-{/**
-        <SafeAreaView>
-          <View style={styles.body}>
-            <View style={styles.ImageSections}>
-              <View>
-                {renderFileData()}
-                <Text  style={{textAlign:'center'}}>FOTO DE PERFIL</Text>
-              </View>
-
-            </View>
-
-            <View style={styles.btnParentSection}>
-              <TouchableOpacity onPress={() => chooseImage()} style={styles.btnSection}  >
-                <Text style={styles.btnText}>Choose File</Text>
-              </TouchableOpacity>
-
-            </View>
-
-          </View>
-        </SafeAreaView>
-
- */}
+        <ContainerFooter>
+            <Footer titlePage="AIZON"/>
+        </ContainerFooter>
 
       </Background>
   );
 }
 
+const styles = StyleSheet.create({
+
+
+  viewPrincipal:{
+    flex:1,
+  },
+
+  viewLine1: {
+    flex: 1,
+    flexDirection: "row",
+    backgroundColor: "#a0efef"
+  },
+
+  viewLine2: {
+    flex: 1,
+    flexDirection: "row",
+    backgroundColor: "#FFF"
+  },
+  viewLineCenter: {
+    flex: 1,
+    flexDirection: "column",
+    alignItems: "center",
+    backgroundColor: "#FFF",
+    marginBottom: 20
+  },
+
+  textTitleFirst: {
+    fontSize: 14,
+    color: "#F0B42F",
+    fontWeight: "bold",
+    marginLeft: 10,
+  },
+
+  textDataFirst: {
+    fontSize: 12,
+    fontWeight: "bold",
+    color: "#000",
+    marginLeft: 10,
+
+  },
+
+  textDataRodape: {
+    fontSize: 15,
+    fontWeight: "bold",
+    color: "#000",
+    marginLeft: 10,
+
+  },
+
+  textTitleError: {
+    fontSize: 14,
+    color: "#CC0000",
+    fontWeight: "bold",
+    marginLeft: 10,
+    marginRight: 80,
+  },
+
+  images: {
+    width: 130,
+    height: 130,
+    borderColor: 'black',
+    borderWidth: 1,
+    marginHorizontal: 3
+  },
+
+});
+
+/**
 const styles = StyleSheet.create({
   scrollView: {
     backgroundColor: '#f0f8ff',
@@ -311,13 +303,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     justifyContent: 'center'
   },
-  images: {
-    width: 130,
-    height: 130,
-    borderColor: 'black',
-    borderWidth: 1,
-    marginHorizontal: 3
-  },
+
   btnParentSection: {
     alignItems: 'center',
     marginTop:10
@@ -338,4 +324,4 @@ const styles = StyleSheet.create({
     fontWeight:'bold'
   }
 });
-
+ */

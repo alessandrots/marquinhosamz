@@ -5,7 +5,7 @@ import { Platform } from 'react-native';
 import { AuthContext } from '../../contexts/auth';
 
 import { Background, Container2, AreaInput, Input, SubmitButton,
-SubmitText} from '../SignIn/styles';
+SubmitText, InputPassword} from '../SignIn/styles';
 
 import { alertMessage } from '../../util/util'
 
@@ -68,21 +68,25 @@ export default function SignUp() {
         </AreaInput>
 
         <AreaInput>
-          <Input
+          <InputPassword
           placeholder="Senha"
           autoCorrect={false}
           autoCapitalize="none"
           value={password}
+          underlineColorAndroid="transparent"
+          secureTextEntry={true}
           onChangeText={ (text) => setPassword(text) }
           />
         </AreaInput>
 
         <AreaInput>
-          <Input
+          <InputPassword
           placeholder="Confirmar Senha"
           autoCorrect={false}
           autoCapitalize="none"
           value={confirmPassword}
+          underlineColorAndroid="transparent"
+          secureTextEntry={true}
           onChangeText={ (text) => setConfirmPassword(text) }
           />
         </AreaInput>

@@ -58,14 +58,14 @@ export const CameraButtonContainer = styled.TouchableHighlight.attrs({
 export const ContainerImageRight = styled.View`
  flex:3;
  margin-top: 10px;
- background-color: #CC0000;
+ /** background-color: #CC0000; */
  align-items:center;
  flex-direction: column;
 `;
 
 export const ContainerImageLeft = styled.View`
  flex:5;
- background-color: #CCC000;
+ /** background-color: #CCC000;*/
  /**align-items:center;
  margin-top: 10px;
  */

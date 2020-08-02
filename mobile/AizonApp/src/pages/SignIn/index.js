@@ -4,7 +4,7 @@ import { Platform } from 'react-native';
 import { AuthContext } from '../../contexts/auth';
 
 import { Background, Container2, Container1, Logo, AreaInput, Input, SubmitButton,
-SubmitText, Link, LinkText, AreaImage} from './styles';
+SubmitText, Link, LinkText, AreaImage, InputPassword} from './styles';
 
 {/*
 https://medium.com/reactbrasil/consumindo-api-rest-com-autentica%C3%A7%C3%A3o-jwt-no-react-native-eec62b852ff3
@@ -49,11 +49,13 @@ export default function SignIn() {
         </AreaInput>
 
         <AreaInput>
-          <Input
+          <InputPassword
           placeholder="Senha"
           autoCorrect={false}
           autoCapitalize="none"
           value={password}
+          underlineColorAndroid="transparent"
+          secureTextEntry={true}
           onChangeText={ (text) => setPassword(text) }
           />
         </AreaInput>
