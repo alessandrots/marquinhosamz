@@ -11,11 +11,11 @@ import Footer from '../../components/Footer';
 import ImageList from "../../components/ImageList/ImageList";
 import PhotoService from '../../services/photo/PhotoService';
 
-import PhotoBase64Service from '../../services/photoBase64/PhotoBase64Service';
+//import PhotoBase64Service from '../../services/photoBase64/PhotoBase64Service';
 
 import ImageView from "react-native-image-viewing";
 import Icon from "react-native-vector-icons/MaterialIcons";
-import FotoCmp from '../../components/FotoCmp';
+//import FotoCmp from '../../components/FotoCmp';
 import FotoLayerCmp from '../../components/FotoLayerCmp';
 
 
@@ -134,34 +134,7 @@ export default function PhotoManager({ navigator, route }) {
     }
   }
 
-  async function getLoadFrontPhoto64(arr) {
 
-    return await new Promise((resolve, reject) => {
-
-      console.log('\n getLoadFrontPhoto64 \n ');
-      let thumb = {};
-      thumb['thumbnail'] = PhotoBase64Service.getRGAlexandreFrontBase64();
-      thumb['uri'] = PhotoBase64Service.getRGAlexandreFrontBase64();
-      arr.push(thumb);
-
-
-      resolve(arr);
-    });
-  }
-
-  async function getLoadVersoPhoto64(arr) {
-
-    return await new Promise((resolve, reject) => {
-
-      console.log('\n getLoadVersoPhoto64 \n ');
-      let thumb = {};
-      thumb['thumbnail'] = PhotoBase64Service.getRGAlexandreVersoBase64();
-      thumb['uri'] = PhotoBase64Service.getRGAlexandreVersoBase64();
-      arr.push(thumb);
-
-      resolve(arr);
-    });
-  }
 
   /**
    * Após o clique do showImages ou showImagesTemp
@@ -221,38 +194,7 @@ export default function PhotoManager({ navigator, route }) {
     setModalVisibleSideZero(false);
   }
 
-  /**
-  function alertMessageUpload( msg, sendForPage, data) {
-    let arr =[
-      {
-        text: "Ok",
-        style: "ok"
-      }
-    ]
-
-    if (sendForPage) {
-      arr = [
-        {
-          text: "Ok",
-          onPress: () => goToDataVisualization(data),
-          style: "ok"
-        }
-      ]
-    }
-
-    Alert.alert(
-        "AIZON - UPLOAD",
-        msg,
-        arr,
-        { cancelable: false }
-    );
-  }
-  */
-
   function goToDataVisualization(data) {
-    console.log('====================================');
-    console.log(data.id);
-    console.log('====================================');
     navigation.navigate('ViewData', { side: '0', 'identificacaoDocumento': data.id});
   }
 
@@ -281,6 +223,12 @@ export default function PhotoManager({ navigator, route }) {
     );
   }
 
+  function closeModalPhoto() {
+    setModalVisibleSideUm(false);
+    setModalVisibleSideZero(false);
+  }
+
+  /**
   function getModalPhotoOLD () {
     return  (
         <Modal
@@ -298,11 +246,33 @@ export default function PhotoManager({ navigator, route }) {
     );
   }
 
+  async function getLoadFrontPhoto64(arr) {
 
-  function closeModalPhoto() {
-    setModalVisibleSideUm(false);
-    setModalVisibleSideZero(false);
+    return await new Promise((resolve, reject) => {
+
+      let thumb = {};
+      thumb['thumbnail'] = PhotoBase64Service.getRGAlexandreFrontBase64();
+      thumb['uri'] = PhotoBase64Service.getRGAlexandreFrontBase64();
+      arr.push(thumb);
+
+
+      resolve(arr);
+    });
   }
+
+  async function getLoadVersoPhoto64(arr) {
+
+    return await new Promise((resolve, reject) => {
+
+      let thumb = {};
+      thumb['thumbnail'] = PhotoBase64Service.getRGAlexandreVersoBase64();
+      thumb['uri'] = PhotoBase64Service.getRGAlexandreVersoBase64();
+      arr.push(thumb);
+
+      resolve(arr);
+    });
+  }
+
 
   async function showImagesBase64 () {
 
@@ -337,6 +307,7 @@ export default function PhotoManager({ navigator, route }) {
       }
     });
   }
+  */
 
   function getMontagemTela() {
     if (!modalVisibleSideUm && !modalVisibleSideZero){

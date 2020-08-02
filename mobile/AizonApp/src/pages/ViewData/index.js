@@ -78,15 +78,7 @@ export default function ViewData({ navigator, route }) {
   async function getDataForConfigToObj() {
     console.log('\n\n route ViewData = ', route);
     setLoading(true);
-    //setResponseData(null);
     setImageBase64(null);
-
-    let arr =[
-      {
-        text: "Ok",
-        style: "ok"
-      }
-    ]
 
     const id = await loadStorageIdUpload();
 
@@ -109,7 +101,6 @@ export default function ViewData({ navigator, route }) {
           setResponseData(res.data.data_extract.data_extract);
 
           let img = await PhotoService.getImageBase64();
-          //console.log(img);
           setImageBase64(img);
         } else if (res.data.Erro) {
           setLoading(false);
