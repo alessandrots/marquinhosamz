@@ -55,6 +55,20 @@ export const Container1 = styled.View.attrs({
  border-radius: 7px;
  `;
 
+export const InputPassword = styled.TextInput.attrs({
+    placeholderTextColor: 'rgba(240,180,47,1)'
+})`
+background: rgba(0,0,0,0.20);
+width: 60%;
+font-size: 17px;
+color: #000;
+margin-bottom: 15px;
+padding: 10px;
+border-radius: 7px;
+border-color: #D3CFCF;
+border-width: 2px;
+`;
+
 export const SubmitButton = styled.TouchableOpacity`
     align-items: center;
     justify-content: center;
