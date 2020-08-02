@@ -68,6 +68,10 @@ export default function SignIn() {
             <LinkText>Criar uma conta!</LinkText>
         </Link>
 
+        <Link onPress={ () => navigation.navigate('ChangePasswd')}>
+            <LinkText>Alterar Senha!</LinkText>
+        </Link>
+
       </Container2>
    </Background>
   );

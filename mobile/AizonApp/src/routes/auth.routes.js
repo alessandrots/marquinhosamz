@@ -8,6 +8,7 @@ import React, {useContext} from 'react';
 import { createStackNavigator} from '@react-navigation/stack';
 import SignIn from '../pages/SignIn';
 import SignUp from '../pages/SignUp';
+import ChangePasswd from '../pages/ChangePasswd'
 import Boarding from '../pages/Boarding';
 
 import { AuthContext } from '../contexts/auth';
@@ -49,7 +50,25 @@ function AuthRoutes() {
                             fontWeight: 'bold',
                         },
                         headerBackTitleVisible: false,
-                        headerTitle: 'Voltar'
+                        headerTitle: 'Cadastro Usuário'
+                    }}
+                />
+
+                <AuthStack.Screen
+                    name="ChangePasswd"
+                    component={ChangePasswd}
+                    options={{
+                        headerStyle:{
+                            backgroundColor: '#0EABB5',
+                            borderBottomWidth: 1,
+                            borderBottomColor: '#00b94a'
+                        },
+                        headerTintColor: '#000',
+                        headerTitleStyle: {
+                            fontWeight: 'bold',
+                        },
+                        headerBackTitleVisible: false,
+                        headerTitle: 'Alterar Senha'
                     }}
                 />
             </AuthStack.Navigator>
