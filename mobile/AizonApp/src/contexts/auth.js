@@ -55,8 +55,8 @@ function AuthProvider({ children }){
         console.log('signIn FAKE!');
 
         let data = {
-            uid: 8388,
-            nome: 'Alessandro Santos',
+            id: 8388,
+            name: 'Alessandro Santos',
             email: 'ats@mail.com',
             username: 'atssantos2000'
         };
@@ -110,9 +110,10 @@ function AuthProvider({ children }){
 
             let user = {
                 id: idUser,
-                nome: data.nome,
+                name: data.nome,
                 email: data.mail,
-                username: data.username
+                username: data.username,
+                imageUserBase64: null
             };
 
             //guardando o objeto user no state

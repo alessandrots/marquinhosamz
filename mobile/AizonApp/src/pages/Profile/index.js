@@ -1,8 +1,7 @@
-import React, { useContext, useState} from 'react';
+import React, { useContext, useState, useEffect} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
-  ScrollView,
   View,
   Text,
   StatusBar,
@@ -13,31 +12,46 @@ import {
 } from 'react-native';
 
 import Header from '../../components/Header';
+import Footer from '../../components/Footer';
 
-import { Background, ContainerHeader } from './styles';
+import { Background, ContainerMain, ContainerHeader,
+  ContainerImageRight, ContainerImageLeft,ContainerDadosView,
+  ContainerFooter, ContainerScreenButton, SubmitButton, SubmitText,
+  TitleText, ItemText } from './styles';
 
 import { AuthContext } from '../../contexts/auth';
 
 import ImagePicker from 'react-native-image-picker';
 
-const options = {
-  title: 'Select Avatar',
-  customButtons: [{ name: 'fb', title: 'Choose Photo from Facebook' }],
-  storageOptions: {
-    skipBackup: true,
-    path: 'images',
-  },
-};
-
+import { getPhotoProfileUser, storagePhotoProfileUser, alertMessage } from '../../util/util';
 
 export default function Profile() {
 
   const { user } = useContext(AuthContext);
 
   const [ filePathData, setFilePathData ] = useState('');
-  const [ filePathUri, setFilePathUri ] = useState('');
+  //const [ filePathUri, setFilePathUri ] = useState('');
   const [ fileData, setFileData ] = useState('');
   const [ fileUri, setFileUri] = useState('');
+
+  //substituir pelos dados do User
+  let [responseData, setResponseData] = useState(null);
+
+  useEffect(() => {
+    //console.log('route PhotoManager = ', route);
+
+    getPhotoProfileUser(user.id).then((photoBase64) => {
+      console.log('\n getPhotoProfileUser = ', photoBase64);
+
+      if (photoBase64) {
+        setFileData(photoBase64);
+        alertMessage('Imagem Carregada com sucesso!', null, null, 'AIZON-PERFIL');
+      }
+    })
+    .catch(() => {
+        console.log('\n Deu pau na recuperação do getPhotoProfileUser \n ');
+    });
+  }, []);
 
 
 function launchCamera () {
@@ -60,8 +74,6 @@ function launchCamera () {
       //alert(response.customButton);
     } else {
       const source = { uri: response.uri };
-      //console.log('response', JSON.stringify(response));
-
       setFilePathData(response);
       setFileData(response.data);
       setFileUri(response.uri);
@@ -72,17 +84,21 @@ function launchCamera () {
 
 function chooseImage () {
   let options = {
-    title: 'Select Image',
+    title: 'Selecione a Imagem',
     customButtons: [
-      { name: 'customOptionKey', title: 'Choose Photo from Custom Option' },
+      //{ name: 'customOptionKey', title: 'Escolha a Foto das opções acima' },
     ],
+    cancelButtonTitle:'Cancelar',
+    chooseFromLibraryButtonTitle:'Galeria de Imagens',
+    chooseWhichLibraryTitle:'Escolha o app de Fotos',
+    takePhotoButtonTitle:'Tirar Foto',
     storageOptions: {
       skipBackup: true,
       path: 'images',
     },
   };
 
-  console.log('chooseImage user = ', user);
+  let id = user.id;
 
   ImagePicker.showImagePicker(options, (response) => {
     console.log('chooseImage Response = ', response);
@@ -100,6 +116,14 @@ function chooseImage () {
       setFilePathData(response);
       setFileData(response.data);
       setFileUri(response.uri);
+
+      storagePhotoProfileUser(response.data, user.id).then((photoBase64) => {
+        console.log('\n storagePhotoProfileUser = ', response.data);
+        alertMessage('Imagem Salva com sucesso!', null, null, 'AIZON-PERFIL');
+      })
+      .catch(() => {
+          console.log('\n Deu pau na salvar do storagePhotoProfileUser \n ');
+      });
     }
   });
 }
@@ -116,18 +140,93 @@ function renderFileData() {
   }
 }
 
-function renderFileUri() {
-  if (fileUri) {
-    return <Image
-      source={{ uri: fileUri }}
-      style={styles.images}
-    />
-  } else {
-    return <Image
-      source={require('../../assets/galeryImages.jpg')}
-      style={styles.images}
-    />
+function getDataPopulate() {
+
+  /**
+   * pegar do STORAGE
+   *
+   * let data = {
+            id: 8388,
+            name: 'Alessandro Santos',
+            email: 'ats@mail.com',
+            username: 'atssantos2000',
+            imageUserBase64: null
+        };
+   */
+
+  if (responseData) {
+    return (
+      <View style={styles.viewPrincipal}>
+            <View style={styles.viewLine1}>
+              <Text style={styles.textTitleFirst}>Identificação Doc.</Text>
+              <Text style={styles.textTitleSecond}>UF</Text>
+            </View>
+
+            <View style={styles.viewLine2}>
+              <Text  style={styles.textDataFirst}> {route.params && route.params.identificacaoDocumento }</Text>
+              <Text  style={styles.textDataSecond}> {responseData.uf }</Text>
+            </View>
+
+            <View style={styles.viewLine1}>
+              <Text style={styles.textTitleFirst}> Registro Geral</Text>
+              <Text style={styles.textTitleSecond}> Data de Expedição</Text>
+            </View>
+
+            <View style={styles.viewLine2}>
+              <Text style={styles.textDataFirst}> {responseData.numero_rg }</Text>
+              <Text style={styles.textDataSecond}> {responseData.data_expedicao }</Text>
+            </View>
+
+            <View style={styles.viewLine1}>
+              <Text style={styles.textTitleFirst}> Nome</Text>
+            </View>
+
+            <View style={styles.viewLine2}>
+              <Text style={styles.textDataFirst}> {responseData.nome_pessoa }</Text>
+            </View>
+
+            <View style={styles.viewLine1}>
+              <Text style={styles.textTitleFirst}> Filiação</Text>
+            </View>
+
+            <View style={styles.viewLine2}>
+              <Text style={styles.textDataFirst}> {responseData.filiacao }</Text>
+            </View>
+
+            <View style={styles.viewLine1}>
+              <Text style={styles.textTitleFirst}> Naturalidade</Text>
+            </View>
+
+            <View style={styles.viewLine2}>
+              <Text style={styles.textDataFirst}> {responseData.naturalidade }</Text>
+            </View>
+
+            <View style={styles.viewLine1}>
+              <Text style={styles.textTitleFirst}> Nascimento</Text>
+            </View>
+
+            <View style={styles.viewLine2}>
+              <Text style={styles.textDataFirst}> {responseData.data_de_nascimento }</Text>
+            </View>
+
+            <View style={styles.viewLine1}>
+              <Text style={styles.textTitleFirst}> Documento Origem</Text>
+            </View>
+
+            <View style={styles.viewLine2}>
+              <Text style={styles.textDataFirst}> {responseData.doc_origem }</Text>
+            </View>
+
+            <View style={styles.viewLine1}>
+              <Text style={styles.textTitleFirst}> CPF</Text>
+            </View>
+
+            <View style={styles.viewLine2}>
+              <Text style={styles.textDataFirst}> {responseData.cpf }</Text>
+            </View>
+    </View>)
   }
+
 }
 
  return (
@@ -136,12 +235,50 @@ function renderFileUri() {
           <Header titlePage="Perfil"/>
         </ContainerHeader>
 
+        <ContainerMain>
+
+            <ContainerImageRight>
+
+                  {renderFileData()}
+                  <TitleText  style={{textAlign:'center'}}>FOTO DE PERFIL</TitleText>
+
+                <ContainerScreenButton>
+                  <SubmitButton onPress={() => chooseImage()}>
+                      <SubmitText>Alterar Imagem</SubmitText>
+                  </SubmitButton>
+                </ContainerScreenButton>
+
+            </ContainerImageRight>
+
+            <ContainerImageLeft>
+              <ContainerDadosView>
+              { getDataPopulate() }
+              </ContainerDadosView>
+
+
+            </ContainerImageLeft>
+
+
+
+            </ContainerMain>
+            {/**</SendImageBackground>*/}
+
+            <ContainerFooter>
+                <Footer titlePage="AIZON"/>
+            </ContainerFooter>
+
+
+
+
+
+
+{/**
         <SafeAreaView>
           <View style={styles.body}>
             <View style={styles.ImageSections}>
               <View>
                 {renderFileData()}
-                <Text  style={{textAlign:'center'}}>Base 64 String</Text>
+                <Text  style={{textAlign:'center'}}>FOTO DE PERFIL</Text>
               </View>
 
             </View>
@@ -150,16 +287,13 @@ function renderFileUri() {
               <TouchableOpacity onPress={() => chooseImage()} style={styles.btnSection}  >
                 <Text style={styles.btnText}>Choose File</Text>
               </TouchableOpacity>
-{/**
-              <TouchableOpacity onPress={() => launchCamera()} style={styles.btnSection}  >
-                <Text style={styles.btnText}>Directly Launch Camera</Text>
-              </TouchableOpacity>
- */}
 
             </View>
 
           </View>
         </SafeAreaView>
+
+ */}
 
       </Background>
   );
@@ -170,14 +304,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#f0f8ff',
   },
 
-  body: {
-    backgroundColor: '#fff',
-    justifyContent: 'center',
-    borderColor: 'black',
-    borderWidth: 1,
-    height: Dimensions.get('screen').height - 20,
-    width: Dimensions.get('screen').width
-  },
   ImageSections: {
     display: 'flex',
     flexDirection: 'row',
@@ -186,8 +312,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   images: {
-    width: 150,
-    height: 150,
+    width: 130,
+    height: 130,
     borderColor: 'black',
     borderWidth: 1,
     marginHorizontal: 3

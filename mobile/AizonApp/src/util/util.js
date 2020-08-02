@@ -1,7 +1,6 @@
 import { AsyncStorage} from 'react-native'
 import { Alert } from 'react-native';
 
-
 export async function getTokenUser() {
   try {
     return await AsyncStorage.getItem('@AizonApp:userToken');
@@ -28,6 +27,26 @@ export async function deleteTokenUser() {
 
 export async function storageUser(data){
   await AsyncStorage.setItem('@AizonApp:Auth_User', JSON.stringify(data));
+}
+
+export async function getUser() {
+  try {
+    return await AsyncStorage.getItem('@AizonApp:Auth_User');
+  } catch (e) {
+    throw e;
+  }
+}
+
+export async function storagePhotoProfileUser(data, idUser){
+  await AsyncStorage.setItem('@AizonApp:Profile_User_' + idUser, JSON.stringify(data));
+}
+
+export async function getPhotoProfileUser(idUser) {
+  try {
+    return await AsyncStorage.getItem('@AizonApp:Profile_User_' + idUser);
+  } catch (e) {
+    throw e;
+  }
 }
 
 export function alertMessage( msg, fnGoToDataVisualization, data, title) {
