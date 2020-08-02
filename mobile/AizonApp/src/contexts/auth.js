@@ -143,6 +143,10 @@ function AuthProvider({ children }){
         saveUser(data);
     }
 
+    async function changePasswd(password) {
+
+    }
+
     async function saveUser(data) {
         const resposta = await SecurityService.registerNewUser('/register/users');
         console.log(resposta);
@@ -187,7 +191,8 @@ function AuthProvider({ children }){
 
     return(
         <AuthContext.Provider value={{ signed: !!user, user, loading, signUp,
-        signIn, signOut, savePhoto, storageIdUpload, loadStorageIdUpload, boarding }}>
+        signIn, signOut, changePasswd, savePhoto, storageIdUpload,
+        loadStorageIdUpload, boarding }}>
             {children}
         </AuthContext.Provider>
     );

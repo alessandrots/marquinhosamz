@@ -1,34 +1,31 @@
 import React, {useState, useContext} from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { Platform, Text } from 'react-native';
+import { Platform } from 'react-native';
 
 import { AuthContext } from '../../contexts/auth';
 
 import { Background, ContainerCadastro, AreaInput2,
-Input, SubmitButton, LabelText,
-SubmitText, InputPassword} from '../SignIn/styles';
+  Input, SubmitButton, LabelText,
+  SubmitText, InputPassword} from '../SignIn/styles';;
 
 import { alertMessage } from '../../util/util'
 
-export default function SignUp() {
+export default function ChangePasswd() {
   const navigation = useNavigation();
 
-  const [nome, setNome] = useState('Fillipe Freire');
-  const [email, setEmail] = useState('Fillipe.Freire@amazoninf.com.br');
-  const [username, setUsername] = useState('Fillipe.Freire');
   const [password, setPassword] = useState('123456');
   const [confirmPassword, setConfirmPassword] = useState('123456');
 
   const { user } = useContext(AuthContext);
-  const { signUp } = useContext(AuthContext);
+  const { changePasswd } = useContext(AuthContext);
 
-  function handleSignUp(){
+  function handleChangePasswd(){
     if (password === confirmPassword) {
-      signUp(email, password, nome, username);
+      changePasswd(password);
     } else {
       alertMessage( 'As senhas precisam ser iguais.', null, null, 'AIZON-CADASTRO')
     }
-    //console.log('SignUp => ', user);
+    //console.log('ChangePasswd => ', user);
   }
 
 
@@ -38,38 +35,6 @@ export default function SignUp() {
         behavior={Platform.OS === 'ios' ? 'padding' : ''}
         enabled
       >
-        <AreaInput2>
-          <LabelText>Username: </LabelText>
-          <Input
-          placeholder="Username"
-          autoCorrect={false}
-          autoCapitalize="none"
-          value={username}
-          onChangeText={ (text) => setUsername(text) }
-          />
-        </AreaInput2>
-
-         <AreaInput2>
-          <LabelText>Nome Completo: </LabelText>
-          <Input
-          placeholder="Nome"
-          autoCorrect={false}
-          autoCapitalize="none"
-          value={nome}
-          onChangeText={ (text) => setNome(text) }
-          />
-        </AreaInput2>
-
-        <AreaInput2>
-          <LabelText>Email: </LabelText>
-          <Input
-          placeholder="Email"
-          autoCorrect={false}
-          autoCapitalize="none"
-          value={email}
-          onChangeText={ (text) => setEmail(text) }
-          />
-        </AreaInput2>
 
         <AreaInput2>
           <LabelText>Senha: </LabelText>
@@ -97,8 +62,8 @@ export default function SignUp() {
           />
         </AreaInput2>
 
-        <SubmitButton onPress={handleSignUp}>
-            <SubmitText>Cadastrar</SubmitText>
+        <SubmitButton onPress={handleChangePasswd}>
+            <SubmitText>Alterar</SubmitText>
         </SubmitButton>
 
       </ContainerCadastro>

@@ -23,6 +23,16 @@ export const Container1 = styled.View.attrs({
  align-items: center;
  justify-content: flex-start;
  padding-top: 20px;
+ margin-left: 20px;
+ `;
+
+export const ContainerCadastro = styled.KeyboardAvoidingView.attrs({
+    //backgroundColor:"#A00"
+})`
+ flex:2;
+ justify-content: flex-start;
+ padding-top: 20px;
+ margin-left: 20px;
  `;
 
  export const AreaImage = styled.View.attrs({
@@ -43,6 +53,11 @@ export const Container1 = styled.View.attrs({
  export const AreaInput = styled.View`
  flex-direction: row;
  `;
+
+export const AreaInput2 = styled.View`
+ flex-direction: column;
+ `;
+
  export const Input = styled.TextInput.attrs({
      placeholderTextColor: 'rgba(240,180,47,1)'
  })`
@@ -90,14 +105,19 @@ export const SubmitButtonUpload = styled.TouchableOpacity`
     margin-left: 20px;
 `;
 
+export const LabelText = styled.Text`
+    font-size: 13px;
+    color: #131313;
+`;
+
 export const SubmitText = styled.Text`
     font-size: 20px;
     color: #131313;
 `;
 
 export const Link = styled.TouchableOpacity`
-    margin-top: 25px;
-    margin-bottom: 9px;
+    margin-top: 10px;
+    margin-bottom: 2px;
 `;
 
 export const LinkText = styled.Text`
