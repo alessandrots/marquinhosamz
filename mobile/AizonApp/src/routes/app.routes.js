@@ -27,6 +27,7 @@ import SendDocument from '../pages/SendDocument';
 import SendDocInfo from '../pages/SendDocInfo';
 import PhotoManager from '../pages/PhotoManager';
 import PdfView from '../pages/PdfView';
+import ChangePasswd from '../pages/ChangePasswd';
 import FotoCmp from '../components/FotoCmp';
 
 import Icon from "react-native-vector-icons/MaterialIcons";
@@ -112,6 +113,13 @@ function AppRoutes(){
             name="Profile"
             component={Profile}
             options={{ title: 'Perfil' }}/>
+
+          <AppDrawer.Screen
+            name="ChangePasswd"
+            component={ChangePasswd}
+            options={{ title: 'Alterar Senha' }}/>
+
+
 {/**
           <AppDrawer.Screen
             name="Home"

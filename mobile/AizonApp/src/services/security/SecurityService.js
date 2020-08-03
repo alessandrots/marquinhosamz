@@ -95,6 +95,58 @@ const SecurityService = {
         return resposta;
     },
 
+    changePasswd: async function (url, id, pwd) {
+        let me = this;
+
+        let body = JSON.stringify(pwd);
+
+        let headersImg= {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+        };
+
+        let resposta = {};
+
+        resposta['isErro'] = false;
+
+        let res = await api.post(url + '/' + id, body, { headers: headersImg })
+                .catch(function (error) {
+                    resposta['isErro'] = true;
+                    resposta['erro'] = error;
+                    me.makeErrorLog(error);
+                });
+
+        resposta['res'] = res;
+
+        return resposta;
+    },
+
+    forgotPasswd: async function (url, mail) {
+        let me = this;
+
+        let body = JSON.stringify(mail);
+
+        let headersImg= {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+        };
+
+        let resposta = {};
+
+        resposta['isErro'] = false;
+
+        let res = await api.post(url, body, { headers: headersImg })
+                .catch(function (error) {
+                    resposta['isErro'] = true;
+                    resposta['erro'] = error;
+                    me.makeErrorLog(error);
+                });
+
+        resposta['res'] = res;
+
+        return resposta;
+    },
+
     makeErrorLog: function(error) {
         //console.log('makeErrorLog 2 = ', error);
         if (error) {

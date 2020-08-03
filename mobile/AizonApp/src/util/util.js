@@ -11,7 +11,7 @@ export async function getTokenUser() {
 
 export async function storeTokenUser(userToken) {
   try {
-    return await AsyncStorage.setItem('@AizonApp:userToken', JSON.stringify(userToken));
+    return await AsyncStorage.setItem('@AizonApp:userToken', userToken);
   } catch (e) {
     throw e;
   }
