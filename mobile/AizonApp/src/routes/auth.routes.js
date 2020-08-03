@@ -8,7 +8,7 @@ import React, {useContext} from 'react';
 import { createStackNavigator} from '@react-navigation/stack';
 import SignIn from '../pages/SignIn';
 import SignUp from '../pages/SignUp';
-import ChangePasswd from '../pages/ChangePasswd'
+import ForgotPasswd from '../pages/ForgotPasswd'
 import Boarding from '../pages/Boarding';
 
 import { AuthContext } from '../contexts/auth';
@@ -55,8 +55,8 @@ function AuthRoutes() {
                 />
 
                 <AuthStack.Screen
-                    name="ChangePasswd"
-                    component={ChangePasswd}
+                    name="ForgotPasswd"
+                    component={ForgotPasswd}
                     options={{
                         headerStyle:{
                             backgroundColor: '#0EABB5',

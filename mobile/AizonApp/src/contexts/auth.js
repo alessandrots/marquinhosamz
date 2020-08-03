@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import SecurityService from '../services/security/SecurityService';
 
 import { storeTokenUser, deleteTokenUser, storageUser, alertMessage } from '../util/util';
+import { DrawerActions } from '@react-navigation/native';
 
 
 
@@ -49,7 +50,7 @@ function AuthProvider({ children }){
        loadStorage();
     }, []);
 
-    /** */
+    /**
     async function signIn(email, password){
         console.log('email = ', email);
         console.log('signIn FAKE!');
@@ -65,10 +66,9 @@ function AuthProvider({ children }){
 
         storageUser(data);
     }
-
+    */
 
     //Funcao para logar o usario
-    /**
     async function signIn(email, password){
         console.log(email, password);
 
@@ -85,6 +85,9 @@ function AuthProvider({ children }){
 
             //storeTokenUser(token);
             if (data && data.token && data.id) {
+                console.log('====================================');
+                console.log(data.token);
+                console.log('====================================');
                 storeTokenUser(data.token).then(() => {
                     getUserForStorage(data.id);
                   }).catch(() => {
@@ -97,23 +100,22 @@ function AuthProvider({ children }){
             alertMessage( 'Houve erro na autenticação', null, null, 'AIZON-LOGIN');
         }
     }
-    */
 
     async function getUserForStorage(idUser) {
         const resposta = await SecurityService.getUserForID('/register/users', idUser);
         console.log('====================================');
-        console.log(resposta);
+        console.log('getUserForStorage resposta = ', resposta);
         console.log('====================================');
 
         if (!resposta.isErro) {
-            data = respostaUser.data;
+            data = resposta.res.data.data;
 
             let user = {
-                id: idUser,
-                name: data.nome,
-                email: data.mail,
+                id: data.id,
+                name: data.name,
+                email: data.email,
                 username: data.username,
-                imageUserBase64: null
+                userProfile : data.user_profile
             };
 
             //guardando o objeto user no state
@@ -143,27 +145,53 @@ function AuthProvider({ children }){
         saveUser(data);
     }
 
-    async function changePasswd(password) {
-
-    }
-
     async function saveUser(data) {
-        const resposta = await SecurityService.registerNewUser('/register/users');
-        console.log(resposta);
+        const resposta = await SecurityService.registerNewUser('/register/users', data);
+        console.log('====================================');
+        console.log('saveUser resposta = ', resposta);
+        console.log('====================================');
 
         if (!resposta.isErro) {
-            data = respostaUser.data;
+            data = resposta.res.data.data;
 
-            let user = {
-                id: data.id,
-                nome: data.nome,
-                email: data.mail,
-                username: data.username
-            };
+            console.log('saveUser data = ', data);
 
+            alertMessage( 'Usuário cadastrado com sucesso', null, null, 'AIZON-LOGIN')
 
         } else {
             alertMessage( 'Houve erro no cadastro do usuário', null, null, 'AIZON-LOGIN')
+        }
+    }
+
+    async function changePasswd(password) {
+        const resposta = await SecurityService.changePasswd('/register/users', user.id, password);
+        console.log('====================================');
+        console.log('changePasswd resposta = ', resposta);
+        console.log('====================================');
+
+        if (!resposta.isErro) {
+            data = resposta.res.data.data;
+
+            console.log('changePasswd data = ', data);
+        } else {
+            alertMessage( 'Houve erro na recuperação do usuário', null, null, 'AIZON-LOGIN')
+        }
+    }
+
+    async function forgotPassword(email) {
+        const resposta = await SecurityService.forgotPassword('/register/auth/forgot_password', email);
+        console.log('====================================');
+        console.log('forgotPassword resposta = ', resposta);
+        console.log('====================================');
+
+        if (!resposta.isErro) {
+            data = resposta.res.data.data;
+
+            console.log('forgotPassword data = ', data);
+
+            alertMessage( 'Solicitação de senha realizada com sucesso', null, null, 'AIZON-SENHA')
+        } else {
+            alertMessage( 'Houve erro na solicitação de senha do usuário', null, null, 'AIZON-SENHA')
         }
     }
 
@@ -191,7 +219,7 @@ function AuthProvider({ children }){
 
     return(
         <AuthContext.Provider value={{ signed: !!user, user, loading, signUp,
-        signIn, signOut, changePasswd, savePhoto, storageIdUpload,
+        signIn, signOut, changePasswd, forgotPassword, savePhoto, storageIdUpload,
         loadStorageIdUpload, boarding }}>
             {children}
         </AuthContext.Provider>

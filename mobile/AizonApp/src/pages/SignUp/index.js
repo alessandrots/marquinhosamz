@@ -13,9 +13,9 @@ import { alertMessage } from '../../util/util'
 export default function SignUp() {
   const navigation = useNavigation();
 
-  const [nome, setNome] = useState('Fillipe Freire');
-  const [email, setEmail] = useState('Fillipe.Freire@amazoninf.com.br');
-  const [username, setUsername] = useState('Fillipe.Freire');
+  const [nome, setNome] = useState('Fillipe22 Freire');
+  const [email, setEmail] = useState('Fillipe22.Freire@amazoninf.com.br');
+  const [username, setUsername] = useState('Fillipe22.Freire');
   const [password, setPassword] = useState('123456');
   const [confirmPassword, setConfirmPassword] = useState('123456');
 
@@ -28,7 +28,6 @@ export default function SignUp() {
     } else {
       alertMessage( 'As senhas precisam ser iguais.', null, null, 'AIZON-CADASTRO')
     }
-    //console.log('SignUp => ', user);
   }
 
 

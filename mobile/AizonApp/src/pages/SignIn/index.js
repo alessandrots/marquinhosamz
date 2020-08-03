@@ -19,9 +19,14 @@ export default function SignIn() {
 
   const { signIn } = useContext(AuthContext);
 
-
   function handleLogin(){
     signIn(email, password);
+  }
+
+  function showTermoUso() {
+    console.log('====================================');
+    console.log('SHOW TERMO DE USO call navigate');
+    console.log('====================================');
   }
 
  return (
@@ -64,12 +69,16 @@ export default function SignIn() {
             <SubmitText>Acessar</SubmitText>
         </SubmitButton>
 
-        <Link onPress={ () => navigation.navigate('SignUp')}>
-            <LinkText>Criar uma conta!</LinkText>
+        <Link onPress={ () => showTermoUso}>
+            <LinkText>Termo de Uso</LinkText>
         </Link>
 
-        <Link onPress={ () => navigation.navigate('ChangePasswd')}>
-            <LinkText>Alterar Senha!</LinkText>
+        <Link onPress={ () => navigation.navigate('SignUp')}>
+            <LinkText>Criar uma conta</LinkText>
+        </Link>
+
+        <Link onPress={ () => navigation.navigate('ForgotPasswd')}>
+            <LinkText>Esqueci a Senha</LinkText>
         </Link>
 
       </Container2>
