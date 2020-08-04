@@ -16,13 +16,22 @@ export default function ForgotPasswd() {
   const [email, setEmail] = useState('Alexandre.Almeida@amazoninf.com.br');
 
   const { user } = useContext(AuthContext);
-  const { forgotPasswd } = useContext(AuthContext);
+  const { forgotPassword } = useContext(AuthContext);
 
   function handleForgotPasswd(){
     if (email) {
-      forgotPasswd(email);
+      new Promise((resolve, reject) => {
+        forgotPassword(email);
+        resolve(true);
+      })
+      .then((ret) => {
+        setEmail('');
+      })
+      .catch((err) => {
+        console.log('\n Erro no esqueci a senha. ', err);
+      })
     } else {
-      alertMessage('É obrigatório informar o email.', null, null, 'AIZON-LEMBRAR SENHA');
+      alertMessage('É obrigatório informar o email.', null, null, 'AIZON-SENHA');
     }
   }
 

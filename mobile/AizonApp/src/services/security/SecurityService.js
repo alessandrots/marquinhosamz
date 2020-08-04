@@ -98,7 +98,7 @@ const SecurityService = {
     changePasswd: async function (url, id, pwd) {
         let me = this;
 
-        let body = JSON.stringify(pwd);
+        let body = JSON.stringify( {'new_password': pwd} );
 
         let headersImg= {
             'Content-Type': 'application/json',
@@ -121,10 +121,10 @@ const SecurityService = {
         return resposta;
     },
 
-    forgotPasswd: async function (url, mail) {
+    forgotPassword: async function (url, mail) {
         let me = this;
 
-        let body = JSON.stringify(mail);
+        //let body = JSON.stringify(mail);
 
         let headersImg= {
             'Content-Type': 'application/json',
@@ -135,7 +135,7 @@ const SecurityService = {
 
         resposta['isErro'] = false;
 
-        let res = await api.post(url, body, { headers: headersImg })
+        let res = await api.post(url + '/' + mail, null, { headers: headersImg })
                 .catch(function (error) {
                     resposta['isErro'] = true;
                     resposta['erro'] = error;

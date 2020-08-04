@@ -4,17 +4,20 @@ import { Platform } from 'react-native';
 
 import { AuthContext } from '../../contexts/auth';
 
-import { Background, ContainerCadastro, AreaInput2,
-  Input, SubmitButton, LabelText,
-  SubmitText, InputPassword} from '../SignIn/styles';;
+import Header from '../../components/Header';
+import Footer from '../../components/Footer';
+
+import { Background, ContainerMain, AreaInput2,
+  Input, SubmitButton, LabelText, ContainerHeader, ContainerFooter,
+  SubmitText, InputPassword} from './styles';;
 
 import { alertMessage } from '../../util/util'
 
 export default function ChangePasswd() {
   const navigation = useNavigation();
 
-  const [password, setPassword] = useState('123456');
-  const [confirmPassword, setConfirmPassword] = useState('123456');
+  const [password, setPassword] = useState('1234567');
+  const [confirmPassword, setConfirmPassword] = useState('1234567');
 
   const { user } = useContext(AuthContext);
   const { changePasswd } = useContext(AuthContext);
@@ -25,16 +28,16 @@ export default function ChangePasswd() {
     } else {
       alertMessage( 'As senhas precisam ser iguais.', null, null, 'AIZON-CADASTRO')
     }
-    //console.log('ChangePasswd => ', user);
   }
 
 
  return (
    <Background>
-      <ContainerCadastro
-        behavior={Platform.OS === 'ios' ? 'padding' : ''}
-        enabled
-      >
+      <ContainerHeader>
+          <Header titlePage="Alterar Senha"/>
+      </ContainerHeader>
+
+      <ContainerMain>
 
         <AreaInput2>
           <LabelText>Senha: </LabelText>
@@ -66,7 +69,12 @@ export default function ChangePasswd() {
             <SubmitText>Alterar</SubmitText>
         </SubmitButton>
 
-      </ContainerCadastro>
+      </ContainerMain>
+
+      <ContainerFooter>
+            <Footer titlePage="AIZON"/>
+      </ContainerFooter>
+
    </Background>
   );
 }
