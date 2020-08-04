@@ -33,93 +33,135 @@ export default function Boarding(props) {
     navigation.navigate('Login');
   }
 
+  function getSwipeOne() {
+    return (
+      <Background>
+              <Container1
+                behavior={Platform.OS === 'ios' ? 'padding' : ''}
+                enabled
+              >
+                <AreaImage>
+                    <Logo source={require('../../assets/logo_aizon.png')}/>
+                </AreaImage>
+              </Container1>
+
+              <Container2>
+                      <AreaText>
+                          Esse é o Aizon App
+                          com ele você pode centralizar
+                          e manter todos os seus documentos
+                          e dados pessoais.
+                      </AreaText>
+            </Container2>
+
+        </Background>
+    )
+  }
+
+  function getSwipeTwo() {
+    return (
+      <Background>
+              <Container1
+                behavior={Platform.OS === 'ios' ? 'padding' : ''}
+                enabled
+              >
+                <AreaImage>
+                    <Logo source={require('../../assets/logo_aizon.png')}/>
+                </AreaImage>
+              </Container1>
+
+              <Container2>
+                      <AreaText>
+                          O seu principal objetivo é de
+                          empoderar a pessoa quanto ao uso
+                          ou não dos seus dados pessoais
+                          e de seus dependentes junto aos
+                          seus fornecedores de produtos e/ou
+                          serviços.
+                      </AreaText>
+            </Container2>
+
+        </Background>
+    );
+  }
+
+  function getSwipeThird() {
+    return (
+          <Background>
+              <Container1
+                behavior={Platform.OS === 'ios' ? 'padding' : ''}
+                enabled
+              >
+                <AreaImage>
+                    <Logo source={require('../../assets/logo_aizon.png')}/>
+                </AreaImage>
+              </Container1>
+
+              <Container2>
+                      <AreaText>
+                          E o melhor de tudo, você
+                          define quem pode ou não utilizar
+                          o uso dos seus dados pessoais
+                          e de seus dependentes conforme
+                          a LGPD - Lei Geral de Proteção
+                          aos Dados (Lei 13.709 de
+                          14/08/2018).
+                      </AreaText>
+            </Container2>
+          </Background>
+    )
+
+  }
+
+  function getSwipeFour() {
+    return (
+      <Background>
+
+              <Container1
+                behavior={Platform.OS === 'ios' ? 'padding' : ''}
+                enabled
+              >
+                <AreaImage>
+                    <Logo source={require('../../assets/logo_aizon.png')}/>
+                </AreaImage>
+              </Container1>
+
+              <Container2>
+                    <AreaText>
+                        AizonApp
+                        é a solução para riscos de fraudes
+                        com uso de seus dados pessoais.
+                    </AreaText>
+
+                    <AreaText>
+                        Para primeiro acesso é necessário criar uma conta no
+                        app.
+                    </AreaText>
+
+
+
+
+
+            <SubmitButton onPress={handleApp}>
+                <SubmitText> Login </SubmitText>
+            </SubmitButton>
+          </Container2>
+
+        </Background>
+    )
+
+  }
+
+
  return (
 
     <Swiper style={styles.wrapper} showsButtons={true} loop={false}>
-        <Background>
-            <Container1
-              behavior={Platform.OS === 'ios' ? 'padding' : ''}
-              enabled
-            >
-              <AreaImage>
-                  <Logo source={require('../../assets/logo_aizon.png')}/>
-              </AreaImage>
-            </Container1>
 
-            <Container2>
-                  <AreaText>
-                      blabla
-                      blabla
-                      blabla
-                      blabla
-                      blabla
-                      blabla
-                      blabla
-                  </AreaText>
-            </Container2>
-      </Background>
+      { getSwipeOne()}
+      { getSwipeTwo()}
+      { getSwipeThird()}
+      { getSwipeFour()}
 
-      <Background>
-
-          <ContainerMain>
-            <ContainerScreenHeader>
-
-              <HeaderTitle>Utilize sua identidade blabla ...  </HeaderTitle>
-            </ContainerScreenHeader>
-
-            <ContainerScreenImage>
-
-              <Image
-                source={require('../../assets/IdentidadeCPF.png')}
-                style={{
-                  width: 300,
-                  height: 200,
-                  resizeMode: 'contain'
-                }}
-                />
-            </ContainerScreenImage>
-
-          </ContainerMain>
-
-
-      </Background>
-
-      <Background>
-
-      <ContainerMain>
-        <ContainerScreenHeader>
-
-          <HeaderTitle>
-              blabla
-              blabla
-              blabla ...
-          </HeaderTitle>
-        </ContainerScreenHeader>
-
-        <Container1>
-                  <AreaText>
-                      blabla
-                      blabla
-                      blabla
-                      blabla
-                      blabla
-                      blabla
-                      blabla
-                  </AreaText>
-
-
-        </Container1>
-
-        <Container2>
-
-          <SubmitButton onPress={handleApp}>
-              <SubmitText> Login </SubmitText>
-          </SubmitButton>
-        </Container2>
-
-      </ContainerMain>
-
-      </Background>
     </Swiper>
   );
 }
