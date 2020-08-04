@@ -68,7 +68,7 @@ function AuthRoutes() {
                             fontWeight: 'bold',
                         },
                         headerBackTitleVisible: false,
-                        headerTitle: 'Alterar Senha'
+                        headerTitle: 'Esqueci a Senha'
                     }}
                 />
             </AuthStack.Navigator>

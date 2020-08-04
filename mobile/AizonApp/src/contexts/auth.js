@@ -164,7 +164,7 @@ function AuthProvider({ children }){
     }
 
     async function changePasswd(password) {
-        const resposta = await SecurityService.changePasswd('/register/users', user.id, password);
+        const resposta = await SecurityService.changePasswd('/register/auth/change_password', user.id, password);
         console.log('====================================');
         console.log('changePasswd resposta = ', resposta);
         console.log('====================================');
@@ -174,7 +174,7 @@ function AuthProvider({ children }){
 
             console.log('changePasswd data = ', data);
         } else {
-            alertMessage( 'Houve erro na recuperação do usuário', null, null, 'AIZON-LOGIN')
+            alertMessage( 'Houve erro na troca de senha do usuário', null, null, 'AIZON-SENHA')
         }
     }
 
@@ -185,11 +185,11 @@ function AuthProvider({ children }){
         console.log('====================================');
 
         if (!resposta.isErro) {
-            data = resposta.res.data.data;
+            data = resposta.res.data.message;
 
             console.log('forgotPassword data = ', data);
 
-            alertMessage( 'Solicitação de senha realizada com sucesso', null, null, 'AIZON-SENHA')
+            alertMessage( 'Email para troca de senha enviado com sucesso', null, null, 'AIZON-SENHA')
         } else {
             alertMessage( 'Houve erro na solicitação de senha do usuário', null, null, 'AIZON-SENHA')
         }
