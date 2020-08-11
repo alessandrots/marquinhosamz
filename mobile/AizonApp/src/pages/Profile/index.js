@@ -30,7 +30,6 @@ export default function Profile() {
   const { user } = useContext(AuthContext);
 
   const [ filePathData, setFilePathData ] = useState('');
-  //const [ filePathUri, setFilePathUri ] = useState('');
   const [ fileData, setFileData ] = useState('');
   const [ fileUri, setFileUri] = useState('');
 
@@ -38,14 +37,12 @@ export default function Profile() {
   let [responseData, setResponseData] = useState(null);
 
   useEffect(() => {
-    //console.log('route PhotoManager = ', route);
 
     getPhotoProfileUser(user.id).then((photoBase64) => {
       console.log('\n getPhotoProfileUser = ', photoBase64);
 
       if (photoBase64) {
         setFileData(photoBase64);
-        //alertMessage('Imagem Carregada com sucesso!', null, null, 'AIZON-PERFIL');
       }
     })
     .catch(() => {
@@ -130,12 +127,14 @@ function chooseImage () {
 
 function renderFileData() {
   if (fileData) {
-    return <Image source={{ uri: 'data:image/jpeg;base64,' + fileData }}
-      style={styles.images}
+    return <Image
+            source={{ uri: 'data:image/jpeg;base64,' + fileData }}
+            style={styles.images}
     />
   } else {
-    return <Image source={require('../../assets/dummy.png')}
-      style={styles.images}
+    return <Image
+            source={require('../../assets/dummy.png')}
+            style={styles.images}
     />
   }
 }
@@ -283,45 +282,9 @@ const styles = StyleSheet.create({
   images: {
     width: 130,
     height: 130,
-    borderColor: 'black',
-    borderWidth: 1,
-    marginHorizontal: 3
+    borderRadius: 65.5,
+    borderColor: '#CC0000',
+    borderWidth: 1.2,
   },
 
 });
-
-/**
-const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: '#f0f8ff',
-  },
-
-  ImageSections: {
-    display: 'flex',
-    flexDirection: 'row',
-    paddingHorizontal: 8,
-    paddingVertical: 8,
-    justifyContent: 'center'
-  },
-
-  btnParentSection: {
-    alignItems: 'center',
-    marginTop:10
-  },
-  btnSection: {
-    width: 225,
-    height: 50,
-    backgroundColor: '#DCDCDC',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 3,
-    marginBottom:10
-  },
-  btnText: {
-    textAlign: 'center',
-    color: 'gray',
-    fontSize: 14,
-    fontWeight:'bold'
-  }
-});
- */

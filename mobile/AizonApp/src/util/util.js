@@ -49,6 +49,23 @@ export async function getPhotoProfileUser(idUser) {
   }
 }
 
+export async function storageUpload(id){
+  await AsyncStorage.setItem('@AizonApp:CURRENT_ID_UPLOAD', JSON.stringify(id));
+}
+
+export async function loadStorageUpload(){
+  return await AsyncStorage.getItem('@AizonApp:CURRENT_ID_UPLOAD');
+}
+
+export async function storageBoardingPage(){
+  //wait AsyncStorage.setItem('@AizonApp:CURRENT_ID_UPLOAD', JSON.stringify(id));
+  await AsyncStorage.setItem('@AizonApp:boardingPage', JSON.stringify(true));
+}
+
+export async function loadBoardingPage(){
+  return await AsyncStorage.getItem('@AizonApp:boardingPage');
+}
+
 export function alertMessage( msg, fnGoToDataVisualization, data, title) {
   let arr =[
     {
