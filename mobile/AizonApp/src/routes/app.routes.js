@@ -7,54 +7,45 @@
   */
 }
 
-import React, {useContext} from 'react';
-import { Alert, Image, View } from "react-native";
+import React, {useContext, useEffect, useState} from 'react';
+import { Alert, Image } from "react-native";
 
 import {
-createDrawerNavigator,
-DrawerContentScrollView,
-DrawerItemList,
-DrawerItem,
+  createDrawerNavigator,
+  DrawerContentScrollView,
+  DrawerItemList,
+  DrawerItem,
 } from '@react-navigation/drawer';
 
 
-import Home from '../pages/Home';
-import ViewData from '../pages/ViewData';
 import Profile from '../pages/Profile';
-import PhotoView from '../pages/PhotoView';
-import ViewAuthenticity from '../pages/ViewAuthenticity';
+import ViewData from '../pages/ViewData';
 import SendDocument from '../pages/SendDocument';
 import SendDocInfo from '../pages/SendDocInfo';
 import PhotoManager from '../pages/PhotoManager';
 import PdfView from '../pages/PdfView';
 import ChangePasswd from '../pages/ChangePasswd';
-import FotoCmp from '../components/FotoCmp';
 
+import { getPhotoProfileUser } from '../util/util';
+
+import FotoCmp from '../components/FotoCmp';
+import PhotoView from '../pages/PhotoView';
+import Home from '../pages/Home';
+import ViewAuthenticity from '../pages/ViewAuthenticity';
 import Icon from "react-native-vector-icons/MaterialIcons";
 
 import { AuthContext } from '../contexts/auth';
 
 const AppDrawer = createDrawerNavigator();
 
+import { Background, ContainerMain,
+  ContainerImageRight, ContainerDadosView,
+  SubmitButton, SubmitText, TitleText, ItemText } from './styles';
 
-//options={{ headerTitle: props => <LogoAtavar {...props} /> }}
-/**
- options={{
-    headerTitle: props => <LogoAtavar {...props} />,
-    headerRight: () => (
-      <Button
-        onPress={() => alert('This is a button!')}
-        title="Info"
-        color="#fff"
-      />
-    ),
-  }}
- */
 function AppRoutes(){
-  const { user, menuItem } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
 
   return(
-
       <AppDrawer.Navigator
           drawerStyle={{
               backgroundColor: '#c8f5f7'
@@ -119,13 +110,13 @@ function AppRoutes(){
             component={ChangePasswd}
             options={{ title: 'Alterar Senha' }}/>
 
-
+{/**
 
           <AppDrawer.Screen
             name="Home"
             component={Home}
             options={{ title: 'Home' }}/>
-{/**
+
           <AppDrawer.Screen
               name="Photo"
               component={FotoCmp}
@@ -149,27 +140,150 @@ function AppRoutes(){
   );
 }
 
-//navigation.navigate('Photo', { side: '0' })
-function LogoAtavar() {
-return (
-  <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-    <Image
-      style={{ width: 50, height: 50 }}
-      source={require('../assets/avatar-orange.png')}
-    />
-    <Text>Home Screen</Text>
-  </View>
 
-);
-}
 
 function CustomDrawerContent(props) {
   const { user, signOut } = useContext(AuthContext);
 
+  const msg = user.name + ", tem certeza que deseja sair ?";
+
+  const [ fileData, setFileData ] = useState('');
+
+  useEffect(() => {
+
+      getPhotoProfileUser(user.id).then((photoBase64) => {
+        //console.log('\n getPhotoProfileUser = ', photoBase64);
+
+        if (photoBase64) {
+          setFileData(photoBase64);
+        }
+      })
+      .catch(() => {
+          console.log('\n Deu pau na recuperação do getPhotoProfileUser \n ');
+      });
+  }, []);
+
+  function getMontagemTela() {
+      if (fileData) {
+        return getUserWithBase64(fileData);
+      } else {
+        return getUserAvatar();
+      }
+  }
+
+  function getUserWithBase64(photo) {
+    const { user } = useContext(AuthContext);
+
+    return (
+        <Background>
+            <TitleText>
+                MENU
+            </TitleText>
+
+            <ContainerMain>
+              <ContainerImageRight>
+                      <Image
+                          style={
+                            { width: 50,
+                              height: 50,
+                              marginLeft: 10,
+                              borderRadius: 32.5,
+                              borderColor: '#CC0000',
+                              borderWidth: 1.2,
+                            }
+                          }
+                          source={{ uri: 'data:image/jpeg;base64,' + photo }}
+                        />
+                      <ContainerDadosView>
+                          <ItemText>
+                              Pontuação: 130.45
+                          </ItemText>
+                          <ItemText>
+                              Usuário desde 27/07/2020
+                          </ItemText>
+                          <ItemText>
+                              Versão 1.0
+                          </ItemText>
+                      </ContainerDadosView>
+              </ContainerImageRight>
+            </ContainerMain>
+
+            <ContainerMain>
+              <ContainerImageRight>
+
+                      <ContainerDadosView>
+                          <ItemText>
+                              {user.username }
+                          </ItemText>
+                          <ItemText>
+                              {user.email }
+                          </ItemText>
+                      </ContainerDadosView>
+              </ContainerImageRight>
+            </ContainerMain>
+
+        </Background>
+    );
+  }
+
+
+  function getUserAvatar() {
+    const { user } = useContext(AuthContext);
+
+    return (
+        <Background>
+
+            <ContainerMain>
+              <ContainerImageRight>
+                      <Image
+                          style={
+                            { width: 50,
+                              height: 50,
+                              marginLeft: 10,
+                              borderRadius: 32.5,
+                              borderColor: '#CC0000',
+                              borderWidth: 1.2,
+                            }
+                          }
+                          source={require('../assets/avatar-orange.png')}
+                        />
+                      <ContainerDadosView>
+                          <ItemText>
+                              Pontuação: 130.45
+                          </ItemText>
+                          <ItemText>
+                              Usuário desde 27/07/2020
+                          </ItemText>
+                          <ItemText>
+                              Versão 1.0
+                          </ItemText>
+                      </ContainerDadosView>
+              </ContainerImageRight>
+            </ContainerMain>
+
+            <ContainerMain>
+              <ContainerImageRight>
+
+                      <ContainerDadosView>
+                          <ItemText>
+                              {user.username }
+                          </ItemText>
+                          <ItemText>
+                              {user.email }
+                          </ItemText>
+                      </ContainerDadosView>
+              </ContainerImageRight>
+            </ContainerMain>
+
+        </Background>
+    );
+  }
+
   const prepareTosignOut = () =>
+
     Alert.alert(
       "AIZON",
-      "[Logout] - Deseja sair ?",
+      msg ,
       [
         {
           text: "Cancel",
@@ -185,6 +299,7 @@ function CustomDrawerContent(props) {
 
   return (
     <DrawerContentScrollView {...props}>
+      { getMontagemTela() }
       <DrawerItemList {...props} />
       <DrawerItem
           {...props}
@@ -195,17 +310,6 @@ function CustomDrawerContent(props) {
           inactiveTintColor= '#000'
           onPress={() => prepareTosignOut() }
       />
-      {/**
-      <DrawerItem
-          {...props}
-          label="Logout 2"
-          activeTintColor= '#000'
-          activeBackgroundColor= '#F0B42F'
-          inactiveBackgroundColor= '#FFF'
-          inactiveTintColor= '#000'
-          onPress={() => prepareTosignOut() }
-      />
-       */}
     </DrawerContentScrollView>
   );
 }

@@ -2,7 +2,9 @@ import React, { useState, createContext, useEffect} from 'react';
 import AsyncStorage from '@react-native-community/async-storage';
 import SecurityService from '../services/security/SecurityService';
 
-import { storeTokenUser, deleteTokenUser, storageUser, alertMessage } from '../util/util';
+import { getUser, storeTokenUser, deleteTokenUser,
+         storageUser, alertMessage, storageUpload,
+         loadStorageUpload, loadBoardingPage } from '../util/util';
 //import { DrawerActions } from '@react-navigation/native';
 
 export const AuthContext = createContext({});
@@ -26,9 +28,9 @@ function AuthProvider({ children }){
 
     useEffect(()=> {
        async function loadStorage(){
-           const storageUser = await AsyncStorage.getItem('Auth_user');
-
-           const boardingPage = await AsyncStorage.getItem('boardingPage');
+           const storageUser = await getUser();
+;
+           const boardingPage = await loadBoardingPage();
 
            if(storageUser){
             setUser(JSON.parse(storageUser));
@@ -109,7 +111,7 @@ function AuthProvider({ children }){
             //guardando o objeto user no state
             setUser(user);
 
-            //guardando user no AsyncStorage
+            //guardando user no storage
             storageUser(user);
         } else {
             alertMessage( 'Houve erro na recuperação do usuário', null, null, 'AIZON-LOGIN')
@@ -207,12 +209,11 @@ function AuthProvider({ children }){
     }
 
     async function storageIdUpload(id){
-        await AsyncStorage.setItem('CURRENT_ID_UPLOAD', JSON.stringify(id));
+        await storageUpload(id);
     }
 
     async function loadStorageIdUpload(){
-        const storageUser = await AsyncStorage.getItem('CURRENT_ID_UPLOAD');
-        return storageUser;
+        return await loadStorageUpload();
     }
 
     async function savePhoto(photo) {

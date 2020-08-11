@@ -12,6 +12,8 @@ import { Background, Container2, Container1, Logo, AreaText,
 import AsyncStorage from '@react-native-community/async-storage';
 import { useNavigation } from '@react-navigation/native';
 
+import { storageBoardingPage } from '../../util/util';
+
 
 export default function Boarding(props) {
 
@@ -19,15 +21,9 @@ export default function Boarding(props) {
 
   const navigation = useNavigation();
 
-  //import AsyncStorage from '@react-native-community/async-storage';
   //tem um boardingPage=1
   async function handleApp() {
-    console.log('====================================');
-    console.log('\n Fazer o tratamento  \n');
-    console.log('====================================');
-
-    //await AsyncStorage.setItem('boardingPage', true);
-    await AsyncStorage.setItem('boardingPage', JSON.stringify(true));
+    await storageBoardingPage();
 
     navigation.navigate('Login');
   }
