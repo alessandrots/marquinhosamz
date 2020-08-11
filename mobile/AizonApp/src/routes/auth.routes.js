@@ -129,10 +129,6 @@ function AuthRoutes() {
     }
 
     function getMontagemTela() {
-        //const boardingPage = await AsyncStorage.getItem('boardingPage');
-        console.log('====================================');
-        console.log('\n boardingPage  = ', boarding);
-        console.log('\n ====================================');
 
         if (boarding){
             return getAuthStack();
