@@ -15,9 +15,7 @@ export default function SignIn() {
   const [email, setEmail] = useState('Alexandre.Almeida@amazoninf.com.br');
   const [password, setPassword] = useState('123456');
 
-  const { user } = useContext(AuthContext);
-
-  const { signIn } = useContext(AuthContext);
+  const { signIn, refreshToken } = useContext(AuthContext);
 
   function handleLogin(){
     signIn(email, password);
@@ -80,6 +78,8 @@ export default function SignIn() {
         <Link onPress={ () => navigation.navigate('ForgotPasswd')}>
             <LinkText>Esqueci a Senha</LinkText>
         </Link>
+
+
 
       </Container2>
    </Background>

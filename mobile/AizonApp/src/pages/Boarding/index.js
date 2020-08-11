@@ -7,8 +7,7 @@ import {  Text, StyleSheet, Image } from 'react-native';
 import Swiper from 'react-native-swiper';
 
 import { Background, Container2, Container1, Logo, AreaText,
-  AreaImage, ContainerMain, ContainerScreenImage,
-  ContainerScreenHeader, HeaderTitle, SubmitButton, SubmitText } from './styles';
+  AreaImage, SubmitButton, SubmitText } from './styles';
 
 import AsyncStorage from '@react-native-community/async-storage';
 import { useNavigation } from '@react-navigation/native';
@@ -121,9 +120,9 @@ export default function Boarding(props) {
                 behavior={Platform.OS === 'ios' ? 'padding' : ''}
                 enabled
               >
-                <AreaImage>
-                    <Logo source={require('../../assets/logo_aizon.png')}/>
-                </AreaImage>
+                  <AreaImage>
+                      <Logo source={require('../../assets/logo_aizon.png')}/>
+                  </AreaImage>
               </Container1>
 
               <Container2>
@@ -138,13 +137,13 @@ export default function Boarding(props) {
                         app.
                     </AreaText>
 
+                    <AreaText>
 
+                    </AreaText>
 
-
-
-            <SubmitButton onPress={handleApp}>
-                <SubmitText> Login </SubmitText>
-            </SubmitButton>
+                    <SubmitButton onPress={handleApp}>
+                        <SubmitText> Login </SubmitText>
+                    </SubmitButton>
           </Container2>
 
         </Background>

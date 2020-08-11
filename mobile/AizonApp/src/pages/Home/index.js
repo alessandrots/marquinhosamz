@@ -13,10 +13,9 @@ import Camera from '../../components/Camera'
 
 
 import FotoCmp from '../../components/FotoCmp';
-//import PhotoMain  from '../../components/Photo';
 
 import { Background, ContainerHeader } from '../Home/styles';
-import { SubmitButton, SubmitText } from '../SignIn/styles';
+import { SubmitButton, SubmitText, Link, LinkText,  } from '../SignIn/styles';
 
 export default function Home(props) {
 
@@ -25,6 +24,8 @@ export default function Home(props) {
   }, [])
 
   const { user } = useContext(AuthContext);
+
+  const { refreshToken } = useContext(AuthContext);
 
   const [imageBase64, setImageBase64] = useState();
   const [showPhoto, setShowPhoto] = useState(false);
@@ -50,10 +51,12 @@ export default function Home(props) {
   useEffect(() => {
     console.log('\n\n route PhotoView = ', props);
 
-
-
   }, []);
 
+  function handleRefreshToken() {
+    console.log('\n\n route handleRefreshToken = ');
+    refreshToken();
+  }
 
   function getModalPhoto () {
     console.log('\n\n getModalPhoto modalVisibleSideUm = ', modalVisibleSideUm);
@@ -102,7 +105,7 @@ export default function Home(props) {
 
         showPhotoSideOne && getModalPhoto(1)
 
-
+<Camera />
         </Background>
       */ }
  return (
@@ -113,7 +116,10 @@ export default function Home(props) {
       <Header titlePage="Foto2 de Documento"/>
     </ContainerHeader>
 
-    <Camera />
+
+        <SubmitButton onPress={handleRefreshToken}>
+            <SubmitText>handleRefreshToken</SubmitText>
+        </SubmitButton>
 
 
     </Background>

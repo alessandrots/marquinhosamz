@@ -3,9 +3,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import SecurityService from '../services/security/SecurityService';
 
 import { storeTokenUser, deleteTokenUser, storageUser, alertMessage } from '../util/util';
-import { DrawerActions } from '@react-navigation/native';
-
-
+//import { DrawerActions } from '@react-navigation/native';
 
 export const AuthContext = createContext({});
 
@@ -25,9 +23,6 @@ function AuthProvider({ children }){
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [boarding, setBoarding] = useState(false);
-
-    //pegar da tela de Imagem
-    //const [imagesToUpload, setImagesToUpload] = useState(null); // TODO
 
     useEffect(()=> {
        async function loadStorage(){
@@ -70,11 +65,7 @@ function AuthProvider({ children }){
 
     //Funcao para logar o usario
     async function signIn(email, password){
-        console.log(email, password);
-
         const resposta = await SecurityService.login('/register/auth/login', email, password);
-
-        console.log('signIn resposta = ', resposta);
 
         const res = resposta.res;
 
@@ -91,7 +82,7 @@ function AuthProvider({ children }){
                 storeTokenUser(data.token).then(() => {
                     getUserForStorage(data.id);
                   }).catch(() => {
-                      console.log('\n Deu pau na gravação do token \n ');
+                      console.log('\n Houve erro na gravação do token \n ');
                 });
             } else {
                 alertMessage( 'Houve erro na geração do token de autenticação.', null, null, 'AIZON-LOGIN')
@@ -103,9 +94,6 @@ function AuthProvider({ children }){
 
     async function getUserForStorage(idUser) {
         const resposta = await SecurityService.getUserForID('/register/users', idUser);
-        console.log('====================================');
-        console.log('getUserForStorage resposta = ', resposta);
-        console.log('====================================');
 
         if (!resposta.isErro) {
             data = resposta.res.data.data;
@@ -130,10 +118,6 @@ function AuthProvider({ children }){
 
     //Cadastrar usuario
     async function signUp(email, password, name, username){
-        console.log('signUp ::: email => ', email);
-        console.log('signUp ::: password => ', password);
-        console.log('signUp ::: nome => ', name);
-        console.log('signUp ::: username => ', username);
 
         let data = {
             name: name,
@@ -147,9 +131,6 @@ function AuthProvider({ children }){
 
     async function saveUser(data) {
         const resposta = await SecurityService.registerNewUser('/register/users', data);
-        console.log('====================================');
-        console.log('saveUser resposta = ', resposta);
-        console.log('====================================');
 
         if (!resposta.isErro) {
             data = resposta.res.data.data;
@@ -165,9 +146,6 @@ function AuthProvider({ children }){
 
     async function changePasswd(password) {
         const resposta = await SecurityService.changePasswd('/register/auth/change_password', user.id, password);
-        console.log('====================================');
-        console.log('changePasswd resposta = ', resposta);
-        console.log('====================================');
 
         if (!resposta.isErro) {
             data = resposta.res.data.data;
@@ -180,18 +158,45 @@ function AuthProvider({ children }){
 
     async function forgotPassword(email) {
         const resposta = await SecurityService.forgotPassword('/register/auth/forgot_password', email);
-        console.log('====================================');
-        console.log('forgotPassword resposta = ', resposta);
-        console.log('====================================');
 
         if (!resposta.isErro) {
             data = resposta.res.data.message;
 
-            console.log('forgotPassword data = ', data);
-
             alertMessage( 'Email para troca de senha enviado com sucesso', null, null, 'AIZON-SENHA')
         } else {
             alertMessage( 'Houve erro na solicitação de senha do usuário', null, null, 'AIZON-SENHA')
+        }
+    }
+
+    async function refreshToken() {
+        const resposta = await SecurityService.changePasswd('/register/auth/refresh_token', user.id);
+
+        console.log('refreshToken resposta = ', resposta);
+
+        if (!resposta.isErro) {
+            data = resposta.res.data;
+
+            console.log('refreshToken data = ', data);
+
+            if (data && data.token) {
+                console.log('====================================');
+                console.log(data.token);
+                console.log('====================================');
+
+                deleteTokenUser(data.token).then(() => {
+                    storeTokenUser(data.token).then(() => {
+                        //
+                    }).catch(() => {
+                          console.log('\n Houve erro na gravação do novo token \n ');
+                    });
+                }).catch(() => {
+                      console.log('\n Houve erro na deleção do token \n ');
+                });
+            } else {
+                alertMessage( 'Houve erro na geração do token de autenticação.', null, null, 'AIZON-LOGIN')
+            }
+        } else {
+            alertMessage( 'Houve erro na troca de senha do usuário', null, null, 'AIZON-SENHA')
         }
     }
 
@@ -202,25 +207,22 @@ function AuthProvider({ children }){
     }
 
     async function storageIdUpload(id){
-        console.log('storageIdUpload ');
         await AsyncStorage.setItem('CURRENT_ID_UPLOAD', JSON.stringify(id));
     }
 
     async function loadStorageIdUpload(){
-        console.log('loadStorageIdUpload ');
         const storageUser = await AsyncStorage.getItem('CURRENT_ID_UPLOAD');
         return storageUser;
     }
 
     async function savePhoto(photo) {
         await console.log('objeto photo a ser salvo = ', photo);
-        //!!user
     }
 
     return(
         <AuthContext.Provider value={{ signed: !!user, user, loading, signUp,
         signIn, signOut, changePasswd, forgotPassword, savePhoto, storageIdUpload,
-        loadStorageIdUpload, boarding }}>
+        refreshToken, loadStorageIdUpload, boarding }}>
             {children}
         </AuthContext.Provider>
     );
