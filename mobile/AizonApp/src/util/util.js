@@ -1,4 +1,4 @@
-import { AsyncStorage} from 'react-native'
+import AsyncStorage from '@react-native-community/async-storage';
 import { Alert } from 'react-native';
 
 export async function getTokenUser() {
@@ -58,7 +58,6 @@ export async function loadStorageUpload(){
 }
 
 export async function storageBoardingPage(){
-  //wait AsyncStorage.setItem('@AizonApp:CURRENT_ID_UPLOAD', JSON.stringify(id));
   await AsyncStorage.setItem('@AizonApp:boardingPage', JSON.stringify(true));
 }
 
@@ -94,7 +93,7 @@ export function alertMessage( msg, fnGoToDataVisualization, data, title) {
 
 
 
-export function makeErrorLogAlessandro(error) {
+export function makeErrorLog2(error) {
   //console.log('makeErrorLog 2 = ', error);
   if (error) {
     let currentDate = moment().format('DD/MM/YYYY, hh:mm:ss a'); // December 13th 2018, 5:25:14 pm

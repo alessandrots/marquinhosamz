@@ -1,6 +1,8 @@
 import api from '../api';
 import moment from "moment";
 
+import { makeErrorLog2 } from '../../util/util';
+
 /**
  * https://stackoverflow.com/questions/35855781/having-services-in-react-application
  * ver o ValidationService
@@ -12,7 +14,7 @@ const SecurityService = {
 
         const response = await api.get(url)
             .catch(function (error) {
-                me.makeErrorLog(error);
+                makeErrorLog2(error);
             });
 
         console.log('getJson response = ', response);
@@ -34,8 +36,7 @@ const SecurityService = {
             .catch(function (error) {
                 resposta['isErro'] = true;
                 resposta['erro'] = error;
-                me.makeErrorLog(error);
-                //makeErrorLogAlessandro(error);
+                makeErrorLog2(error);
             });
 
         resposta['res'] = res;
@@ -60,7 +61,7 @@ const SecurityService = {
                 .catch(function (error) {
                     resposta['isErro'] = true;
                     resposta['erro'] = error;
-                    me.makeErrorLog(error);
+                    makeErrorLog2(error);
                 });
 
         resposta['res'] = res;
@@ -87,7 +88,7 @@ const SecurityService = {
                 .catch(function (error) {
                     resposta['isErro'] = true;
                     resposta['erro'] = error;
-                    me.makeErrorLog(error);
+                    makeErrorLog2(error);
                 });
 
         resposta['res'] = res;
@@ -113,7 +114,7 @@ const SecurityService = {
                 .catch(function (error) {
                     resposta['isErro'] = true;
                     resposta['erro'] = error;
-                    me.makeErrorLog(error);
+                    makeErrorLog2(error);
                 });
 
         resposta['res'] = res;
@@ -139,7 +140,7 @@ const SecurityService = {
                 .catch(function (error) {
                     resposta['isErro'] = true;
                     resposta['erro'] = error;
-                    me.makeErrorLog(error);
+                    makeErrorLog2(error);
                 });
 
         resposta['res'] = res;
@@ -163,14 +164,14 @@ const SecurityService = {
                 .catch(function (error) {
                     resposta['isErro'] = true;
                     resposta['erro'] = error;
-                    me.makeErrorLog(error);
+                    makeErrorLog2(error);
                 });
 
         resposta['res'] = res;
 
         return resposta;
     },
-
+/**
     makeErrorLog: function(error) {
         //console.log('makeErrorLog 2 = ', error);
         if (error) {
@@ -211,6 +212,8 @@ const SecurityService = {
         }
 
     }
+
+     */
 
 };
 

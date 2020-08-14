@@ -1,11 +1,11 @@
-import React, { useState, createContext, useEffect} from 'react';
-import AsyncStorage from '@react-native-community/async-storage';
+import React, { useState, createContext, useEffect} from 'react'
 import SecurityService from '../services/security/SecurityService';
+
+import { ActivityIndicator } from 'react-native';
 
 import { getUser, storeTokenUser, deleteTokenUser,
          storageUser, alertMessage, storageUpload,
          loadStorageUpload, loadBoardingPage } from '../util/util';
-//import { DrawerActions } from '@react-navigation/native';
 
 export const AuthContext = createContext({});
 
@@ -29,19 +29,21 @@ function AuthProvider({ children }){
     useEffect(()=> {
        async function loadStorage(){
            const storageUser = await getUser();
-;
+
            const boardingPage = await loadBoardingPage();
 
-           if(storageUser){
-            setUser(JSON.parse(storageUser));
+           console.log('useEffect loadBoardingPage boardingPage = ', boardingPage);
+
+            if(storageUser){
+                setUser(JSON.parse(storageUser));
+                setLoading(false);
+            }
+
+            if (boardingPage) {
+                setBoarding(true);
+            }
+
             setLoading(false);
-           }
-
-           if (boardingPage) {
-            setBoarding(true);
-           }
-
-           setLoading(false);
        }
 
        loadStorage();
@@ -67,12 +69,15 @@ function AuthProvider({ children }){
 
     //Funcao para logar o usario
     async function signIn(email, password){
+        //setLoading(true);
+
         const resposta = await SecurityService.login('/register/auth/login', email, password);
 
         const res = resposta.res;
 
+        setLoading(false);
+
         if (!resposta.isErro) {
-            setLoading(false);
 
             let data = res.data;
 
