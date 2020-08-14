@@ -4,12 +4,14 @@
      * rotas não logadas
     */
 }
-import React, {useContext} from 'react';
+import React, {useState, useEffect} from 'react';
 import { createStackNavigator} from '@react-navigation/stack';
 import SignIn from '../pages/SignIn';
 import SignUp from '../pages/SignUp';
 import ForgotPasswd from '../pages/ForgotPasswd'
 import Boarding from '../pages/Boarding';
+
+import {  loadBoardingPage } from '../util/util';
 
 import { AuthContext } from '../contexts/auth';
 
@@ -17,7 +19,23 @@ function AuthRoutes() {
     const AuthStack = createStackNavigator();
     const BoardingStack = createStackNavigator();
 
-    const { boarding } = useContext(AuthContext);
+    //const { boarding } = useContext(AuthContext);
+
+    const [boarding, setBoarding] = useState(false);
+
+    useEffect(()=> {
+       async function loadStorage(){
+           const boardingPage = await loadBoardingPage();
+
+           console.log('useEffect AuthRoutes boardingPage = ', boardingPage);
+
+            if (boardingPage) {
+                setBoarding(true);
+            }
+       }
+
+       loadStorage();
+    }, []);
 
     function getAuthStack() {
         return (
@@ -129,6 +147,7 @@ function AuthRoutes() {
     }
 
     function getMontagemTela() {
+        console.log('getMontagemTela = ', boarding);
 
         if (boarding){
             return getAuthStack();

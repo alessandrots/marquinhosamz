@@ -9,7 +9,6 @@ import Swiper from 'react-native-swiper';
 import { Background, Container2, Container1, Logo, AreaText,
   AreaImage, SubmitButton, SubmitText } from './styles';
 
-import AsyncStorage from '@react-native-community/async-storage';
 import { useNavigation } from '@react-navigation/native';
 
 import { storageBoardingPage } from '../../util/util';
@@ -23,7 +22,7 @@ export default function Boarding(props) {
 
   //tem um boardingPage=1
   async function handleApp() {
-    await storageBoardingPage();
+    //await storageBoardingPage();
 
     navigation.navigate('Login');
   }

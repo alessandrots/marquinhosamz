@@ -6,6 +6,8 @@ import { AuthContext } from '../../contexts/auth';
 import { Background, Container2, Container1, Logo, AreaInput, Input, SubmitButton,
 SubmitText, Link, LinkText, AreaImage, InputPassword} from './styles';
 
+import {  storageBoardingPage, loadBoardingPage } from '../../util/util';
+
 {/*
 https://medium.com/reactbrasil/consumindo-api-rest-com-autentica%C3%A7%C3%A3o-jwt-no-react-native-eec62b852ff3
 */}
@@ -17,7 +19,15 @@ export default function SignIn() {
 
   const { signIn, refreshToken } = useContext(AuthContext);
 
-  function handleLogin(){
+  async function handleLogin(){
+    const boardingPage = await loadBoardingPage();
+
+    console.log('handleLogin loadBoardingPage boardingPage = ', boardingPage);
+
+    if (!boardingPage) {
+      console.log('handleLogin storageBoardingPage = ');
+      await storageBoardingPage();
+    }
     signIn(email, password);
   }
 
@@ -29,6 +39,8 @@ export default function SignIn() {
 
  return (
    <Background>
+
+
       <Container1
         behavior={Platform.OS === 'ios' ? 'padding' : ''}
         enabled
