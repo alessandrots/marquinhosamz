@@ -10,6 +10,7 @@ import SignIn from '../pages/SignIn';
 import SignUp from '../pages/SignUp';
 import ForgotPasswd from '../pages/ForgotPasswd'
 import Boarding from '../pages/Boarding';
+import TermoUso from '../pages/TermoUso';
 
 import {  loadBoardingPage } from '../util/util';
 
@@ -89,6 +90,24 @@ function AuthRoutes() {
                         headerTitle: 'Esqueci a Senha'
                     }}
                 />
+
+                <AuthStack.Screen
+                    name="TermoUso"
+                    component={TermoUso}
+                    options={{
+                        headerStyle:{
+                            backgroundColor: '#0EABB5',
+                            borderBottomWidth: 1,
+                            borderBottomColor: '#00b94a'
+                        },
+                        headerTintColor: '#000',
+                        headerTitleStyle: {
+                            fontWeight: 'bold',
+                        },
+                        headerBackTitleVisible: false,
+                        headerTitle: 'Termo de Uso'
+                    }}
+                />
             </AuthStack.Navigator>
         );
     }
@@ -140,6 +159,24 @@ function AuthRoutes() {
                         },
                         headerBackTitleVisible: false,
                         headerTitle: 'Voltar'
+                    }}
+                />
+
+                <BoardingStack.Screen
+                    name="TermoUso"
+                    component={TermoUso}
+                    options={{
+                        headerStyle:{
+                            backgroundColor: '#0EABB5',
+                            borderBottomWidth: 1,
+                            borderBottomColor: '#00b94a'
+                        },
+                        headerTintColor: '#000',
+                        headerTitleStyle: {
+                            fontWeight: 'bold',
+                        },
+                        headerBackTitleVisible: false,
+                        headerTitle: 'Termo de Uso'
                     }}
                 />
             </BoardingStack.Navigator>

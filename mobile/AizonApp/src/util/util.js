@@ -65,6 +65,14 @@ export async function loadBoardingPage(){
   return await AsyncStorage.getItem('@AizonApp:boardingPage');
 }
 
+export async function storageTermoUso(){
+  await AsyncStorage.setItem('@AizonApp:TermoUso', JSON.stringify(true));
+}
+
+export async function loadTermoUso(){
+  return await AsyncStorage.getItem('@AizonApp:TermoUso');
+}
+
 export function alertMessage( msg, fnGoToDataVisualization, data, title) {
   let arr =[
     {
@@ -94,7 +102,7 @@ export function alertMessage( msg, fnGoToDataVisualization, data, title) {
 
 
 export function makeErrorLog2(error) {
-  //console.log('makeErrorLog 2 = ', error);
+  console.log('makeErrorLog 2 = ');
   if (error) {
     let currentDate = moment().format('DD/MM/YYYY, hh:mm:ss a'); // December 13th 2018, 5:25:14 pm
     //let error = res.erro;
