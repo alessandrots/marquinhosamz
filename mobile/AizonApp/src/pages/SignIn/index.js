@@ -79,7 +79,7 @@ export default function SignIn() {
             <SubmitText>Acessar</SubmitText>
         </SubmitButton>
 
-        <Link onPress={ () => showTermoUso}>
+        <Link onPress={ () => navigation.navigate('TermoUso')}>
             <LinkText>Termo de Uso</LinkText>
         </Link>
 

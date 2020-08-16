@@ -89,7 +89,7 @@ api.interceptors.request.use(
   config => {
 
     return getTokenUser().then((tokenBearer) => {
-      console.log('\n vai chamar o FRONT ret= ', tokenBearer);
+      //console.log('\n vai chamar o FRONT ret= ', tokenBearer);
       if (tokenBearer) {
         config.headers.Authorization = `Bearer ${tokenBearer}`
       }

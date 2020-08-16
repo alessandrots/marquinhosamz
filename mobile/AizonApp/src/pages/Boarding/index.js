@@ -22,7 +22,7 @@ export default function Boarding(props) {
 
   //tem um boardingPage=1
   async function handleApp() {
-    //await storageBoardingPage();
+    await storageBoardingPage();
 
     navigation.navigate('Login');
   }

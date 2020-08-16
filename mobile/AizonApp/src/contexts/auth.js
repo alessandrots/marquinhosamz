@@ -83,11 +83,9 @@ function AuthProvider({ children }){
 
             //storeTokenUser(token);
             if (data && data.token && data.id) {
-                console.log('====================================');
-                console.log(data.token);
-                console.log('====================================');
                 storeTokenUser(data.token).then(() => {
                     getUserForStorage(data.id);
+                    console.log(data.token);
                   }).catch(() => {
                       console.log('\n Houve erro na gravação do token \n ');
                 });
