@@ -28,6 +28,8 @@ import ChangePasswd from '../pages/ChangePasswd';
 
 import { getPhotoProfileUser } from '../util/util';
 
+import ProfileMenu from '../components/ProfileMenu';
+
 import FotoCmp from '../components/FotoCmp';
 import PhotoView from '../pages/PhotoView';
 import Home from '../pages/Home';
@@ -230,6 +232,7 @@ function CustomDrawerContent(props) {
   function getUserAvatar() {
     const { user } = useContext(AuthContext);
 
+    //{ getMontagemTela() }
     return (
         <Background>
 
@@ -297,9 +300,10 @@ function CustomDrawerContent(props) {
       { cancelable: false }
   );
 
+
   return (
     <DrawerContentScrollView {...props}>
-      { getMontagemTela() }
+      <ProfileMenu />
       <DrawerItemList {...props} />
       <DrawerItem
           {...props}

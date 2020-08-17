@@ -45,7 +45,7 @@ export default function TermoUso(props) {
       return (
         <ContainerScreenImage>
           <AreaInfoText>
-              Termo de uso já foi aceito!
+              Termo de uso foi aceito!
           </AreaInfoText>
        </ContainerScreenImage>
       )
