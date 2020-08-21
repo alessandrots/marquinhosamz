@@ -7,3 +7,6 @@ include ':app'
 include ':react-native-camera'
 project(':react-native-camera').projectDir = new File(rootProject.projectDir,     '../node_modules/react-native-camera/android')
 include ':opencv4'
+
+include ':react-native-scanbot-sdk'
+project(':react-native-scanbot-sdk').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-scanbot-sdk/android/app')

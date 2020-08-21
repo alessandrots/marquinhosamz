@@ -168,6 +168,13 @@ android {
         }
     }
 
+    dexOptions {
+        javaMaxHeapSize "2g" // 2g should be also OK
+    }
+
+    packagingOptions {
+        pickFirst '**/libc++_shared.so'
+    }
 
     packagingOptions {
        pickFirst 'lib/x86/libc++_shared.so'

@@ -11,7 +11,7 @@ import { Background, Container2, Container1, Logo, AreaText,
 
 import { useNavigation } from '@react-navigation/native';
 
-import { storageBoardingPage } from '../../util/util';
+import { checkLicense, storageBoardingPage } from '../../util/util';
 
 
 export default function Boarding(props) {
@@ -28,6 +28,8 @@ export default function Boarding(props) {
   }
 
   function getSwipeOne() {
+    checkLicense();
+
     return (
       <Background>
               <Container1

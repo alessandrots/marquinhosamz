@@ -1,8 +1,10 @@
 import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native'
-import React from 'react';
+import React, {useEffect} from 'react';
 import { View, StatusBar } from 'react-native';
 import Routes from './src/routes/index';
+
+import { initScanbotSdk } from './src/util/util';
 
 import AuthProvider from './src/contexts/auth';
 
@@ -26,10 +28,23 @@ https://snack.expo.io/@atsantos/16c137?platform=android&name=Hello%20React%20Nav
 
 
 */}
+
+
+
+
 console.disableYellowBox=true;
 
 export default function AizonApp() {
- return (
+  useEffect(() => {
+    //console.log('route ScanbotManager = ', route);
+
+    initScanbotSdk();
+
+
+  }, []);
+
+
+  return (
    <NavigationContainer>
      <AuthProvider>
         <StatusBar backgroundColor="#0EABB5" barStyle="light-content"/>
