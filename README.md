@@ -106,3 +106,13 @@ https://github.com/leecade/react-native-swiper
 
 # Integracao Autenticacao
 
+
+--*******************************************************
+
+https://scanbotsdk.github.io/documentation/react-native/
+
+https://scanbot.io/en/sdk/demo/trial
+
+https://scanbot.io/en/sdk-key?code=583327ca9e753b7528f93ebae4d9ff80
+
+
