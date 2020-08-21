@@ -69,14 +69,9 @@ export default function TermoUso(props) {
             behavior={Platform.OS === 'ios' ? 'padding' : ''}
             enabled
           >
-             <AreaTitleText>
-                Importante
-              </AreaTitleText>
+              {confirmarTermoUso()}
 
-              <AreaText>
-                    Para criar uma conta no AizonApp você precisa
-                    concordar com nosso termo de uso.
-              </AreaText>
+
           </Container1>
 
           <Container2>
@@ -108,7 +103,7 @@ export default function TermoUso(props) {
                 </AreaText>
 
 
-                {confirmarTermoUso()}
+
         </Container2>
 
       </Background>
