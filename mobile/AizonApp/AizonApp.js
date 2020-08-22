@@ -29,9 +29,6 @@ https://snack.expo.io/@atsantos/16c137?platform=android&name=Hello%20React%20Nav
 
 */}
 
-
-
-
 console.disableYellowBox=true;
 
 export default function AizonApp() {
