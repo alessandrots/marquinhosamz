@@ -103,6 +103,10 @@ export async function loadTermoUso(){
   return await AsyncStorage.getItem('@AizonApp:TermoUso');
 }
 
+export function showAlert( msg, title) {
+  alertMessage( msg, null, null, title)
+}
+
 export function alertMessage( msg, fnGoToDataVisualization, data, title) {
   let arr =[
     {

@@ -25,6 +25,7 @@ import SendDocInfo from '../pages/SendDocInfo';
 import PhotoManager from '../pages/PhotoManager';
 import PdfView from '../pages/PdfView';
 import ChangePasswd from '../pages/ChangePasswd';
+import ScanbotManager from '../pages/ScanbotManager';
 
 import { getPhotoProfileUser } from '../util/util';
 
@@ -90,6 +91,13 @@ function AppRoutes(){
               component={PhotoManager}
               options={{ title: 'Foto Documental' }}
               />
+
+          <AppDrawer.Screen
+              name="ScanbotManager"
+              component={ScanbotManager}
+              options={{ title: 'Foto Documental 2' }}
+              />
+
 
           <AppDrawer.Screen
             name="ViewData"

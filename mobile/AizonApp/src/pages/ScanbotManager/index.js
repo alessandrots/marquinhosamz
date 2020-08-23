@@ -27,6 +27,9 @@ import { Background, ContainerMain,
 import { ContainerHeader, ContainerFooter } from '../Home/styles';
 
 import { alertMessage } from '../../util/util';
+//import { add, addList} from '../../components/ScannerBot';
+
+import ScanbotSDK from 'react-native-scanbot-sdk';
 
 export default function ScanbotManager({ navigator, route }) {
 
@@ -228,87 +231,6 @@ export default function ScanbotManager({ navigator, route }) {
     setModalVisibleSideZero(false);
   }
 
-  /**
-  function getModalPhotoOLD () {
-    return  (
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalVisibleSideZero || modalVisibleSideUm}
-          onRequestClose={() => {
-            Alert.alert("Modal has been closed.");
-          }}
-        >
-          <View style={styles.modalView}>
-            <FotoCmp side={sidePhoto} onClose= {() => closeModalPhoto() }/>
-          </View>
-        </Modal>
-    );
-  }
-
-  async function getLoadFrontPhoto64(arr) {
-
-    return await new Promise((resolve, reject) => {
-
-      let thumb = {};
-      thumb['thumbnail'] = PhotoBase64Service.getRGAlexandreFrontBase64();
-      thumb['uri'] = PhotoBase64Service.getRGAlexandreFrontBase64();
-      arr.push(thumb);
-
-
-      resolve(arr);
-    });
-  }
-
-  async function getLoadVersoPhoto64(arr) {
-
-    return await new Promise((resolve, reject) => {
-
-      let thumb = {};
-      thumb['thumbnail'] = PhotoBase64Service.getRGAlexandreVersoBase64();
-      thumb['uri'] = PhotoBase64Service.getRGAlexandreVersoBase64();
-      arr.push(thumb);
-
-      resolve(arr);
-    });
-  }
-
-
-  async function showImagesBase64 () {
-
-    new Promise((resolve, reject) => {
-      setImageFrontal(PhotoBase64Service.getRGAlexandreFrontBase64());
-      setImageVerso(PhotoBase64Service.getRGAlexandreVersoBase64());
-
-      resolve(true);
-    })
-    .then((ret) => {
-      //console.log('\n vai chamar o FRONT ret= ', imageFrontal);
-      if (ret) {
-        if (imageFrontal && imageVerso) {
-          let arr = [];
-          console.log('\n\n showImages 2= ');
-
-          let imgObjFrontal = {};
-          imgObjFrontal['thumbnail'] = 'data:image/jpeg;base64,' + PhotoBase64Service.getRGAlexandreFrontBase64();
-          imgObjFrontal['uri'] = 'data:image/jpeg;base64,' + PhotoBase64Service.getRGAlexandreFrontBase64();
-
-          arr.push(imgObjFrontal);
-
-          let imgObjVerso = {};
-          imgObjVerso['thumbnail'] = 'data:image/jpeg;base64,' + PhotoBase64Service.getRGAlexandreVersoBase64();
-          imgObjVerso['uri'] = 'data:image/jpeg;base64,' + PhotoBase64Service.getRGAlexandreVersoBase64()
-
-          arr.push(imgObjVerso);
-
-          setImages(arr);
-          setIsVisibleList(true);
-        }
-      }
-    });
-  }
-  */
-
   function getMontagemTela() {
     if (!modalVisibleSideUm && !modalVisibleSideZero){
       return getMainScreen();
@@ -316,6 +238,33 @@ export default function ScanbotManager({ navigator, route }) {
       return getModalPhoto();
     }
   }
+
+  async function startDocumentScanner() {
+    const config = {
+      // Customize colors, text resources, etc..
+      polygonColor: '#00ffff',
+      bottomBarBackgroundColor: '#c8193c',
+      topBarBackgroundColor: '#c8193c',
+      cameraBackgroundColor: '#c8193c',
+      orientationLockMode: 'PORTRAIT',
+      pageCounterButtonTitle: '%d Page(s)',
+      multiPageEnabled: true,
+      ignoreBadAspectRatio: true,
+      autoSnappingSensitivity: 0.85,
+      // documentImageSizeLimit: { width: 2000, height: 3000 },
+      // maxNumberOfPages: 3,
+      // See further config properties ...
+    };
+
+    const result = await ScanbotSDK.UI.startDocumentScanner(config);
+
+    if (result.status === 'OK') {
+      //addList(result.pages);
+      //this.pushPage(Navigation.IMAGE_RESULTS);
+      //navigation.navigate('ScanbotImage', {});
+    }
+  }
+
 
   function getMainScreen() {
     return (
@@ -332,7 +281,7 @@ export default function ScanbotManager({ navigator, route }) {
 
                 <ContainerDadosView>
                   <TitleText>Primeira Fotografia: </TitleText>
-                  <SubmitButton onPress={ () => showNewCompPhotoSideZero()}>
+                  <SubmitButton onPress={ () => startDocumentScanner()}>
                       <SubmitText>Frontal</SubmitText>
                   </SubmitButton>
                 </ContainerDadosView>
