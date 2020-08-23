@@ -27,7 +27,7 @@ import { Background, ContainerMain,
 import { ContainerHeader, ContainerFooter } from '../Home/styles';
 
 import { alertMessage } from '../../util/util';
-//import { add, addList} from '../../components/ScannerBot';
+import { addList} from '../../components/ScannerBot';
 
 import ScanbotSDK from 'react-native-scanbot-sdk';
 
@@ -50,6 +50,8 @@ export default function ScanbotManager({ navigator, route }) {
   const [modalVisibleSideUm, setModalVisibleSideUm] = useState(false);
   const [sidePhoto, setSidePhoto] = useState(0);
   const [idUpload, setIdUpload] = useState(0);
+  const [list, setList] = useState([]);
+
 
   const { storageIdUpload } = useContext(AuthContext);
 
@@ -257,11 +259,12 @@ export default function ScanbotManager({ navigator, route }) {
     };
 
     const result = await ScanbotSDK.UI.startDocumentScanner(config);
+    console.log(' result startDocumentScanner = ', result);
 
     if (result.status === 'OK') {
-      //addList(result.pages);
+      addList(result.pages, setList);
       //this.pushPage(Navigation.IMAGE_RESULTS);
-      //navigation.navigate('ScanbotImage', {});
+      navigation.navigate('ScanbotImage', { post: list});
     }
   }
 

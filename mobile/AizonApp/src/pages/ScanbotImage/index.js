@@ -5,8 +5,10 @@ import {
   Image,
   Modal,
   SafeAreaView,
+  StyleSheet,
   Text,
   TouchableOpacity,
+  Colors,
   View,
 } from 'react-native';
 
@@ -15,8 +17,6 @@ import { showAlert, checkLicense, } from '../../util/util';
 import { addList, isEmpty, cleanList} from '../../components/ScannerBot';
 
 import ScanbotSDK from 'react-native-scanbot-sdk';
-
-
 
 /**
  *
@@ -34,18 +34,38 @@ import ScanbotSDK from 'react-native-scanbot-sdk';
     *
     */
 
+
+
    export default function ScanbotImage({ navigator, route }) {
 
-       //https://stackoverflow.com/questions/46240647/react-how-to-force-a-function-component-to-render
-       function useForceUpdate(){
-           //const [value, setValue] = useState(0); // integer state
-           //return () => setValue(value => ++value); // update the state to force render
-       }
+    useEffect(() => {
+      console.log('route ScanbotImage = ', route);
+
+      if (route.params?.post) {
+        // Post updated, do something with `route.params.post`
+        // For example, send the post to the server
+
+        if (route.params.post) {
+          console.log('route ScanbotImage list = ', route.params.post);
+          setList(route.params.post);
+        }
+      }
+
+    }, [route.params?.post]);
+
+
+
+    //https://stackoverflow.com/questions/46240647/react-how-to-force-a-function-component-to-render
+    function useForceUpdate(){
+      //const [value, setValue] = useState(0); // integer state
+      //return () => setValue(value => ++value); // update the state to force render
+    }
+
     const [progressVisible, setProgressVisible] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
+    const [list, setList] = useState([]);
 
     const navigation = useNavigation();
-
 
     function refresh() {
         useForceUpdate();
@@ -88,14 +108,14 @@ import ScanbotSDK from 'react-native-scanbot-sdk';
         const result = await ScanbotSDK.UI.startDocumentScanner(config);
 
         if (result.status === 'OK') {
-            addList(result.pages);
+            addList(result.pages, setList);
 
             refresh();
         }
     }
 
     function saveButtonPress() {
-        if (isEmpty()) {
+        if (isEmpty(list)) {
             showAlert(
             'You have no images to save. Please scan a few documents first.',
             'IMAGE'
@@ -115,7 +135,7 @@ import ScanbotSDK from 'react-native-scanbot-sdk';
             return;
         }
 
-        cleanList();
+        cleanList(list);
 
         refresh();
     }
@@ -306,7 +326,7 @@ import ScanbotSDK from 'react-native-scanbot-sdk';
     }
 
     return (
-        getMontagemTela()
+      getMontagemTela()
     )
 
 }
@@ -316,7 +336,7 @@ import ScanbotSDK from 'react-native-scanbot-sdk';
     bottomBar: {
       width: '100%',
       height: 50,
-      backgroundColor: Colors.SCANBOT_RED,
+      backgroundColor: '#c8193c',
       position: 'absolute',
       bottom: 0,
       flexDirection: 'row',
@@ -467,7 +487,7 @@ import ScanbotSDK from 'react-native-scanbot-sdk';
     },
     actionButton: {
       color: 'white',
-      backgroundColor: Colors.SCANBOT_RED,
+      backgroundColor: '#c8193c',
       fontWeight: 'bold',
     },
     closeButton: {
@@ -475,4 +495,3 @@ import ScanbotSDK from 'react-native-scanbot-sdk';
       borderWidth: 1,
     },
   });
-}

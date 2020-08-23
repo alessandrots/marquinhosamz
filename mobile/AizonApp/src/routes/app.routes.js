@@ -26,6 +26,7 @@ import PhotoManager from '../pages/PhotoManager';
 import PdfView from '../pages/PdfView';
 import ChangePasswd from '../pages/ChangePasswd';
 import ScanbotManager from '../pages/ScanbotManager';
+import ScanbotImage from '../pages/ScanbotImage';
 
 import { getPhotoProfileUser } from '../util/util';
 
@@ -96,6 +97,12 @@ function AppRoutes(){
               name="ScanbotManager"
               component={ScanbotManager}
               options={{ title: 'Foto Documental 2' }}
+              />
+
+          <AppDrawer.Screen
+              name="ScanbotImage"
+              component={ScanbotImage}
+              options={{ title: 'ScanbotImage' }}
               />
 
 
