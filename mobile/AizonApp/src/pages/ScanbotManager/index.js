@@ -27,7 +27,7 @@ import { Background, ContainerMain,
 import { ContainerHeader, ContainerFooter } from '../Home/styles';
 
 import { alertMessage } from '../../util/util';
-import { addList} from '../../components/ScannerBot';
+//import { addList} from '../../components/ScannerBot';
 
 import ScanbotSDK from 'react-native-scanbot-sdk';
 
@@ -262,10 +262,23 @@ export default function ScanbotManager({ navigator, route }) {
     console.log(' result startDocumentScanner = ', result);
 
     if (result.status === 'OK') {
-      addList(result.pages, setList);
-      //this.pushPage(Navigation.IMAGE_RESULTS);
-      navigation.navigate('ScanbotImage', { post: list});
+      addList(result.pages);
+      navigation.navigate('ScanbotImage', { pages: result.pages});
     }
+  }
+
+  function add(page) {
+    setList(page);
+  }
+
+  function cleanList() {
+    setList([]);
+  }
+
+  function addList(pages) {
+    pages.forEach((page) => {
+        add(page);
+    });
   }
 
 

@@ -9,12 +9,13 @@ import {
   Text,
   TouchableOpacity,
   Colors,
+  Dimensions,
   View,
 } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
 import { showAlert, checkLicense, } from '../../util/util';
-import { addList, isEmpty, cleanList} from '../../components/ScannerBot';
+//import { addList, isEmpty, cleanList} from '../../components/ScannerBot';
 
 import ScanbotSDK from 'react-native-scanbot-sdk';
 
@@ -33,27 +34,24 @@ import ScanbotSDK from 'react-native-scanbot-sdk';
     *
     *
     */
-
-
-
    export default function ScanbotImage({ navigator, route }) {
 
     useEffect(() => {
       console.log('route ScanbotImage = ', route);
 
-      if (route.params?.post) {
-        // Post updated, do something with `route.params.post`
-        // For example, send the post to the server
+      if (route.params?.pages) {
+        // pages updated, do something with `route.params.pages`
+        // For example, send the pages to the server
 
-        if (route.params.post) {
-          console.log('route ScanbotImage list = ', route.params.post);
-          setList(route.params.post);
+        if (route.params.pages) {
+          console.log('route ScanbotImage pages = ', route.params.pages);
+          setList(route.params.pages);
         }
       }
 
-    }, [route.params?.post]);
+    }, [route.params?.pages]);
 
-
+    //const { heightx, widthx } = Dimensions.get('window');
 
     //https://stackoverflow.com/questions/46240647/react-how-to-force-a-function-component-to-render
     function useForceUpdate(){
@@ -89,6 +87,12 @@ import ScanbotSDK from 'react-native-scanbot-sdk';
         refresh();
     }
 
+    function getImageUris() {
+      return list.map(
+        (p) => p.documentImageFileUri || p.originalImageFileUri,
+      );
+    }
+
     //create your forceUpdate hook
     async function addButtonPress() {
         if (!(await checkLicense())) {
@@ -108,14 +112,14 @@ import ScanbotSDK from 'react-native-scanbot-sdk';
         const result = await ScanbotSDK.UI.startDocumentScanner(config);
 
         if (result.status === 'OK') {
-            addList(result.pages, setList);
+            addList(result.pages);
 
             refresh();
         }
     }
 
     function saveButtonPress() {
-        if (isEmpty(list)) {
+        if (isEmpty()) {
             showAlert(
             'You have no images to save. Please scan a few documents first.',
             'IMAGE'
@@ -135,24 +139,69 @@ import ScanbotSDK from 'react-native-scanbot-sdk';
             return;
         }
 
-        cleanList(list);
+        cleanList();
 
         refresh();
     }
 
+    function add(page) {
+        //let listTmp = list;
+        //listTmp.push(page);
+        //setList(listTmp);
+
+        setList(page);
+    }
+
+    function cleanList() {
+        //let listTmp = list;
+        //listTmp.push(page);
+        //setList(listTmp);
+
+        setList([]);
+    }
+
+    function addList(pages) {
+        pages.forEach((page) => {
+            add(page);
+        });
+    }
+
+    function isEmpty() {
+        return (!list && list.length === 0);
+    }
+
+    function update(page) {
+        let index = -1;
+        for (let i = 0; i < list.length; i++) {
+            let pageTmp = list[i];
+
+            if (pageTmp.pageId === page.pageId) {
+                index = i;
+            }
+        }
+
+        if (index !== -1) {
+          //list[index] = page;
+          setList(page);
+        }
+    }
+
+
+
     function onGalleryItemClick(page) {
-        //Pages.selectedPage = page;
+      //selectedPage = page;
 
-        // @ts-ignore TODO implementar tela de DETAIL
-        //props.navigation.push(Navigation.IMAGE_DETAILS);
+      // @ts-ignore TODO implementar tela de DETAIL
+      //props.navigation.push(Navigation.IMAGE_DETAILS);
 
-        //navigation.navigate('ViewData', { side: '0', 'identificacaoDocumento': data.id});
+      //navigation.navigate('ViewData', { side: '0', 'identificacaoDocumento': data.id});
     }
 
     function onModalClose() {
-        //modalVisible = false;
-        setModalVisible(false);
-        refresh();
+      //modalVisible = false;
+      setModalVisible(false);
+
+      refresh();
     }
 
     async function onSaveAsPDF() {
@@ -166,7 +215,7 @@ import ScanbotSDK from 'react-native-scanbot-sdk';
             showProgress();
 
             const result = await ScanbotSDK.createPDF(
-                Pages.getImageUris(),
+                getImageUris(),
                 'FIXED_A4',
             );
 
@@ -187,7 +236,7 @@ import ScanbotSDK from 'react-native-scanbot-sdk';
         try {
             showProgress();
 
-            const result = await ScanbotSDK.performOCR(Pages.getImageUris(), ['en'], {
+            const result = await ScanbotSDK.performOCR(getImageUris(), ['en'], {
                 outputFormat: 'FULL_OCR_RESULT',
             });
 
@@ -208,7 +257,7 @@ import ScanbotSDK from 'react-native-scanbot-sdk';
         try {
             showProgress();
 
-            const result = await ScanbotSDK.writeTIFF(Pages.getImageUris(), {
+            const result = await ScanbotSDK.writeTIFF(getImageUris(), {
                 oneBitEncoded: binarized, // "true" means create 1-bit binarized black and white TIFF
                 dpi: 300, // optional DPI. default value is 200
                 compression: binarized ? 'CCITT_T6' : 'ADOBE_DEFLATE', // optional compression. see documentation!
@@ -225,43 +274,43 @@ import ScanbotSDK from 'react-native-scanbot-sdk';
     function getMontagemTela() {
         return (
             <>
-              <SafeAreaView style={styles.imageResults.container}>
+              <SafeAreaView style={imageResults.container}>
                 <ActivityIndicator
                   size="large"
                   color='#c8193c'
-                  style={styles.common.progress}
+                  style={common.progress}
                   animating={progressVisible}
                 />
-                <View style={styles.imageResults.gallery}>
-                  {Pages.list.map((page) => (
+                <View style={imageResults.gallery}>
+                  {list.map((page) => (
                     <TouchableOpacity
                       onPress={() => onGalleryItemClick(page)}
                       key={page.pageId}>
                       <Image
                         style={[
-                          styles.imageResults.galleryCell,
-                          styles.common.containImage,
+                          imageResults.galleryCell,
+                          common.containImage,
                         ]}
                         source={{uri: page.documentImageFileUri}}
                       />
                     </TouchableOpacity>
                   ))}
                 </View>
-                <View style={styles.common.bottomBar}>
+                <View style={common.bottomBar}>
                   <Text
-                    style={styles.common.bottomBarButton}
+                    style={common.bottomBarButton}
                     onPress={() => addButtonPress()}>
                     ADD
                   </Text>
                   <Text
-                    style={styles.common.bottomBarButton}
+                    style={common.bottomBarButton}
                     onPress={() => saveButtonPress()}>
                     SAVE
                   </Text>
                   <Text
                     style={[
-                      styles.common.bottomBarButton,
-                      styles.common.alignRight,
+                      common.bottomBarButton,
+                      common.alignRight,
                     ]}
                     onPress={() => deleteAllButtonPress()}>
                     DELETE ALL
@@ -273,47 +322,47 @@ import ScanbotSDK from 'react-native-scanbot-sdk';
                 animationType="slide"
                 transparent={true}
                 visible={modalVisible}>
-                <View style={styles.modal.centeredView}>
-                  <View style={styles.modal.modalView}>
-                    <Text style={styles.modal.text}>
+                <View style={modal.centeredView}>
+                  <View style={modal.modalView}>
+                    <Text style={modal.text}>
                       How would you like to save the pages?
                     </Text>
                     <Text
                       style={[
-                        styles.modal.button,
-                        styles.modal.actionButton,
+                        modal.button,
+                        modal.actionButton,
                       ]}
                       onPress={() => onSaveAsPDF()}>
                       PDF
                     </Text>
                     <Text
                       style={[
-                        styles.modal.button,
-                        styles.modal.actionButton,
+                        modal.button,
+                        modal.actionButton,
                       ]}
                       onPress={() => onSaveAsPDFWithOCR()}>
                       PDF with OCR
                     </Text>
                     <Text
                       style={[
-                        styles.modal.button,
-                        styles.modal.actionButton,
+                        modal.button,
+                        modal.actionButton,
                       ]}
                       onPress={() => onSaveAsTIFF(true)}>
                       TIFF (1-bit B&W)
                     </Text>
                     <Text
                       style={[
-                        styles.modal.button,
-                        styles.modal.actionButton,
+                        modal.button,
+                        modal.actionButton,
                       ]}
                       onPress={() => onSaveAsTIFF(false)}>
                       TIFF (color)
                     </Text>
                     <Text
                       style={[
-                        styles.modal.button,
-                        styles.modal.closeButton,
+                        modal.button,
+                        modal.closeButton,
                       ]}
                       onPress={() => onModalClose()}>
                       Cancel
@@ -331,6 +380,25 @@ import ScanbotSDK from 'react-native-scanbot-sdk';
 
 }
 
+  imageResults = StyleSheet.create({
+    container: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    gallery: {
+      flex: 1,
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+    },
+    galleryCell: {
+      width: (Dimensions.get("window").width - 4 * 20) / 3,
+      height: (Dimensions.get("window").width - 4 * 20) / 3,
+      marginLeft: 20,
+      marginTop: 20,
+      backgroundColor: 'rgb(245, 245, 245)',
+    },
+  });
 
  common = StyleSheet.create({
     bottomBar: {
