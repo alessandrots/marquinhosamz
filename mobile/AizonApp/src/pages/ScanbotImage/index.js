@@ -20,8 +20,6 @@ import { showAlert, checkLicense, } from '../../util/util';
 import ScanbotSDK from 'react-native-scanbot-sdk';
 import RNFetchBlob from 'rn-fetch-blob';
 
-import base64 from 'react-native-base64'
-
 /**
  *
  * TENTAR https://github.com/CharlesStover/use-force-update
