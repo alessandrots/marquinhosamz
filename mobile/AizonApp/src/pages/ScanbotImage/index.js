@@ -309,34 +309,43 @@ import RNFetchBlob from 'rn-fetch-blob';
      */
     function upload() {
       let arrUpl = [];
-      console.log(' upload list = ', list);
+      //console.log(' RNFetchBlobBase = ', list);
 
       for (let i = 0; i < 2; i++) {
           let pageTmp = list[i];
           let objImg  = {};
-          console.log(' RNFetchBlobBase pageTmp = ', pageTmp);
-
           let resultado = pageTmp.originalImageFileUri.split("?");
 
-          //console.log(' RNFetchBlobBase resultado = ', resultado);
           if (i == 0) {
-            convertFile(resultado[0]);
+            //convertFile(resultado[0]);
             objImg['name'] = 'frente';
             objImg['filename'] ='frente.jpg';
-            objImg['data'] = RNFetchBlob.wrap(pageTmp.documentImageFileUri);
+            objImg['data'] = RNFetchBlob.wrap(resultado[0]);
           } else {
-            //convertFile(RNFetchBlob.wrap(pageTmp.documentImageFileUri));
-            convertFile(resultado[0]);
+            //convertFile(resultado[0]);
             objImg['name'] = 'tras';
             objImg['filename'] ='tras.jpg';
-            objImg['data'] = RNFetchBlob.wrap(pageTmp.documentImageFileUri);
+            objImg['data'] = RNFetchBlob.wrap(resultado[0]);
           }
           arrUpl.push(objImg);
       }
 
-      //console.log(' \n RNFetchBlobBase:', arrUpl);
+      for (let i = 0; i < 2; i++) {
+        let pageTmp = list[i];
+        let objImg  = {};
+        let resultado = pageTmp.polygon;
 
-      /**
+        //console.log(' RNFetchBlobBase resultado = ', resultado);
+        if (i == 0) {
+          objImg['polygon-img1'] = resultado;
+        } else {
+          objImg['polygon-img2'] = resultado;
+        }
+        arrUpl.push(objImg);
+    }
+
+      console.log(' \n RNFetchBlobBase:', arrUpl);
+
       let task = RNFetchBlob.fetch('POST', 'http://45.4.186.2:5000/image/upload4', {
           'Content-Type' : 'multipart/form-data'
       }, arrUpl);
@@ -347,13 +356,6 @@ import RNFetchBlob from 'rn-fetch-blob';
       .catch((err) => {
         console.log('RNFetchBlob err = ', data);
       })
-
-
-      RNFetchBlob.fetch('POST', 'http://myupload.com/upload', {
-          'Content-Type' : 'multipart/form-data'
-      }, [
-   convertFile(pageTmp.documentImageFileUri);   ])
-       */
     }
 
     function convertFile (exampleFilePath) {
