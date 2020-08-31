@@ -288,61 +288,48 @@ import RNFetchBlob from 'rn-fetch-blob';
         }
     }
 
-    /**
+    function getDataToUpload() {
+        let arrUpl = [];
+        //console.log(' RNFetchBlobBase = ', list);
 
-       { documentImageSizeLimit: null,
-    documentPreviewImageFileUri: 'file:///storage/emulated/0/Android/data/com.aizonapp/files/my-custom-storage/snapping_pages/91e4ea57-c8c3-4539-a8b9-959183933476/document_image_preview.jpg?minihash=a30bf89bd3f90f8b37d4917e14ce1cbe',
-    documentImageFileUri: 'file:///storage/emulated/0/Android/data/com.aizonapp/files/my-custom-storage/snapping_pages/91e4ea57-c8c3-4539-a8b9-959183933476/document_image.jpg?minihash=dcb8afba0fe7c106b5d1a89b03da5e49',
-    originalPreviewImageFileUri: 'file:///storage/emulated/0/Android/data/com.aizonapp/files/my-custom-storage/snapping_pages/91e4ea57-c8c3-4539-a8b9-959183933476/original_image_preview.jpg?minihash=c22f78a932de41e7afcae9336e7f3a1e',
-    originalImageFileUri: 'file:///storage/emulated/0/Android/data/com.aizonapp/files/my-custom-storage/snapping_pages/91e4ea57-c8c3-4539-a8b9-959183933476/original_image.jpg?minihash=5416ed73e2bf793261eeab3f5e7aad1c',
-    filter: 'NONE',
-    polygon:
-     [ { y: 0.1901647299528122, x: 0.21705426275730133 },
-       { y: 0.17102713882923126, x: 0.7270671725273132 },
-       { y: 0.7781007885932922, x: 0.7861757278442383 },
-       { y: 0.7914243936538696, x: 0.24483203887939453 } ],
-    detectionResult: 'OK_BUT_TOO_SMALL',
-    pageId: '91e4ea57-c8c3-4539-a8b9-959183933476' },
-    //{ name : 'frente', filename : 'frente.jpg', data : RNFetchBlob.wrap(path_to_the_file) },
-    console.log('showImagesScanbot documentImageFileUri = ', pageTmp.documentImageFileUri);
-    //list.length somente os dois primeiros elementos
-     */
-    function upload() {
-      let arrUpl = [];
-      //console.log(' RNFetchBlobBase = ', list);
+        for (let i = 0; i < 2; i++) {
+            let pageTmp = list[i];
+            let objImg  = {};
+            let resultado = pageTmp.originalImageFileUri.split("?");
 
-      for (let i = 0; i < 2; i++) {
+            if (i == 0) {
+              //convertFile(resultado[0]);
+              objImg['name'] = 'frente';
+              objImg['filename'] ='frente.jpg';
+              objImg['data'] = RNFetchBlob.wrap(resultado[0]);
+            } else {
+              //convertFile(resultado[0]);
+              objImg['name'] = 'tras';
+              objImg['filename'] ='tras.jpg';
+              objImg['data'] = RNFetchBlob.wrap(resultado[0]);
+            }
+            arrUpl.push(objImg);
+        }
+
+        for (let i = 0; i < 2; i++) {
           let pageTmp = list[i];
           let objImg  = {};
-          let resultado = pageTmp.originalImageFileUri.split("?");
+          let resultado = pageTmp.polygon;
 
+          //console.log(' RNFetchBlobBase resultado = ', resultado);
           if (i == 0) {
-            //convertFile(resultado[0]);
-            objImg['name'] = 'frente';
-            objImg['filename'] ='frente.jpg';
-            objImg['data'] = RNFetchBlob.wrap(resultado[0]);
+            objImg['name'] = 'polygon-img1';
+            objImg['data'] = JSON.stringify(resultado);
           } else {
-            //convertFile(resultado[0]);
-            objImg['name'] = 'tras';
-            objImg['filename'] ='tras.jpg';
-            objImg['data'] = RNFetchBlob.wrap(resultado[0]);
+            objImg['name'] = 'polygon-img2';
+            objImg['data'] = JSON.stringify(resultado);
           }
           arrUpl.push(objImg);
-      }
-
-      for (let i = 0; i < 2; i++) {
-        let pageTmp = list[i];
-        let objImg  = {};
-        let resultado = pageTmp.polygon;
-
-        //console.log(' RNFetchBlobBase resultado = ', resultado);
-        if (i == 0) {
-          objImg['polygon-img1'] = resultado;
-        } else {
-          objImg['polygon-img2'] = resultado;
         }
-        arrUpl.push(objImg);
     }
+
+    async function upload() {
+      let arrUpl = await getDataToUpload();
 
       console.log(' \n RNFetchBlobBase:', arrUpl);
 
@@ -358,26 +345,71 @@ import RNFetchBlob from 'rn-fetch-blob';
       })
     }
 
+    async function upload2() {
+      let options = {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
+        method: 'POST'
+      };
+
+      options.body = new FormData();
+
+      for (let i = 0; i < 2; i++) {
+        let pageTmp = list[i];
+        let objImg  = {};
+        let resultado = pageTmp.originalImageFileUri.split("?");
+        let polygon = pageTmp.polygon;
+
+        if (i == 0) {
+          objImg['name1'] = 'frente';
+          objImg['filename1'] ='frente.jpg';
+          objImg['imagem1'] = RNFetchBlob.wrap(resultado[0]);
+          objImg['polygon-img1'] = JSON.stringify(polygon);
+          options.body.append('frente', objImg);
+        } else {
+          objImg['name2'] = 'tras';
+          objImg['filename2'] ='tras.jpg';
+          objImg['imagem2'] = RNFetchBlob.wrap(resultado[0]);
+          objImg['polygon-img2'] = JSON.stringify(resultado);
+          options.body.append('tras', objImg);
+        }
+
+        //arrUpl.push(objImg);
+      }
+
+      console.log('\n  upload2 options.body = ',  options.body);
+
+      try {
+        let response = await fetch('http://45.4.186.2:5000/image/upload4', options);
+
+        console.log('\n upload2 1)===================');
+        console.log('upload2 response = ', response);
+
+        let json = await response.json();
+
+        console.log('\n upload2 2)===================');
+        console.log('upload2 json = ', json);
+      } catch (error) {
+        console.log('upload2 error = ', error);
+      }
+
+      /**
+      return fetch(requestUrl, options)
+          .then(response => {
+            return response.json()
+              .then(responseJson => {
+                //You put some checks here
+                return responseJson;
+              });
+      });
+      */
+    }
+
     function convertFile (exampleFilePath) {
       const fs = RNFetchBlob.fs;
 
-      //console.log('RNFetchBlobBase exampleFilePath = ', exampleFilePath);
-
-      //console.log('RNFetchBlobBase base64 = ', RNFetchBlob.base64.encode(exampleFilePath));
-
-      //console.log('RNFetchBlobBase react-native-base64 = ', base64.encode(exampleFilePath));
-      //getBase64(exampleFilePath);
-
-      //let mime = 'data:image/jpeg;base64,'
-      //let mime = 'image/jpeg';
-     /*
-      let metadata = {
-        type: 'image/jpeg'
-      };
-      */
-
       let mime = 'application/octet-stream';
-
 
       fs.readFile(exampleFilePath, 'base64')
         .then((dataF) => {
@@ -388,16 +420,8 @@ import RNFetchBlob from 'rn-fetch-blob';
           getBase64(blob);
         }).catch((err) => {
           console.log('RNFetchBlobBase err = ', err);
-        })
+        });
 
-        /**
-      fs.readFile(exampleFilePath, 'base64')
-        .then(dataF => {
-            //console.log("\n RNFetchBlobBase sucess:", dataF);
-        })
-        .catch((err) => {
-          //console.log('RNFetchBlobBase err = ', err);
-        }) */
     }
 
     function getBase64(file) {
@@ -482,6 +506,7 @@ import RNFetchBlob from 'rn-fetch-blob';
                       upload
                     </Text>
 
+                      {/**
                     <Text
                       style={[
                         modal.button,
@@ -498,7 +523,7 @@ import RNFetchBlob from 'rn-fetch-blob';
                       onPress={() => onSaveAsPDFWithOCR()}>
                       PDF with OCR
                     </Text>
-
+                       */}
 
 
                   </View>
