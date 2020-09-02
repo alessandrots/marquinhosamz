@@ -449,7 +449,7 @@ import RNFetchBlob from 'rn-fetch-blob';
               <SafeAreaView style={imageResults.container}>
                 <ActivityIndicator
                   size="large"
-                  color='#c8193c'
+                  color='#00ffff'
                   style={common.progress}
                   animating={progressVisible}
                 />
@@ -497,7 +497,7 @@ import RNFetchBlob from 'rn-fetch-blob';
                 <View style={modal.centeredView}>
                   <View style={modal.modalView}>
                     <Text style={modal.text}>
-                      Fazer upload das páginas ?
+                      Fazer upload das imagens ?
                     </Text>
 
                     <Text
@@ -554,8 +554,8 @@ import RNFetchBlob from 'rn-fetch-blob';
       flexWrap: 'wrap',
     },
     galleryCell: {
-      width: (Dimensions.get("window").width - 4 * 20) / 3,
-      height: (Dimensions.get("window").width - 4 * 20) / 3,
+      width: (Dimensions.get("window").width - 4 * 10) / 3,
+      height: (Dimensions.get("window").width - 4 * 10) / 3,
       marginLeft: 20,
       marginTop: 20,
       backgroundColor: 'rgb(245, 245, 245)',
@@ -566,7 +566,7 @@ import RNFetchBlob from 'rn-fetch-blob';
     bottomBar: {
       width: '100%',
       height: 50,
-      backgroundColor: '#c8193c',
+      backgroundColor: '#F0B42F',
       position: 'absolute',
       bottom: 0,
       flexDirection: 'row',
@@ -588,7 +588,7 @@ import RNFetchBlob from 'rn-fetch-blob';
       marginLeft: 'auto',
     },
     progress: {
-      color: '#c8193c',
+      color: '#F0B42F',
       position: 'absolute',
       left: '47%',
       top: '40%',
@@ -717,7 +717,7 @@ import RNFetchBlob from 'rn-fetch-blob';
     },
     actionButton: {
       color: 'white',
-      backgroundColor: '#c8193c',
+      backgroundColor: '#F0B42F',
       fontWeight: 'bold',
     },
     closeButton: {
