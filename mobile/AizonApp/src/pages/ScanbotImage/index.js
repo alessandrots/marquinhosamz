@@ -288,7 +288,7 @@ import RNFetchBlob from 'rn-fetch-blob';
         }
     }
 
-    function getDataToUpload() {
+    async function getDataToUpload() {
         let arrUpl = [];
         //console.log(' RNFetchBlobBase = ', list);
 
@@ -326,25 +326,69 @@ import RNFetchBlob from 'rn-fetch-blob';
           }
           arrUpl.push(objImg);
         }
+
+        return arrUpl;
     }
 
     async function upload() {
       let arrUpl = await getDataToUpload();
 
-      console.log(' \n RNFetchBlobBase:', arrUpl);
+      let url = 'http://45.4.186.2:5000/image/upload4';
+      //let url = 'http://192.168.10.81:5000/image/upload4';
 
-      let task = RNFetchBlob.fetch('POST', 'http://45.4.186.2:5000/image/upload4', {
+      console.log(' \n RNFetchBlobBase url = ', url);
+
+      console.log(' \n RNFetchBlobBase arrUpl = ', arrUpl);
+
+      let task = RNFetchBlob.fetch('POST', url, {
           'Content-Type' : 'multipart/form-data'
       }, arrUpl);
 
-      task.then((data) => {
-        console.log('RNFetchBlob sucess = ', data);
+      task.then((dataF) => {
+        console.log('RNFetchBlobBase sucess = ', dataF);
       })
       .catch((err) => {
-        console.log('RNFetchBlob err = ', data);
+        console.log('RNFetchBlobBase error = ', err);
       })
     }
 
+
+
+    function convertFile (exampleFilePath) {
+      const fs = RNFetchBlob.fs;
+
+      let mime = 'application/octet-stream';
+
+      fs.readFile(exampleFilePath, 'base64')
+        .then((dataF) => {
+          //let blob =  Blob.build(dataF, { type: `${mime};BASE64` })
+          //let blob = new File(exampleFilePath);
+          //let blob = new File([dataF], 'exampleFilePath', `${mime};BASE64`);
+          let blob =  new Blob([dataF], {type: mime, lastModified: new Date()});
+          getBase64(blob);
+        }).catch((err) => {
+          console.log('RNFetchBlobBase err = ', err);
+        });
+
+    }
+
+    function getBase64(file) {
+      console.log("\n RNFetchBlobBase file:", file);
+
+     let  reader = new FileReader();
+      //console.log("\n RNFetchBlobBase reader:", reader);
+
+      reader.readAsDataURL(file);
+
+      reader.onload = function () {
+        console.log('RNFetchBlobBase sucess getBase64 = ',reader.result);
+      };
+      reader.onerror = function (error) {
+        console.log('RNFetchBlobBase error getBase64 = ',error);
+      };
+   }
+
+   /**
     async function upload2() {
       let options = {
         headers: {
@@ -381,7 +425,8 @@ import RNFetchBlob from 'rn-fetch-blob';
       console.log('\n  upload2 options.body = ',  options.body);
 
       try {
-        let response = await fetch('http://45.4.186.2:5000/image/upload4', options);
+        //let response = await fetch('http://45.4.186.2:5000/image/upload4', options);
+        let response = await fetch('http://192.168.10.81:5000/image/upload4', options);
 
         console.log('\n upload2 1)===================');
         console.log('upload2 response = ', response);
@@ -394,51 +439,9 @@ import RNFetchBlob from 'rn-fetch-blob';
         console.log('upload2 error = ', error);
       }
 
-      /**
-      return fetch(requestUrl, options)
-          .then(response => {
-            return response.json()
-              .then(responseJson => {
-                //You put some checks here
-                return responseJson;
-              });
-      });
-      */
-    }
-
-    function convertFile (exampleFilePath) {
-      const fs = RNFetchBlob.fs;
-
-      let mime = 'application/octet-stream';
-
-      fs.readFile(exampleFilePath, 'base64')
-        .then((dataF) => {
-          //let blob =  Blob.build(dataF, { type: `${mime};BASE64` })
-          //let blob = new File(exampleFilePath);
-          //let blob = new File([dataF], 'exampleFilePath', `${mime};BASE64`);
-          let blob =  new Blob([dataF], {type: mime, lastModified: new Date()});
-          getBase64(blob);
-        }).catch((err) => {
-          console.log('RNFetchBlobBase err = ', err);
-        });
 
     }
-
-    function getBase64(file) {
-      console.log("\n RNFetchBlobBase file:", file);
-
-     let  reader = new FileReader();
-      //console.log("\n RNFetchBlobBase reader:", reader);
-
-      reader.readAsDataURL(file);
-
-      reader.onload = function () {
-        console.log('RNFetchBlobBase sucess getBase64 = ',reader.result);
-      };
-      reader.onerror = function (error) {
-        console.log('RNFetchBlobBase error getBase64 = ',error);
-      };
-   }
+    */
 
     function getMontagemTela() {
         return (
@@ -494,7 +497,7 @@ import RNFetchBlob from 'rn-fetch-blob';
                 <View style={modal.centeredView}>
                   <View style={modal.modalView}>
                     <Text style={modal.text}>
-                      How would you like to save the pages?
+                      Fazer upload das páginas ?
                     </Text>
 
                     <Text
