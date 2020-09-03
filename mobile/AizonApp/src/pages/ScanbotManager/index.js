@@ -247,68 +247,29 @@ export default function ScanbotManager({ navigator, route }) {
       polygonColor: '#d60a0a',
       polygonColorOK: '#88ff00',
       bottomBarBackgroundColor: '#00ffff',
+      bottomBarButtonsColor: '#000000',
       topBarBackgroundColor: '#00ffff',
       cameraBackgroundColor: '#00ffff',
-      /**
-      * The color of the title of all buttons in the bottom shutter-bar (Cancel button, etc.),
-      * as well as the camera permission prompt button.
-      */
-      bottomBarButtonsColor: '#000',
+      topBarButtonsActiveColor: '#F0B42F',
+      topBarButtonsInactiveColor: '#000000',
+      userGuidanceBackgroundColor: '#00ffff',
+      userGuidanceTextColor: '#9b1212',
       orientationLockMode: 'PORTRAIT',
       pageCounterButtonTitle: '%d Pág(s)',
       multiPageEnabled: true,
       ignoreBadAspectRatio: true,
       autoSnappingSensitivity: 0.85,
-      /**
-      * Title of the flash toggle button.
-      */
       flashButtonTitle: 'Flash',
-      /**
-      * Title of the multi-page mode toggle button.
-      */
       multiPageButtonTitle: 'Multi-Pág.',
-      /**
-      * Title of the cancel button.
-      */
       cancelButtonTitle: 'Cancelar',
-      /**
-      * Title of the button that opens the screen where the user can allow
-      * the usage of the camera by the app.
-      */
       enableCameraButtonTitle: 'Permitir o uso da câmera',
-      /**
-      * Text that will be displayed when the app
-      * is not allowed to use the camera, prompting the user
-      * to enable the usage of the camera.
-      */
       enableCameraExplanationText: 'Não houve permissão para o uso da câmera',
-      /**
-      * Text hint that will be shown when the current detection status is OK_BUT_BAD_ANGLES
-      */
       textHintBadAngles: 'Detecção Ok, mas a angulação está ruim',
-      /**
-       * Text hint that will be shown when the current detection status is OK_BUT_BAD_ASPECT_RATIO
-       */
       textHintBadAspectRatio: 'Detecção Ok, mas o aspecto está ruim',
-      /**
-       * Text hint that will be shown when the current detection status is ERROR_NOTHING_DETECTED
-       */
       textHintNothingDetected: 'Nada foi detectado',
-      /**
-       * Text hint that will be shown when the current detection status is OK
-       */
       textHintOK: 'Detecção Ok',
-      /**
-       * Text hint that will be shown when the current detection status is ERROR_TOO_DARK
-       */
       textHintTooDark: 'Detecção muito escura',
-      /**
-       * Text hint that will be shown when the current detection status is ERROR_TOO_NOISY
-       */
       textHintTooNoisy: 'Detecção muito barulhenta',
-      /**
-       * Text hint that will be shown when the current detection status is OK_BUT_TOO_SMALL
-       */
       textHintTooSmall: 'Detecção muito pequena',
     };
 

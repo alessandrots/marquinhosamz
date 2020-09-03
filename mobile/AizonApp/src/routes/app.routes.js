@@ -87,24 +87,19 @@ function AppRoutes(){
             options={{ title: 'Orientações' }}
             />
 
-          <AppDrawer.Screen
-              name="PhotoManager"
-              component={PhotoManager}
-              options={{ title: 'Foto Documental' }}
-              />
+
 
           <AppDrawer.Screen
               name="ScanbotManager"
               component={ScanbotManager}
-              options={{ title: 'Foto Documental 2' }}
+              options={{ title: 'Foto Documental' }}
               />
 
           <AppDrawer.Screen
               name="ScanbotImage"
               component={ScanbotImage}
-              options={{ title: 'ScanbotImage' }}
+              options={{ title: 'Scanner de Documento' }}
               />
-
 
           <AppDrawer.Screen
             name="ViewData"
@@ -128,6 +123,11 @@ function AppRoutes(){
             options={{ title: 'Alterar Senha' }}/>
 
 {/**
+        <AppDrawer.Screen
+            name="PhotoManager"
+            component={PhotoManager}
+            options={{ title: 'Foto Documental' }}
+            />
 
           <AppDrawer.Screen
             name="Home"

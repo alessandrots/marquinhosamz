@@ -15,7 +15,11 @@ import {
 
 import { useNavigation } from '@react-navigation/native';
 import { showAlert, checkLicense, } from '../../util/util';
-//import { addList, isEmpty, cleanList} from '../../components/ScannerBot';
+import Header from '../../components/Header';
+import Footer from '../../components/Footer';
+
+import { Background } from './styles';
+import { ContainerHeader, ContainerFooter } from '../Home/styles';
 
 import ScanbotSDK from 'react-native-scanbot-sdk';
 import RNFetchBlob from 'rn-fetch-blob';
@@ -104,13 +108,34 @@ import RNFetchBlob from 'rn-fetch-blob';
         }
 
         const config = {
-            // Customize colors, text resources, etc..
-            cameraPreviewMode: 'FIT_IN',
-            orientationLockMode: 'PORTRAIT',
-            multiPageEnabled: false,
-            multiPageButtonHidden: true,
-            ignoreBadAspectRatio: true,
-            // See further config properties ...
+          // Customize colors, text resources, etc..
+          polygonColor: '#d60a0a',
+          polygonColorOK: '#88ff00',
+          bottomBarBackgroundColor: '#00ffff',
+          bottomBarButtonsColor: '#000000',
+          topBarBackgroundColor: '#00ffff',
+          cameraBackgroundColor: '#00ffff',
+          topBarButtonsActiveColor: '#F0B42F',
+          topBarButtonsInactiveColor: '#000000',
+          userGuidanceBackgroundColor: '#00ffff',
+          userGuidanceTextColor: '#9b1212',
+          orientationLockMode: 'PORTRAIT',
+          pageCounterButtonTitle: '%d Pág(s)',
+          multiPageEnabled: true,
+          ignoreBadAspectRatio: true,
+          autoSnappingSensitivity: 0.85,
+          flashButtonTitle: 'Flash',
+          multiPageButtonTitle: 'Multi-Pág.',
+          cancelButtonTitle: 'Cancelar',
+          enableCameraButtonTitle: 'Permitir o uso da câmera',
+          enableCameraExplanationText: 'Não houve permissão para o uso da câmera',
+          textHintBadAngles: 'Detecção Ok, mas a angulação está ruim',
+          textHintBadAspectRatio: 'Detecção Ok, mas o aspecto está ruim',
+          textHintNothingDetected: 'Nada foi detectado',
+          textHintOK: 'Detecção Ok',
+          textHintTooDark: 'Detecção muito escura',
+          textHintTooNoisy: 'Detecção muito barulhenta',
+          textHintTooSmall: 'Detecção muito pequena',
         };
 
         const result = await ScanbotSDK.UI.startDocumentScanner(config);
@@ -352,8 +377,6 @@ import RNFetchBlob from 'rn-fetch-blob';
       })
     }
 
-
-
     function convertFile (exampleFilePath) {
       const fs = RNFetchBlob.fs;
 
@@ -443,6 +466,24 @@ import RNFetchBlob from 'rn-fetch-blob';
     }
     */
 
+   function getMainScreen() {
+      return  (
+
+        <Background>
+          <ContainerHeader>
+            <Header titlePage="Scanner de Documento"/>
+          </ContainerHeader>
+
+          { getMontagemTela() }
+
+          <ContainerFooter>
+            <Footer titlePage="AIZON"/>
+          </ContainerFooter>
+
+        </Background>
+      );
+    }
+
     function getMontagemTela() {
         return (
             <>
@@ -472,12 +513,12 @@ import RNFetchBlob from 'rn-fetch-blob';
                   <Text
                     style={common.bottomBarButton}
                     onPress={() => addButtonPress()}>
-                    ADD
+                    Tirar Foto
                   </Text>
                   <Text
                     style={common.bottomBarButton}
                     onPress={() => saveButtonPress()}>
-                    SAVE
+                    Salvar
                   </Text>
                   <Text
                     style={[
@@ -485,7 +526,7 @@ import RNFetchBlob from 'rn-fetch-blob';
                       common.alignRight,
                     ]}
                     onPress={() => deleteAllButtonPress()}>
-                    DELETE ALL
+                    Apagar Tudo
                   </Text>
                 </View>
               </SafeAreaView>
@@ -537,7 +578,7 @@ import RNFetchBlob from 'rn-fetch-blob';
     }
 
     return (
-      getMontagemTela()
+      getMainScreen()
     )
 
 }
@@ -566,7 +607,7 @@ import RNFetchBlob from 'rn-fetch-blob';
     bottomBar: {
       width: '100%',
       height: 50,
-      backgroundColor: '#F0B42F',
+      backgroundColor: '#00ffff',
       position: 'absolute',
       bottom: 0,
       flexDirection: 'row',
@@ -577,12 +618,12 @@ import RNFetchBlob from 'rn-fetch-blob';
       lineHeight: 50,
       textAlignVertical: 'center',
       textAlign: 'center',
-      color: 'white',
+      color: '#F0B42F',
       paddingLeft: 10,
       paddingRight: 10,
       marginRight: 10,
       fontWeight: 'bold',
-      fontSize: 13,
+      fontSize: 14,
     },
     alignRight: {
       marginLeft: 'auto',
