@@ -48,13 +48,13 @@ import RNFetchBlob from 'rn-fetch-blob';
         // pages updated, do something with `route.params.pages`
         // For example, send the pages to the server
 
-        if (route.params.pages) {
+        //if (route.params.pages) {
           //console.log('route ScanbotImage pages = ', route.params.pages);
 
 
 
           showImagesScanbot(route.params.pages);
-        }
+        //}
       }
 
     }, [route.params?.pages]);
@@ -234,6 +234,8 @@ import RNFetchBlob from 'rn-fetch-blob';
       //props.navigation.push(Navigation.IMAGE_DETAILS);
 
       //navigation.navigate('ViewData', { side: '0', 'identificacaoDocumento': data.id});
+
+      navigation.navigate('ScanbotDetailImage', { pageSelected: page});
     }
 
     function onModalClose() {
@@ -260,6 +262,7 @@ import RNFetchBlob from 'rn-fetch-blob';
 
             showAlert('PDF file created: ' + result.pdfFileUri, 'IMAGE');
         } catch (e) {
+            console.log('onSaveAsPDF ERROR: ', JSON.stringify(e));
             showAlert('ERROR: ' + JSON.stringify(e), 'IMAGE');
         } finally {
             hideProgress();
@@ -275,6 +278,24 @@ import RNFetchBlob from 'rn-fetch-blob';
         try {
             showProgress();
 
+            const resultOCRConfigs = await ScanbotSDK.getOCRConfigs();
+
+            console.log('resultOCRConfigs : ', resultOCRConfigs);
+
+            /**
+            resultOCRConfigs
+            .then((data) => {
+              console.log('====================================');
+              console.log('resultOCRConfigs data : ', data);
+              console.log('====================================');
+            })
+            .then((error) => {
+              console.log('====================================');
+              console.log('resultOCRConfigs error : ', error);
+              console.log('====================================');
+            });
+             */
+
             const result = await ScanbotSDK.performOCR(getImageUris(), ['en'], {
                 outputFormat: 'FULL_OCR_RESULT',
             });
@@ -282,7 +303,7 @@ import RNFetchBlob from 'rn-fetch-blob';
             showAlert('PDF with OCR layer created: ' + result.pdfFileUri, 'IMAGE');
         } catch (e) {
             console.log('====================================');
-            console.log('PDF with OCR layer created error : ', JSON.stringify(e));
+            console.log('onSaveAsPDFWithOCR ERROR : ', JSON.stringify(e));
             console.log('====================================');
             showAlert('ERROR: ' + JSON.stringify(e), 'IMAGE');
         } finally {
@@ -550,7 +571,7 @@ import RNFetchBlob from 'rn-fetch-blob';
                       upload
                     </Text>
 
-                      {/**
+
                     <Text
                       style={[
                         modal.button,
@@ -559,6 +580,7 @@ import RNFetchBlob from 'rn-fetch-blob';
                       onPress={() => onSaveAsPDF()}>
                       PDF
                     </Text>
+                    {/***/}
                     <Text
                       style={[
                         modal.button,
@@ -567,7 +589,7 @@ import RNFetchBlob from 'rn-fetch-blob';
                       onPress={() => onSaveAsPDFWithOCR()}>
                       PDF with OCR
                     </Text>
-                       */}
+
 
 
                   </View>
