@@ -11,6 +11,7 @@ import {
   Colors,
   Dimensions,
   View,
+  TouchableHighlight
 } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
@@ -23,6 +24,7 @@ import { ContainerHeader, ContainerFooter } from '../Home/styles';
 
 import ScanbotSDK from 'react-native-scanbot-sdk';
 import RNFetchBlob from 'rn-fetch-blob';
+import Pdf from 'react-native-pdf';
 
 /**
  *
@@ -69,6 +71,13 @@ import RNFetchBlob from 'rn-fetch-blob';
 
     const [progressVisible, setProgressVisible] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
+    const [modalVisiblePdf, setModalVisiblePdf] = useState(false);
+    const [uriPdfWithOcr, setUriPdfWithOcr] = useState('');
+    const [uriJsonWithOcr, setUriJsonWithOcr] = useState('');
+
+
+
+
     const [list, setList] = useState([]);
 
     const navigation = useNavigation();
@@ -268,8 +277,18 @@ import RNFetchBlob from 'rn-fetch-blob';
             hideProgress();
         }
     }
-    async function onSaveAsPDFWithOCR() {
+
+    async function onSaveAsPDFWithOCRWithJson() {
+      onSaveAsPDFWithOCR('RESULT_JSON')
+    }
+
+    async function onSaveAsPDFWithOCRWithFullOCRRes() {
+      onSaveAsPDFWithOCR('FULL_OCR_RESULT')
+    }
+
+    async function onSaveAsPDFWithOCR(outputResult) {
         onModalClose();
+        setModalVisiblePdf(false);
 
         if (!(await checkLicense())) {
             return;
@@ -278,29 +297,38 @@ import RNFetchBlob from 'rn-fetch-blob';
         try {
             showProgress();
 
-            const resultOCRConfigs = await ScanbotSDK.getOCRConfigs();
+            //const resultOCRConfigs = await ScanbotSDK.getOCRConfigs();
 
-            console.log('resultOCRConfigs : ', resultOCRConfigs);
+            //console.log('resultOCRConfigs : ', resultOCRConfigs);
 
-            /**
-            resultOCRConfigs
-            .then((data) => {
-              console.log('====================================');
-              console.log('resultOCRConfigs data : ', data);
-              console.log('====================================');
-            })
-            .then((error) => {
-              console.log('====================================');
-              console.log('resultOCRConfigs error : ', error);
-              console.log('====================================');
-            });
-             */
-
-            const result = await ScanbotSDK.performOCR(getImageUris(), ['en'], {
-                outputFormat: 'FULL_OCR_RESULT',
+            const result = await ScanbotSDK.performOCR(getImageUris(), ['en','pt'], {
+                outputFormat: outputResult,
             });
 
-            showAlert('PDF with OCR layer created: ' + result.pdfFileUri, 'IMAGE');
+            console.log('onSaveAsPDFWithOCR result : ', result);
+
+            if (result.pdfFileUri || result.jsonFileUri) {
+              setUriPdfWithOcr(result.pdfFileUri);
+              setUriJsonWithOcr(result.jsonFileUri);
+
+              if (outputResult === 'FULL_OCR_RESULT') {
+                showPdfWithOCR();
+              } else {
+                //showAlert('PDF with OCR layer created: ' + result.jsonFileUri, 'IMAGE');
+                fetch(result.jsonFileUri)
+                .then((response) => {
+                  console.log('onSaveAsPDFWithOCR response : ', response);
+                  return response.json()
+                })
+                .then((json) => {
+                  console.log('onSaveAsPDFWithOCR JSON : ', json);
+                })
+                .catch((err) => {
+                  console.log('onSaveAsPDFWithOCR err : ', err);
+                });
+              }
+            }
+
         } catch (e) {
             console.log('====================================');
             console.log('onSaveAsPDFWithOCR ERROR : ', JSON.stringify(e));
@@ -309,6 +337,55 @@ import RNFetchBlob from 'rn-fetch-blob';
         } finally {
             hideProgress();
         }
+    }
+
+    function showPdfWithOCR() {
+      setModalVisiblePdf(true);
+    }
+
+
+
+    function getModalPdfWithOCR() {
+      return (
+        <>
+          <View style={styles.container}>
+                      <Modal
+                        animationType="slide"
+                        transparent={true}
+                        visible={modalVisiblePdf}
+                        onRequestClose={() => {
+                          //Alert.alert("Modal has been closed.");
+                        }}
+                      >
+                        <View style={styles.modalView}>
+                            <Pdf
+                                source={{ uri: uriPdfWithOcr }}
+                                onLoadComplete={(numberOfPages, filePath) => {
+                                    console.log(`number of pages: ${numberOfPages}`);
+                                }}
+                                onPageChanged={(page, numberOfPages) => {
+                                    console.log(`current page: ${page}`);
+                                }}
+                                onError={error => {
+                                    console.log(error);
+                                }}
+                                style={styles.pdf}
+                            />
+                        </View>
+                          <TouchableHighlight
+                            style={styles.closeButton}
+                            onPress={() => {
+                              setModalVisiblePdf(!modalVisiblePdf);
+                            }}
+                          >
+                            <Text style={styles.textStyle}>Fechar</Text>
+                          </TouchableHighlight>
+
+                      </Modal>
+            </View>
+        </>
+      )
+
     }
 
     async function onSaveAsTIFF(binarized) {
@@ -432,61 +509,6 @@ import RNFetchBlob from 'rn-fetch-blob';
       };
    }
 
-   /**
-    async function upload2() {
-      let options = {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        },
-        method: 'POST'
-      };
-
-      options.body = new FormData();
-
-      for (let i = 0; i < 2; i++) {
-        let pageTmp = list[i];
-        let objImg  = {};
-        let resultado = pageTmp.originalImageFileUri.split("?");
-        let polygon = pageTmp.polygon;
-
-        if (i == 0) {
-          objImg['name1'] = 'frente';
-          objImg['filename1'] ='frente.jpg';
-          objImg['imagem1'] = RNFetchBlob.wrap(resultado[0]);
-          objImg['polygon-img1'] = JSON.stringify(polygon);
-          options.body.append('frente', objImg);
-        } else {
-          objImg['name2'] = 'tras';
-          objImg['filename2'] ='tras.jpg';
-          objImg['imagem2'] = RNFetchBlob.wrap(resultado[0]);
-          objImg['polygon-img2'] = JSON.stringify(resultado);
-          options.body.append('tras', objImg);
-        }
-
-        //arrUpl.push(objImg);
-      }
-
-      console.log('\n  upload2 options.body = ',  options.body);
-
-      try {
-        //let response = await fetch('http://45.4.186.2:5000/image/upload4', options);
-        let response = await fetch('http://192.168.10.81:5000/image/upload4', options);
-
-        console.log('\n upload2 1)===================');
-        console.log('upload2 response = ', response);
-
-        let json = await response.json();
-
-        console.log('\n upload2 2)===================');
-        console.log('upload2 json = ', json);
-      } catch (error) {
-        console.log('upload2 error = ', error);
-      }
-
-
-    }
-    */
-
    function getMainScreen() {
       return  (
 
@@ -496,6 +518,8 @@ import RNFetchBlob from 'rn-fetch-blob';
           </ContainerHeader>
 
           { getMontagemTela() }
+
+          { getModalPdfWithOCR() }
 
           <ContainerFooter>
             <Footer titlePage="AIZON"/>
@@ -559,7 +583,7 @@ import RNFetchBlob from 'rn-fetch-blob';
                 <View style={modal.centeredView}>
                   <View style={modal.modalView}>
                     <Text style={modal.text}>
-                      Fazer upload das imagens ?
+                      Escolha a funcionalidade ?
                     </Text>
 
                     <Text
@@ -570,7 +594,7 @@ import RNFetchBlob from 'rn-fetch-blob';
                       onPress={() => upload()}>
                       upload
                     </Text>
-
+                    {/***/}
 
                     <Text
                       style={[
@@ -580,14 +604,23 @@ import RNFetchBlob from 'rn-fetch-blob';
                       onPress={() => onSaveAsPDF()}>
                       PDF
                     </Text>
-                    {/***/}
+
                     <Text
                       style={[
                         modal.button,
                         modal.actionButton,
                       ]}
-                      onPress={() => onSaveAsPDFWithOCR()}>
-                      PDF with OCR
+                      onPress={() => onSaveAsPDFWithOCRWithFullOCRRes()}>
+                        PDF with OCR
+                    </Text>
+
+                    <Text
+                      style={[
+                        modal.button,
+                        modal.actionButton,
+                      ]}
+                      onPress={() => onSaveAsPDFWithOCRWithJson()}>
+                        PDF with OCR To JSon
                     </Text>
 
 
@@ -787,4 +820,68 @@ import RNFetchBlob from 'rn-fetch-blob';
       borderColor: 'gray',
       borderWidth: 1,
     },
+  });
+
+  const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'flex-start',
+        margin: 20,
+    },
+
+    containerRow: {
+      flex: 1,
+      //backgroundColor :'#CC0000',
+      flexDirection: 'column',
+      margin: 20,
+    },
+
+    pdf: {
+        flex:1,
+        width:Dimensions.get('window').width,
+        height:Dimensions.get('window').height,
+    },
+
+    modalView: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      margin: 20,
+      backgroundColor: "transparent",
+      borderRadius: 10,
+      padding: 10,
+      alignItems: "center",
+      shadowColor: "#000",
+      shadowOffset: {
+        width: 0,
+        height: 2
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      elevation: 5
+    },
+    openButton: {
+      backgroundColor: "#0EABB5",
+      borderRadius: 20,
+      padding: 10,
+      elevation: 2
+    },
+
+    closeButton: {
+      backgroundColor: "#0EABB5",
+      borderRadius: 20,
+      padding: 10,
+      elevation: 2,
+      width: 130,
+      height: 40,
+      marginLeft: 120,
+      marginRight: 20,
+      marginBottom: 35,
+    },
+    textStyle: {
+      color: "white",
+      fontWeight: "bold",
+      textAlign: "center"
+    }
+
   });

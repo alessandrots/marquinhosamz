@@ -1,7 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { StatusBar, StyleSheet, SafeAreaView, TouchableOpacity,
-  View, Text, ScrollView, ActivityIndicator, Image, Dimensions, TouchableHighlight,
-  Modal} from 'react-native';
+import { StatusBar, StyleSheet, SafeAreaView, Dimensions, TouchableHighlight,
+  View, Text, ScrollView, ActivityIndicator, Modal} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 import { AuthContext } from '../../contexts/auth';
