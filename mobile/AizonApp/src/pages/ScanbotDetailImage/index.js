@@ -24,6 +24,7 @@ import { ContainerHeader, ContainerFooter } from '../Home/styles';
 import ScanbotSDK from 'react-native-scanbot-sdk';
 import RNFetchBlob from 'rn-fetch-blob';
 
+
 /**
  *
  * TENTAR https://github.com/CharlesStover/use-force-update
@@ -49,7 +50,7 @@ import RNFetchBlob from 'rn-fetch-blob';
     const navigation = useNavigation();
 
     useEffect(() => {
-      console.log('route ScanbotImage = ', route);
+      console.log('route ScanbotDetailImage = ', route);
 
       if (route.params?.pageSelected) {
         setPage(route.params.pageSelected);
@@ -85,10 +86,13 @@ import RNFetchBlob from 'rn-fetch-blob';
       const filter = options[index];
 
       const updated = await ScanbotSDK.applyImageFilterOnPage(
-        Pages.selectedPage,
+        //Pages.selectedPage,
+        page,
         // @ts-ignore
         filter,
       );
+
+      console.log('ScanbotDetailImage updated = ', updated);
 
       //updateCurrentPage(updated);
     };
@@ -97,7 +101,7 @@ import RNFetchBlob from 'rn-fetch-blob';
       if (!(await SDKUtils.checkLicense())) {
         return;
       }
-      const result = await ScanbotSDK.UI.startCroppingScreen(Pages.selectedPage, {
+      const result = await ScanbotSDK.UI.startCroppingScreen(page, {
         doneButtonTitle: 'Aplicar',
         topBarBackgroundColor: '#c8193c',
         bottomBarBackgroundColor: '#c8193c',
@@ -112,8 +116,14 @@ import RNFetchBlob from 'rn-fetch-blob';
     }
 
     function updateCurrentPage(page) {
-      Pages.update(page);
-      Pages.selectedPage = page;
+      /**
+       * chama update no ScanbotImage
+       */
+      //Pages.update(page);
+
+
+      //Pages.selectedPage = page;
+
       refresh();
     }
 
@@ -125,9 +135,9 @@ import RNFetchBlob from 'rn-fetch-blob';
     }
 
     function deleteButtonPress() {
-      Pages.list.splice(Pages.list.indexOf(Pages.selectedPage), 1);
+      //Pages.list.splice(Pages.list.indexOf(Pages.selectedPage), 1);
       // @ts-ignore
-      props.navigation.pop();
+      //props.navigation.pop();
     }
 
 
@@ -158,8 +168,8 @@ import RNFetchBlob from 'rn-fetch-blob';
                   imageDetails.image,
                   common.containImage,
                 ]}
-                source={{uri: Pages.selectedPage.documentImageFileUri}}
-                key={Pages.selectedPage.pageId}
+                source={{uri: page.documentImageFileUri}}
+                key={page.pageId}
               />
               <View style={common.bottomBar}>
                 <Text

@@ -26,6 +26,8 @@ import ScanbotSDK from 'react-native-scanbot-sdk';
 import RNFetchBlob from 'rn-fetch-blob';
 import Pdf from 'react-native-pdf';
 
+import Pages from '../../components/Pages';
+
 /**
  *
  * TENTAR https://github.com/CharlesStover/use-force-update
@@ -65,6 +67,7 @@ import Pdf from 'react-native-pdf';
 
     //https://stackoverflow.com/questions/46240647/react-how-to-force-a-function-component-to-render
     function useForceUpdate(){
+      Pages.length();
       //const [value, setValue] = useState(0); // integer state
       //return () => setValue(value => ++value); // update the state to force render
     }
@@ -151,6 +154,8 @@ import Pdf from 'react-native-pdf';
 
         if (result.status === 'OK') {
             addList(result.pages);
+
+            Pages.add(result.pages);
 
             refresh();
         }
