@@ -46,7 +46,7 @@ import Pages from '../../components/Pages';
    export default function ScanbotImage({ navigator, route }) {
 
     useEffect(() => {
-      console.log('route ScanbotImage = ', route);
+      //console.log('route ScanbotImage = ', route);
 
       if (route.params?.pages) {
         // pages updated, do something with `route.params.pages`
@@ -54,8 +54,9 @@ import Pages from '../../components/Pages';
 
         //if (route.params.pages) {
           //console.log('route ScanbotImage pages = ', route.params.pages);
+          Pages.length();
 
-
+          Pages.add(route.params.pages);
 
           showImagesScanbot(route.params.pages);
         //}
@@ -233,9 +234,11 @@ import Pages from '../../components/Pages';
       console.log(' showImagesScanbot pages = ', pages);
       setList(pages);
 
+      Pages.length();
+
       for (let i = 0; i < pages.length; i++) {
           let pageTmp = pages[i];
-          console.log('showImagesScanbot documentImageFileUri = ', pageTmp.documentImageFileUri);
+          //console.log('showImagesScanbot documentImageFileUri = ', pageTmp.documentImageFileUri);
       }
   }
 
@@ -243,6 +246,7 @@ import Pages from '../../components/Pages';
 
     function onGalleryItemClick(page) {
       //selectedPage = page;
+      Pages.selectedPage = page;
 
       // @ts-ignore TODO implementar tela de DETAIL
       //props.navigation.push(Navigation.IMAGE_DETAILS);

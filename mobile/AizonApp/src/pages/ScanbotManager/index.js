@@ -28,6 +28,7 @@ import { ContainerHeader, ContainerFooter } from '../Home/styles';
 
 import { alertMessage } from '../../util/util';
 //import { addList} from '../../components/ScannerBot';
+import Pages from '../../components/Pages';
 
 import ScanbotSDK from 'react-native-scanbot-sdk';
 
@@ -278,6 +279,7 @@ export default function ScanbotManager({ navigator, route }) {
 
     if (result.status === 'OK') {
       addList(result.pages);
+
       navigation.navigate('ScanbotImage', { pages: result.pages});
     }
   }

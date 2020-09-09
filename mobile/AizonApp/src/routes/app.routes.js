@@ -27,6 +27,7 @@ import PdfView from '../pages/PdfView';
 import ChangePasswd from '../pages/ChangePasswd';
 import ScanbotManager from '../pages/ScanbotManager';
 import ScanbotImage from '../pages/ScanbotImage';
+import ScanbotDetailImage from '../pages/ScanbotDetailImage';
 
 import { getPhotoProfileUser } from '../util/util';
 
@@ -98,7 +99,13 @@ function AppRoutes(){
           <AppDrawer.Screen
               name="ScanbotImage"
               component={ScanbotImage}
-              options={{ title: 'Scanner de Documento' }}
+              options={{ title: 'Scanner' }}
+              />
+
+          <AppDrawer.Screen
+              name="ScanbotDetailImage"
+              component={ScanbotDetailImage}
+              options={{ title: 'Detalhe Scanner' }}
               />
 
           <AppDrawer.Screen

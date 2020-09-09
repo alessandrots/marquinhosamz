@@ -17,13 +17,14 @@ import { useNavigation } from '@react-navigation/native';
 import { showAlert, checkLicense, } from '../../util/util';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
+import Pages from '../../components/Pages';
 
 import { Background } from './styles';
 import { ContainerHeader, ContainerFooter } from '../Home/styles';
 
 import ScanbotSDK from 'react-native-scanbot-sdk';
 import RNFetchBlob from 'rn-fetch-blob';
-
+import {ActionSheetCustom as ActionSheet} from 'react-native-custom-actionsheet';
 
 /**
  *
@@ -45,20 +46,33 @@ import RNFetchBlob from 'rn-fetch-blob';
     const [selected, setSelected] = useState(0);
     const [actionSheet, setActionSheet] = useState();
     const [list, setList] = useState([]);
-    const [page, setPage] = useState(null);
+    //const [page, setPage] = useState(null);
 
     const navigation = useNavigation();
 
+    const CANCEL_INDEX = 0;
+
+    const options = [
+      'NONE',
+      'COLOR_ENHANCED',
+      'GRAYSCALE',
+      'BINARIZED',
+      'COLOR_DOCUMENT',
+      'PURE_BINARIZED',
+      'BACKGROUND_CLEAN',
+      'BLACK_AND_WHITE',
+      'OTSU_BINARIZATION',
+      'DEEP_BINARIZATION',
+      'LOW_LIGHT_BINARIZATION',
+      'EDGE_HIGHLIGHT',
+      'LOW_LIGHT_BINARIZATION_2',
+    ];
+
+    /** */
     useEffect(() => {
-      console.log('route ScanbotDetailImage = ', route);
+      //console.log('Pages.selectedPage ScanbotImage = ', Pages.selectedPage);
+    }, []);
 
-      if (route.params?.pageSelected) {
-        setPage(route.params.pageSelected);
-      }
-
-    }, [route.params?.pageSelected]);
-
-    //const { heightx, widthx } = Dimensions.get('window');
 
     //https://stackoverflow.com/questions/46240647/react-how-to-force-a-function-component-to-render
     function useForceUpdate(){
@@ -66,11 +80,14 @@ import RNFetchBlob from 'rn-fetch-blob';
       //return () => setValue(value => ++value); // update the state to force render
     }
 
-
     function refresh() {
         useForceUpdate();
     }
 
+    function getActionSheetRef (ref) {
+      //actionSheet = ref;
+      setActionSheet(ref);
+    }
 
 
     function pushPage(name) {
@@ -86,13 +103,12 @@ import RNFetchBlob from 'rn-fetch-blob';
       const filter = options[index];
 
       const updated = await ScanbotSDK.applyImageFilterOnPage(
-        //Pages.selectedPage,
-        page,
+        Pages.selectedPage,
         // @ts-ignore
         filter,
       );
 
-      console.log('ScanbotDetailImage updated = ', updated);
+      console.log('ScanbotImage updated = ', updated);
 
       //updateCurrentPage(updated);
     };
@@ -101,12 +117,34 @@ import RNFetchBlob from 'rn-fetch-blob';
       if (!(await SDKUtils.checkLicense())) {
         return;
       }
-      const result = await ScanbotSDK.UI.startCroppingScreen(page, {
+
+      console.log('ScanbotImage Pages.selectedPage = ', Pages.selectedPage);
+
+
+
+      const result = await ScanbotSDK.UI.startCroppingScreen(Pages.selectedPage, {
         doneButtonTitle: 'Aplicar',
-        topBarBackgroundColor: '#c8193c',
-        bottomBarBackgroundColor: '#c8193c',
+        backgroundColor: '#f0f2b5',
+        topBarBackgroundColor: '#00ffff',
+        bottomBarBackgroundColor: '#00ffff',
+        bottomBarButtonsColor: '#000000',
+        topBarButtonsActiveColor: '#F0B42F',
+        polygonColor: '#d60a0a',
+        polygonColorMagnetic: '#88ff00',
+        rotateButtonTitle: 'Rotacionar',
+        titleColor: '#000000',
+        /**
+          * Title of the cancel button.
+          */
+        cancelButtonTitle: 'Cancelar',
+        /**
+         * Title of the Done button.
+         */
+        doneButtonTitle: 'Ok',
         // See further config properties ...
       });
+
+      console.log('ScanbotImage result = ', result);
 
       if (result.status === 'OK') {
         if (result.page) {
@@ -119,10 +157,10 @@ import RNFetchBlob from 'rn-fetch-blob';
       /**
        * chama update no ScanbotImage
        */
-      //Pages.update(page);
+      Pages.update(page);
 
 
-      //Pages.selectedPage = page;
+      Pages.selectedPage = page;
 
       refresh();
     }
@@ -135,7 +173,7 @@ import RNFetchBlob from 'rn-fetch-blob';
     }
 
     function deleteButtonPress() {
-      //Pages.list.splice(Pages.list.indexOf(Pages.selectedPage), 1);
+      Pages.list.splice(Pages.list.indexOf(Pages.selectedPage), 1);
       // @ts-ignore
       //props.navigation.pop();
     }
@@ -168,8 +206,8 @@ import RNFetchBlob from 'rn-fetch-blob';
                   imageDetails.image,
                   common.containImage,
                 ]}
-                source={{uri: page.documentImageFileUri}}
-                key={page.pageId}
+                source={{uri: Pages.selectedPage.documentImageFileUri}}
+                key={Pages.selectedPage.pageId}
               />
               <View style={common.bottomBar}>
                 <Text
@@ -193,8 +231,8 @@ import RNFetchBlob from 'rn-fetch-blob';
               </View>
               <ActionSheet
                 ref={getActionSheetRef}
-                title={'Filters'}
-                message="Choose an image filter to see how it enhances the document"
+                title={'Filtros'}
+                message="Escolha um filtro de imagem para ver como melhora o documento"
                 options={options}
                 cancelButtonIndex={CANCEL_INDEX}
                 onPress={handlePress}
