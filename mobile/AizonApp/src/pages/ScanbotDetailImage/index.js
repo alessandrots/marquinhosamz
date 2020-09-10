@@ -25,6 +25,7 @@ import { ContainerHeader, ContainerFooter } from '../Home/styles';
 import ScanbotSDK from 'react-native-scanbot-sdk';
 import RNFetchBlob from 'rn-fetch-blob';
 import {ActionSheetCustom as ActionSheet} from 'react-native-custom-actionsheet';
+import { alertMessage } from '../../util/util';
 
 /**
  *
@@ -114,13 +115,7 @@ import {ActionSheetCustom as ActionSheet} from 'react-native-custom-actionsheet'
     };
 
     async function cropButtonPress() {
-      if (!(await SDKUtils.checkLicense())) {
-        return;
-      }
-
       console.log('ScanbotImage Pages.selectedPage = ', Pages.selectedPage);
-
-
 
       const result = await ScanbotSDK.UI.startCroppingScreen(Pages.selectedPage, {
         doneButtonTitle: 'Aplicar',
@@ -145,6 +140,8 @@ import {ActionSheetCustom as ActionSheet} from 'react-native-custom-actionsheet'
       });
 
       console.log('ScanbotImage result = ', result);
+
+      alertMessage( 'startCroppingScreen', null, null, 'ScanbotSDK')
 
       if (result.status === 'OK') {
         if (result.page) {
@@ -200,43 +197,44 @@ import {ActionSheetCustom as ActionSheet} from 'react-native-custom-actionsheet'
     function getMontagemTela() {
         return (
             <>
-              <SafeAreaView />
-              <Image
-                style={[
-                  imageDetails.image,
-                  common.containImage,
-                ]}
-                source={{uri: Pages.selectedPage.documentImageFileUri}}
-                key={Pages.selectedPage.pageId}
-              />
-              <View style={common.bottomBar}>
-                <Text
-                  style={common.bottomBarButton}
-                  onPress={() => cropButtonPress()}>
-                  CROP & ROTATE
-                </Text>
-                <Text
-                  style={common.bottomBarButton}
-                  onPress={() => filterButtonPress()}>
-                  FILTER
-                </Text>
-                <Text
+            <SafeAreaView style={imageResults.container}>
+                <Image
                   style={[
-                    common.bottomBarButton,
-                    common.alignRight,
+                    imageDetails.image,
+                    common.containImage,
                   ]}
-                  onPress={() => deleteButtonPress()}>
-                  DELETE
-                </Text>
-              </View>
-              <ActionSheet
-                ref={getActionSheetRef}
-                title={'Filtros'}
-                message="Escolha um filtro de imagem para ver como melhora o documento"
-                options={options}
-                cancelButtonIndex={CANCEL_INDEX}
-                onPress={handlePress}
-              />
+                  source={{uri: Pages.selectedPage.documentImageFileUri}}
+                  key={Pages.selectedPage.pageId}
+                />
+                <View style={common.bottomBar}>
+                  <Text
+                    style={common.bottomBarButton}
+                    onPress={() => cropButtonPress()}>
+                    CROP & ROTATE
+                  </Text>
+                  <Text
+                    style={common.bottomBarButton}
+                    onPress={() => filterButtonPress()}>
+                    FILTER
+                  </Text>
+                  <Text
+                    style={[
+                      common.bottomBarButton,
+                      common.alignRight,
+                    ]}
+                    onPress={() => deleteButtonPress()}>
+                    DELETE
+                  </Text>
+                </View>
+                <ActionSheet
+                  ref={getActionSheetRef}
+                  title={'Filtros'}
+                  message="Escolha um filtro de imagem para ver como melhora o documento"
+                  options={options}
+                  cancelButtonIndex={CANCEL_INDEX}
+                  onPress={handlePress}
+                />
+            </SafeAreaView>
             </>
           );
     }
