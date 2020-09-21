@@ -106,3 +106,11 @@ https://github.com/leecade/react-native-swiper
 
 # Integracao Autenticacao
 
+
+# Integração OpenCV
+https://www.youtube.com/watch?v=oNn68UX0194
+https://github.com/jhansireddy/AndroidScannerDemo
+https://medium.com/hackernoon/how-to-use-opencv-in-react-native-for-image-processing-db997e73678c
+
+
+
