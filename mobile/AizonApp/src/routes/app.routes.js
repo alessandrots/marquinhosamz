@@ -112,6 +112,11 @@ function AppRoutes(){
             component={ChangePasswd}
             options={{ title: 'Alterar Senha' }}/>
 
+          <AppDrawer.Screen
+            name="Home"
+            component={Home}
+            options={{ title: 'Home' }}/>
+
 {/**
 
           <AppDrawer.Screen

@@ -17,18 +17,46 @@ function CameraScreen({
 
     function pickFromGallery() {
         ImagePicker.openPicker({
-            cropping: false,
+            cropping: true,
             multiple: false,
             includeBase64: true,
+            showCropGuidelines: true,
+            showCropFrame: true,
             width: 300,
             height: 400,
         }).then(image => {
 
-            const { data } = image
+            console.log('\n CameraScreen image = ', image);
 
-            takingPicture(data)
+            //const { data } = image
 
-        }).catch(error => console.log(error))
+            takingPicture('data:image/jpeg;base64,' + image.data)
+
+        }).catch((error) => {
+            console.log('\n CameraScreen error = ', error);
+        });
+    }
+
+    function takePhoto() {
+        ImagePicker.openCamera({
+            cropping: true,
+            multiple: false,
+            includeBase64: true,
+            showCropGuidelines: true,
+            showCropFrame: true,
+            width: 300,
+            height: 400,
+        }).then(image => {
+
+            console.log('\n photo CameraScreen image = ', image);
+
+            //const { data } = image
+
+            takingPicture('data:image/jpeg;base64,' + image.data)
+
+        }).catch((error) => {
+            console.log('\n CameraScreen error = ', error);
+        });
     }
 
     return (
@@ -73,7 +101,7 @@ function CameraScreen({
                 </View>
 
                 <TouchableOpacity
-                    onPress={() => takingPicture()}
+                    onPress={() => takePhoto()}
                     style={styles.buttonBorder}
                 >
                     <View style={styles.button} />

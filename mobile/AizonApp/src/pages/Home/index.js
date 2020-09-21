@@ -112,10 +112,11 @@ export default function Home(props) {
 
 
     <Background>
-    <ContainerHeader>
-      <Header titlePage="Foto2 de Documento"/>
-    </ContainerHeader>
+      <ContainerHeader>
+        <Header titlePage="Foto2 de Documento"/>
+      </ContainerHeader>
 
+        <Camera />
 
         <SubmitButton onPress={handleRefreshToken}>
             <SubmitText>handleRefreshToken</SubmitText>

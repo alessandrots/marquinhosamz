@@ -22,6 +22,7 @@ function Camera() {
     async function takingPicture(image = undefined) {
         try {
 
+            console.log('\n CameraScreen0 image = ', image);
             let imageLocal = ''
 
             setIsTakingPicture(true)
@@ -40,7 +41,11 @@ function Camera() {
                 }
             }
 
-            scanImage(imageLocal)
+            console.log('\n CameraScreen2 imageLocal = ', imageLocal);
+            //scanImage(imageLocal);
+
+            setImage(imageLocal);
+            setIsTakingPicture(false);
 
 
         } catch(error) {
@@ -63,8 +68,10 @@ function Camera() {
                     {cancelable: false},
                 )
             },  (data) => {
-                setImage(data)
-                setIsTakingPicture(false)
+
+                console.log('\n CameraScreen3 data = ', data);
+                setImage(data);
+                setIsTakingPicture(false);
             })
         }
     }
