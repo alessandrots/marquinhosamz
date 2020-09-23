@@ -132,7 +132,7 @@ android {
 
     defaultConfig {
         applicationId "com.aizonapp"
-        minSdkVersion rootProject.ext.minSdkVersion
+        minSdkVersion 19
         targetSdkVersion rootProject.ext.targetSdkVersion
         missingDimensionStrategy 'react-native-camera', 'general'
         multiDexEnabled true
@@ -217,6 +217,7 @@ dependencies {
         exclude group:'com.facebook.flipper'
     }
     implementation project(path: ':opencv4')
+    implementation project(path: ':scanlibrary')
 
     if (enableHermes) {
         def hermesPath = "../../node_modules/hermes-engine/android/";
