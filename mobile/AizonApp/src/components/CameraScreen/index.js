@@ -66,29 +66,7 @@ function CameraScreen({
                 <View style={styles.squareMask} />
             </View>
 
-            <Camera
-                ref={cameraRef}
-                style={styles.preview}
-                type={Camera.Constants.Type.back}
-                autoFocus={Camera.Constants.AutoFocus.on}
-                flashMode={Camera.Constants.FlashMode.off}
-                androidCameraPermissionOptions={{
-                  title: 'Permission to use camera',
-                  message: 'We need your permission to use your camera',
-                  buttonPositive: 'Ok',
-                  buttonNegative: 'Cancelar',
-                }}
-                androidRecordAudioPermissionOptions={{
-                  title: 'Permission to use audio recording',
-                  message: 'We need your permission to use your audio',
-                  buttonPositive: 'Ok',
-                  buttonNegative: 'Cancelar',
-                }}
-                onGoogleVisionBarcodesDetected={({ barcodes }) =>  {
-                  console.log(barcodes);
-                }}
 
-            ></Camera>
 
             <View style={styles.buttonContainer}>
                 <View style={styles.iconContainer}>
