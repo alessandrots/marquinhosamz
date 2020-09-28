@@ -1,10 +1,12 @@
 package com.amazonlibrary;
 
+import com.aizonapp.ScannerAmzActivity;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.Callback;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
@@ -32,9 +34,13 @@ public class RNOpenCvLibraryModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void callAlessandro(String imageAsBase64, Callback errorCallback, Callback successCallback) {
-        System.out.println("callAlessandro ... ");
+        System.out.println("RNOpenCvLibrary callAlessandro ... ");
 
-        successCallback.invoke(imageAsBase64);
+        Intent i = new Intent(this.reactContext, ScannerAmzActivity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        this.reactContext.startActivity(i);
+
+        successCallback.invoke("Atividade Criada");
     }
 
     @ReactMethod

@@ -11,7 +11,7 @@ import Orientation from 'react-native-orientation-locker'
 
 import Camera from '../../components/Camera'
 
-
+import OpenCV from '../../NativeModules/OpenCV'
 import FotoCmp from '../../components/FotoCmp';
 
 import { Background, ContainerHeader } from '../Home/styles';
@@ -57,6 +57,32 @@ export default function Home(props) {
     console.log('\n\n route handleRefreshToken = ');
     refreshToken();
   }
+
+  function scanner() {
+    console.log('\n\n RNOpenCvLibrary react = ');
+    scanImage('scanner');
+  }
+
+  function scanImage(image) {
+    if(Platform.OS === 'android') {
+        OpenCV.callAlessandro(image, (err) => {
+
+            Alert.alert(
+                'Atenção',
+                'Nenhuma imagem detectada',
+                [
+                    {text: 'Ok', onPress: () => {}},
+                ],
+                {cancelable: false},
+            )
+
+        },  (data) => {
+
+          console.log('\n scanImage data = ', data);
+
+        });
+    }
+}
 
   function getModalPhoto () {
     console.log('\n\n getModalPhoto modalVisibleSideUm = ', modalVisibleSideUm);
@@ -108,19 +134,22 @@ export default function Home(props) {
 <Camera />
         </Background>
       */ }
+
+      {/**
+        <Camera />
+
+      */ }
  return (
 
 
     <Background>
-      <ContainerHeader>
-        <Header titlePage="Foto2 de Documento"/>
-      </ContainerHeader>
+        <ContainerHeader>
+          <Header titlePage="Scanner"/>
+        </ContainerHeader>
 
-        <Camera />
-
-        <SubmitButton onPress={handleRefreshToken}>
-            <SubmitText>handleRefreshToken</SubmitText>
-        </SubmitButton>
+         <SubmitButton onPress={scanner}>
+            <SubmitText>Scan Lib</SubmitText>
+         </SubmitButton>
 
 
     </Background>
