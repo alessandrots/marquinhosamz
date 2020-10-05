@@ -138,6 +138,10 @@ export default function Home(props) {
       {/**
         <Camera />
 
+        <SubmitButton onPress={scanner}>
+            <SubmitText>Scan Lib</SubmitText>
+         </SubmitButton>
+
       */ }
  return (
 
@@ -147,10 +151,10 @@ export default function Home(props) {
           <Header titlePage="Scanner"/>
         </ContainerHeader>
 
-         <SubmitButton onPress={scanner}>
+
+        <SubmitButton onPress={scanner}>
             <SubmitText>Scan Lib</SubmitText>
          </SubmitButton>
-
 
     </Background>
   );
