@@ -2,15 +2,15 @@
 <resources>
 
     <string name="app_name">ScanLibrary</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
-    <string name="scanning">Scanning</string>
-    <string name="done">Save</string>
-    <string name="scan">Next</string>
+    <string name="hello_world">e aí Mundão!</string>
+    <string name="action_settings">Configurações</string>
+    <string name="scanning">Scaneando</string>
+    <string name="done">Salvar</string>
+    <string name="scan">Continuar</string>
     <string name="cantCrop">Cant crop the image, change the points</string>
     <string name="ok">Ok</string>
-    <string name="loading">Loading</string>
-    <string name="applying_filter">Applying filter</string>
-    <string name="low_memory">Low Memory</string>
-    <string name="low_memory_message">Your phone is low on memory, you may feel some lags while editing images.</string>
+    <string name="loading">Carregando...</string>
+    <string name="applying_filter">Aplicando filtro</string>
+    <string name="low_memory">Memória Baixa</string>
+    <string name="low_memory_message">Seu fone está com pouca memória, você pode ter alguns lags enquanto edita imagem.</string>
 </resources>

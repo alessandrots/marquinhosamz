@@ -5,6 +5,7 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.Callback;
+import com.scanlibrary.ScanActivity;
 import com.scanlibrary.ScanConstants;
 
 import android.content.Intent;
@@ -45,9 +46,18 @@ public class RNOpenCvLibraryModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void callAlessandro(String imageAsBase64, Callback errorCallback, Callback successCallback) {
         System.out.println("RNOpenCvLibrary callAlessandro ... ");
+        int REQUEST_CODE = 99;
+        int preference = ScanConstants.OPEN_CAMERA;
 
-        Intent i = new Intent(this.reactContext, ScannerAmzActivity.class);
+        //Assim vai para uma outra janela
+        //Intent i = new Intent(this.reactContext, ScannerAmzActivity.class);
+
+        /**
+         Assim foi direto para a camera
+         */
+        Intent i = new Intent(this.reactContext, ScanActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        i.putExtra(ScanConstants.OPEN_INTENT_PREFERENCE, preference);
 
         this.reactContext.startActivity(i);
 

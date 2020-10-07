@@ -11,6 +11,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -20,6 +21,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -211,12 +213,44 @@ public class ScanFragment extends Fragment {
             showProgressDialog(getString(R.string.scanning));
         }
 
+        /***
         @Override
         protected Bitmap doInBackground(Void... params) {
             Bitmap bitmap =  getScannedBitmap(original, points);
             Uri uri = Utils.getUri(getActivity(), bitmap);
+
             scanner.onScanFinish(uri);
             return bitmap;
+        }
+         */
+
+        /***
+         * aqui posso passar os points num outro método onScanFinish(uri, points, bitmap)
+         *
+         * e de repente o bitmap já passando..
+         */
+        @Override
+        protected Bitmap doInBackground(Void... params) {
+            Uri uriOriginal = Utils.getUri(getActivity(), original);
+
+            Bitmap bitmapScanned =  getScannedBitmap(original, points);
+            Uri uriScanned = Utils.getUri(getActivity(), bitmapScanned);
+
+            String imgOriginal = this.encodeImage(original);
+            String imgScanned  = this.encodeImage(bitmapScanned);
+
+            scanner.onScanFinishByAmazon(uriOriginal, uriScanned, points);
+            return bitmapScanned;
+        }
+
+        private String encodeImage(Bitmap bm)
+        {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bm.compress(Bitmap.CompressFormat.JPEG,100,baos);
+            byte[] b = baos.toByteArray();
+            String encImage = Base64.encodeToString(b, Base64.DEFAULT);
+
+            return encImage;
         }
 
         @Override

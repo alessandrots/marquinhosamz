@@ -18,4 +18,6 @@ public class ScanConstants {
             .getExternalStorageDirectory().getPath() + "/scanSample";
 
     public final static String SELECTED_BITMAP = "selectedBitmap";
+    public final static String ORIGINAL_IMG_URI = "originaImgUri";
+    public final static String POINTS_MARKED_ORIGINAL_IMG = "pointsMarkedOriginalImg";
 }

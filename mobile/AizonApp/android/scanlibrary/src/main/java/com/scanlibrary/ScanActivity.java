@@ -5,8 +5,14 @@ import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.content.ComponentCallbacks2;
 import android.graphics.Bitmap;
+import android.graphics.PointF;
 import android.net.Uri;
 import android.os.Bundle;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by jhansi on 28/03/15.
@@ -59,6 +65,39 @@ public class ScanActivity extends Activity implements IScanner, ComponentCallbac
         fragmentTransaction.add(R.id.content, fragment);
         fragmentTransaction.addToBackStack(ResultFragment.class.toString());
         fragmentTransaction.commit();
+    }
+
+    @Override
+    public void onScanFinishByAmazon(Uri uriOriginal, Uri uriScanned, Map<Integer, PointF> points) {
+        ResultFragment fragment = new ResultFragment();
+        Bundle bundle = new Bundle();
+
+        bundle.putParcelable(ScanConstants.SCANNED_RESULT, uriScanned);
+        bundle.putParcelable(ScanConstants.ORIGINAL_IMG_URI, uriOriginal);
+
+        HashMap<Integer, PointF> mapPoints = convertMapPointsToSerializableHash(points);
+        bundle.putSerializable(ScanConstants.POINTS_MARKED_ORIGINAL_IMG, mapPoints);
+
+        fragment.setArguments(bundle);
+        android.app.FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.add(R.id.content, fragment);
+        fragmentTransaction.addToBackStack(ResultFragment.class.toString());
+        fragmentTransaction.commit();
+    }
+
+    private HashMap<Integer, PointF> convertMapPointsToSerializableHash(Map<Integer, PointF> points) {
+        Set<Integer> keysPoints = points.keySet();
+        Iterator<Integer> iteKeys = keysPoints.iterator();
+
+        HashMap<Integer, PointF> mapPoints = new HashMap();
+
+        while (iteKeys.hasNext()) {
+            Integer key = iteKeys.next();
+            PointF pointF = points.get(key);
+            mapPoints.put(key, pointF);
+        }
+        return mapPoints;
     }
 
     @Override
