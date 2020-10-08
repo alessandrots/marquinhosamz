@@ -113,4 +113,6 @@ https://github.com/jhansireddy/AndroidScannerDemo
 https://medium.com/hackernoon/how-to-use-opencv-in-react-native-for-image-processing-db997e73678c
 
 
+https://medium.com/@filswino/making-rest-calls-download-upload-files-with-one-line-of-code-on-android-no-retrofit-needed-5c0574f41476
+https://github.com/amitshekhariitbhu/Fast-Android-Networking
 
