@@ -9,23 +9,38 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.Priority;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONArrayRequestListener;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.scanlibrary.ScanActivity;
 import com.scanlibrary.ScanConstants;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 public class ScannerAmzActivity extends AppCompatActivity {
 
+    private static final String TAG = "ScannerAmzActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AndroidNetworking.initialize(getApplicationContext());
         setContentView(R.layout.activity_scanlib_amz);
     }
 
     public void openCamera(View v) {
+
+        executePost(v);
+        executeGet(v);
 
         int REQUEST_CODE = 99;
         int preference = ScanConstants.OPEN_CAMERA;
@@ -43,6 +58,53 @@ public class ScannerAmzActivity extends AppCompatActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(ScanConstants.OPEN_INTENT_PREFERENCE, preference);
         startActivityForResult(intent, REQUEST_CODE);
+    }
+
+    public void executePost(View v) {
+        Log.i(TAG, "executePost " );
+
+        AndroidNetworking.post("https://fierce-cove-29863.herokuapp.com/createAnUser")
+                .addBodyParameter("firstname", "Amit")
+                .addBodyParameter("lastname", "Shekhar")
+                .setTag("test")
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        // do anything with response
+                        Log.i(TAG, "POST onResponse = " + response.toString() );
+                    }
+                    @Override
+                    public void onError(ANError error) {
+                        // handle error
+                        Log.i(TAG, "GET ANError = " + error.toString() );
+                    }
+                });
+    }
+
+    public void executeGet(View v) {
+        Log.i(TAG, "executeGet " );
+
+        AndroidNetworking.get("https://fierce-cove-29863.herokuapp.com/getAllUsers/{pageNumber}")
+                .addPathParameter("pageNumber", "0")
+                .addQueryParameter("limit", "3")
+                .addHeaders("token", "1234")
+                .setTag("test")
+                .setPriority(Priority.LOW)
+                .build()
+                .getAsJSONArray(new JSONArrayRequestListener() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        // do anything with response
+                        Log.i(TAG, "GET onResponse = " + response.toString() );
+                    }
+                    @Override
+                    public void onError(ANError error) {
+                        // handle error
+                        Log.i(TAG, "GET ANError = " + error.toString() );
+                    }
+                });
     }
 
     private String encodeImage(Bitmap bm)

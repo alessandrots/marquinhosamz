@@ -8,6 +8,17 @@ import android.graphics.Bitmap;
 import android.graphics.PointF;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.Priority;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONArrayRequestListener;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -19,11 +30,61 @@ import java.util.Set;
  */
 public class ScanActivity extends Activity implements IScanner, ComponentCallbacks2 {
 
+    private static final String TAG = "ScanActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AndroidNetworking.initialize(getApplicationContext());
         setContentView(R.layout.scan_layout);
         init();
+    }
+
+    public void executePost(View v) {
+        Log.i(TAG, "executePost " );
+
+        AndroidNetworking.post("https://fierce-cove-29863.herokuapp.com/createAnUser")
+                .addBodyParameter("firstname", "Amit")
+                .addBodyParameter("lastname", "Shekhar")
+                .setTag("test")
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        // do anything with response
+                        Log.i(TAG, "POST onResponse = " + response.toString() );
+                    }
+                    @Override
+                    public void onError(ANError error) {
+                        // handle error
+                        Log.i(TAG, "GET ANError = " + error.toString() );
+                    }
+                });
+    }
+
+    public void executeGet(View v) {
+        Log.i(TAG, "executeGet " );
+
+        AndroidNetworking.get("https://fierce-cove-29863.herokuapp.com/getAllUsers/{pageNumber}")
+                .addPathParameter("pageNumber", "0")
+                .addQueryParameter("limit", "3")
+                .addHeaders("token", "1234")
+                .setTag("test")
+                .setPriority(Priority.LOW)
+                .build()
+                .getAsJSONArray(new JSONArrayRequestListener() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        // do anything with response
+                        Log.i(TAG, "GET onResponse = " + response.toString() );
+                    }
+                    @Override
+                    public void onError(ANError error) {
+                        // handle error
+                        Log.i(TAG, "GET ANError = " + error.toString() );
+                    }
+                });
     }
 
     private void init() {
@@ -34,6 +95,9 @@ public class ScanActivity extends Activity implements IScanner, ComponentCallbac
         android.app.FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.content, fragment);
+
+        executeGet(null);
+        executePost(null);
         fragmentTransaction.commit();
     }
 
