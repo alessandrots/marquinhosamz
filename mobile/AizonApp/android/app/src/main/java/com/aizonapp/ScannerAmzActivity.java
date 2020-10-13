@@ -107,6 +107,10 @@ public class ScannerAmzActivity extends AppCompatActivity {
                 });
     }
 
+    /***
+     *
+     * Gerar a img base 64
+     */
     private String encodeImage(Bitmap bm)
     {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();

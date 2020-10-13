@@ -8,14 +8,17 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
+import java.util.HashMap;
 
 /**
  * Created by jhansi on 29/03/15.
@@ -25,13 +28,21 @@ public class ResultFragment extends Fragment {
     private View view;
     private ImageView scannedImageView;
     private Button doneButton;
-    private Bitmap original;
+    private Bitmap imgScanned;
     private Button originalButton;
     private Button MagicColorButton;
     private Button grayModeButton;
     private Button bwButton;
     private Bitmap transformed;
     private static ProgressDialogFragment progressDialogFragment;
+
+    private HashMap mapaPoints;
+
+    //Base64 img original
+    private String imgBase64Original;
+
+    //Base64 img scanneada
+    private String imgBase64Scanned;
 
     public ResultFragment() {
     }
@@ -53,22 +64,62 @@ public class ResultFragment extends Fragment {
         grayModeButton.setOnClickListener(new GrayButtonClickListener());
         bwButton = (Button) view.findViewById(R.id.BWMode);
         bwButton.setOnClickListener(new BWButtonClickListener());
-        Bitmap bitmap = getBitmap();
-        setScannedImage(bitmap);
+
+        Bitmap bitmapScanned = generateBitmpasBase64();
+
+        setScannedImage(bitmapScanned);
+
         doneButton = (Button) view.findViewById(R.id.doneButton);
-        doneButton.setOnClickListener(new DoneButtonClickListener());
+        doneButton.setOnClickListener(new DoneButtonClickListener(this));
     }
 
     private Bitmap getBitmap() {
         Uri uri = getUri();
+
         try {
-            original = Utils.getBitmap(getActivity(), uri);
+            imgScanned = Utils.getBitmap(getActivity(), uri);
             getActivity().getContentResolver().delete(uri, null, null);
-            return original;
+            return imgScanned;
         } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private Bitmap convertUriToBitmap(Uri uri) {
+        Bitmap bitmap = null;
+
+        try {
+            bitmap = Utils.getBitmap(getActivity(), uri);
+            getActivity().getContentResolver().delete(uri, null, null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return bitmap;
+    }
+
+    private Bitmap generateBitmpasBase64() {
+        //uri da imagem original
+        Uri uriOriginal = getUriOriginal();
+
+        Bitmap bitmapOriginal = convertUriToBitmap(uriOriginal);
+
+        //Uri da img scanneada
+        Uri uri = getUri();
+
+        Bitmap bitmapScanned = convertUriToBitmap(uri); //getBitmap();
+        this.imgScanned = bitmapScanned;
+
+        this.mapaPoints = getPoints();
+
+        //Base64 img original
+        this.imgBase64Original = encodeImage(bitmapOriginal);
+
+        //Base64 img scanneada
+        this.imgBase64Scanned  = encodeImage(bitmapScanned);
+
+        return bitmapScanned;
     }
 
     private Uri getUri() {
@@ -76,11 +127,42 @@ public class ResultFragment extends Fragment {
         return uri;
     }
 
+    private Uri getUriOriginal() {
+        Uri uri = getArguments().getParcelable(ScanConstants.ORIGINAL_IMG_URI);
+        return uri;
+    }
+
+    private HashMap getPoints() {
+        Serializable ser = getArguments().getSerializable(ScanConstants.POINTS_MARKED_ORIGINAL_IMG);
+        HashMap mapaPoints = (HashMap)ser;
+        return mapaPoints;
+    }
+
+    /***
+     *
+     * Gerar a img base 64
+     */
+    private String encodeImage(Bitmap bm)
+    {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bm.compress(Bitmap.CompressFormat.JPEG,100,baos);
+        byte[] b = baos.toByteArray();
+        String encImage = Base64.encodeToString(b, Base64.DEFAULT);
+
+        return encImage;
+    }
+
     public void setScannedImage(Bitmap scannedImage) {
         scannedImageView.setImageBitmap(scannedImage);
     }
 
     private class DoneButtonClickListener implements View.OnClickListener {
+        private ResultFragment resultFragment;
+
+        public DoneButtonClickListener(ResultFragment fragment) {
+            this.resultFragment = fragment;
+        }
+
         @Override
         public void onClick(View v) {
             showProgressDialog(getResources().getString(R.string.loading));
@@ -91,12 +173,26 @@ public class ResultFragment extends Fragment {
                         Intent data = new Intent();
                         Bitmap bitmap = transformed;
                         if (bitmap == null) {
-                            bitmap = original;
+                            bitmap = imgScanned;
                         }
                         Uri uri = Utils.getUri(getActivity(), bitmap);
+
                         data.putExtra(ScanConstants.SCANNED_RESULT, uri);
+
+                        data.putExtra(ScanConstants.SCANNED_IMG_BASE64, resultFragment.imgBase64Scanned);
+                        data.putExtra(ScanConstants.ORIGINAL_IMG_BASE64, resultFragment.imgBase64Original);
+                        data.putExtra(ScanConstants.ARRAY_COORDENADAS_Img, resultFragment.mapaPoints);
+
+
                         getActivity().setResult(Activity.RESULT_OK, data);
-                        original.recycle();
+
+                        ((ScanActivity)getActivity()).getDataFromFragment(resultFragment.imgBase64Scanned, resultFragment.imgBase64Original,  resultFragment.mapaPoints);
+                        /**
+                         *
+                         * SERá q aqui volta com os dados para o ScanActivity
+                         * TODO debugar
+                         */
+                        imgScanned.recycle();
                         System.gc();
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
@@ -121,13 +217,13 @@ public class ResultFragment extends Fragment {
                 @Override
                 public void run() {
                     try {
-                        transformed = ((ScanActivity) getActivity()).getBWBitmap(original);
+                        transformed = ((ScanActivity) getActivity()).getBWBitmap(imgScanned);
                     } catch (final OutOfMemoryError e) {
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                transformed = original;
-                                scannedImageView.setImageBitmap(original);
+                                transformed = imgScanned;
+                                scannedImageView.setImageBitmap(imgScanned);
                                 e.printStackTrace();
                                 dismissDialog();
                                 onClick(v);
@@ -154,13 +250,13 @@ public class ResultFragment extends Fragment {
                 @Override
                 public void run() {
                     try {
-                        transformed = ((ScanActivity) getActivity()).getMagicColorBitmap(original);
+                        transformed = ((ScanActivity) getActivity()).getMagicColorBitmap(imgScanned);
                     } catch (final OutOfMemoryError e) {
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                transformed = original;
-                                scannedImageView.setImageBitmap(original);
+                                transformed = imgScanned;
+                                scannedImageView.setImageBitmap(imgScanned);
                                 e.printStackTrace();
                                 dismissDialog();
                                 onClick(v);
@@ -184,8 +280,8 @@ public class ResultFragment extends Fragment {
         public void onClick(View v) {
             try {
                 showProgressDialog(getResources().getString(R.string.applying_filter));
-                transformed = original;
-                scannedImageView.setImageBitmap(original);
+                transformed = imgScanned;
+                scannedImageView.setImageBitmap(imgScanned);
                 dismissDialog();
             } catch (OutOfMemoryError e) {
                 e.printStackTrace();
@@ -202,13 +298,13 @@ public class ResultFragment extends Fragment {
                 @Override
                 public void run() {
                     try {
-                        transformed = ((ScanActivity) getActivity()).getGrayBitmap(original);
+                        transformed = ((ScanActivity) getActivity()).getGrayBitmap(imgScanned);
                     } catch (final OutOfMemoryError e) {
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                transformed = original;
-                                scannedImageView.setImageBitmap(original);
+                                transformed = imgScanned;
+                                scannedImageView.setImageBitmap(imgScanned);
                                 e.printStackTrace();
                                 dismissDialog();
                                 onClick(v);

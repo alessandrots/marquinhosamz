@@ -4,10 +4,12 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.content.ComponentCallbacks2;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.PointF;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 
@@ -20,6 +22,7 @@ import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -31,6 +34,8 @@ import java.util.Set;
 public class ScanActivity extends Activity implements IScanner, ComponentCallbacks2 {
 
     private static final String TAG = "ScanActivity";
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,6 +153,7 @@ public class ScanActivity extends Activity implements IScanner, ComponentCallbac
         fragmentTransaction.add(R.id.content, fragment);
         fragmentTransaction.addToBackStack(ResultFragment.class.toString());
         fragmentTransaction.commit();
+
     }
 
     private HashMap<Integer, PointF> convertMapPointsToSerializableHash(Map<Integer, PointF> points) {
@@ -163,6 +169,39 @@ public class ScanActivity extends Activity implements IScanner, ComponentCallbac
         }
         return mapPoints;
     }
+
+/**
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        //if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+        if (resultCode == Activity.RESULT_OK) {
+            //Uri uri = data.getExtras().getParcelable(ScanConstants.SCANNED_RESULT);
+
+            String imgBase64Scanned = data.getExtras().getParcelable(ScanConstants.SCANNED_IMG_BASE64);//, resultFragment.imgBase64Scanned);
+            String imgBase64Original = data.getExtras().getParcelable(ScanConstants.ORIGINAL_IMG_BASE64);//, resultFragment.imgBase64Original);
+            HashMap mapaPoints = data.getExtras().getParcelable(ScanConstants.ARRAY_COORDENADAS_Img);//, resultFragment.mapaPoints);
+
+            Bitmap bitmap = null;
+
+             try {
+             bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+             getContentResolver().delete(uri, null, null);
+             //scannedImageView.setImageBitmap(bitmap);
+             } catch (IOException e) {
+             e.printStackTrace();
+             }
+
+        }
+    }
+ */
+
+    protected void getDataFromFragment( String imgBase64Scanned, String imgBase64Original, HashMap mapaPoints) {
+        //this.passDataInterface.onDataReceived(imgBase64Scanned, imgBase64Original, mapaPoints);
+        Bitmap bitmap = null;
+    }
+
 
     @Override
     public void onTrimMemory(int level) {

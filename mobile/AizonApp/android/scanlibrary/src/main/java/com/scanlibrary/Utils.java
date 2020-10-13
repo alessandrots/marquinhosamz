@@ -7,6 +7,7 @@ import android.provider.MediaStore;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Calendar;
 
 /**
  * Created by jhansi on 05/04/15.
@@ -20,7 +21,8 @@ public class Utils {
     public static Uri getUri(Context context, Bitmap bitmap) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), bitmap, "Title", null);
+        //String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), bitmap, "Title", null);
+        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), bitmap, "IMG_" + Calendar.getInstance().getTime(), null);
         return Uri.parse(path);
     }
 
