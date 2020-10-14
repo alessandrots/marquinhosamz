@@ -215,24 +215,6 @@ public class PickImageFragment extends Fragment {
          */
     }
 
-    /**
-     public void openCamera2() {
-     String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-     String imageFileName = timeStamp + ".jpg";
-
-     File storageDir = Environment.getExternalStoragePublicDirectory(
-     Environment.DIRECTORY_PICTURES);
-
-     pictureImagePath = storageDir.getAbsolutePath() + "/" + imageFileName;
-     File file = new File(pictureImagePath);
-     Uri outputFileUri = Uri.fromFile(file);
-
-     Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-     cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-     startActivityForResult(cameraIntent, 1);
-     }
-     */
-
     protected void postImagePick(Bitmap bitmap) {
         Uri uri = Utils.getUri(getActivity(), bitmap);
         bitmap.recycle();

@@ -35,7 +35,14 @@ public class ScanActivity extends Activity implements IScanner, ComponentCallbac
 
     private static final String TAG = "ScanActivity";
 
+    private PassDataInterface passDataInterface;
 
+    public ScanActivity() {
+    }
+
+    public ScanActivity(PassDataInterface passDataInterface) {
+        this.passDataInterface = passDataInterface;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -170,38 +177,22 @@ public class ScanActivity extends Activity implements IScanner, ComponentCallbac
         return mapPoints;
     }
 
-/**
+    protected void getDataFromFragment( String imgBase64Scanned, String imgBase64Original, HashMap mapaPoints) {
+        Bitmap bitmap = null;
+        Intent data = new Intent();
+
+        data.putExtra(ScanConstants.SCANNED_IMG_BASE64, imgBase64Scanned);
+        data.putExtra(ScanConstants.ORIGINAL_IMG_BASE64, imgBase64Original);
+        data.putExtra(ScanConstants.ARRAY_COORDENADAS_Img, mapaPoints);
+
+        setResult(Activity.RESULT_OK, data);
+        //this.passDataInterface.onDataReceived(imgBase64Scanned, imgBase64Original, mapaPoints);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        //if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-        if (resultCode == Activity.RESULT_OK) {
-            //Uri uri = data.getExtras().getParcelable(ScanConstants.SCANNED_RESULT);
-
-            String imgBase64Scanned = data.getExtras().getParcelable(ScanConstants.SCANNED_IMG_BASE64);//, resultFragment.imgBase64Scanned);
-            String imgBase64Original = data.getExtras().getParcelable(ScanConstants.ORIGINAL_IMG_BASE64);//, resultFragment.imgBase64Original);
-            HashMap mapaPoints = data.getExtras().getParcelable(ScanConstants.ARRAY_COORDENADAS_Img);//, resultFragment.mapaPoints);
-
-            Bitmap bitmap = null;
-
-             try {
-             bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-             getContentResolver().delete(uri, null, null);
-             //scannedImageView.setImageBitmap(bitmap);
-             } catch (IOException e) {
-             e.printStackTrace();
-             }
-
-        }
     }
- */
-
-    protected void getDataFromFragment( String imgBase64Scanned, String imgBase64Original, HashMap mapaPoints) {
-        //this.passDataInterface.onDataReceived(imgBase64Scanned, imgBase64Original, mapaPoints);
-        Bitmap bitmap = null;
-    }
-
 
     @Override
     public void onTrimMemory(int level) {

@@ -1,15 +1,19 @@
 package com.amazonlibrary;
 
+import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.Callback;
+import com.scanlibrary.PassDataInterface;
 import com.scanlibrary.ScanActivity;
 import com.scanlibrary.ScanConstants;
 
+import android.app.Activity;
 import android.content.Intent;
 
 import android.net.Uri;
+import android.os.Bundle;
 import android.util.Base64;
 
 import java.io.ByteArrayInputStream;
@@ -20,7 +24,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
-public class RNOpenCvLibraryModule extends ReactContextBaseJavaModule {
+public class RNOpenCvLibraryModule extends ReactContextBaseJavaModule  implements PassDataInterface, ActivityEventListener {
 
     private final ReactApplicationContext reactContext;
     private Uri fileUri;
@@ -28,6 +32,7 @@ public class RNOpenCvLibraryModule extends ReactContextBaseJavaModule {
     public RNOpenCvLibraryModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
+        this.reactContext.addActivityEventListener(this);
     }
 
     @Override
@@ -47,14 +52,17 @@ public class RNOpenCvLibraryModule extends ReactContextBaseJavaModule {
         /**
          Assim foi direto para a camera
          */
-        //ScanActivity sc = new ScanActivity();
-        Intent i = new Intent(this.reactContext, ScanActivity.class);
+        ScanActivity sc = new ScanActivity(RNOpenCvLibraryModule.this);
+        //Intent i = new Intent(this.reactContext, ScanActivity.class);
+        Intent i = new Intent(this.reactContext, sc.getClass());
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         i.putExtra(ScanConstants.OPEN_INTENT_PREFERENCE, preference);
 
+        //this.reactContext.startActivityForResult(i, 99, new Bundle());
         this.reactContext.startActivity(i);
 
         successCallback.invoke("Atividade Criada");
+        //successCallback.invoke(relativeX, relativeY, width, height);
     }
 
     private void convertBase64ToImageFile(String imgBase64) {
@@ -95,7 +103,6 @@ public class RNOpenCvLibraryModule extends ReactContextBaseJavaModule {
 
             // commons-io
             //IOUtils.copy(inputStream, outputStream);
-
         }
 
     }
@@ -121,6 +128,23 @@ public class RNOpenCvLibraryModule extends ReactContextBaseJavaModule {
     }
 
 
+    @Override
+    public void onDataReceived(String imgBase64Scanned, String imgBase64Original, HashMap mapaPoints) {
+        convertBase64ToImageFile(imgBase64Original);
+        convertBase64ToImageFile(imgBase64Scanned);
 
+    }
 
+    @Override
+    public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
+        if (requestCode == Activity.RESULT_OK) {
+            //super.onActivityResult(activity, requestCode, resultCode, data);
+            Bundle bundle = data.getExtras();
+        }
+    }
+
+    @Override
+    public void onNewIntent(Intent intent) {
+        Bundle bundle = intent.getExtras();
+    }
 }
