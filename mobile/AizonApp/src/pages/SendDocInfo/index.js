@@ -6,17 +6,20 @@ import { useNavigation } from '@react-navigation/native';
 import { AuthContext } from '../../contexts/auth';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
-import api from '../../services/api'
+import api from '../../services/api';
 
-import PhotoService from '../../services/photo/PhotoService';
+import FotoScan from '../../components/FotoScan';
 
 import { Background, ContainerMain, SendImageBackground,
   ContainerImageRight, ContainerImageLeft,ContainerDadosView,
   ContainerScreenButton, SubmitButton, SubmitText,
   TitleText, ItemText } from './styles';
+
 import { ContainerHeader, ContainerFooter } from '../Home/styles';
 
 export default function SendDocInfo() {
+
+  const [visible, setVisible] = useState(false);
 
   const { user } = useContext(AuthContext);
 
@@ -26,78 +29,103 @@ export default function SendDocInfo() {
     navigation.navigate('PhotoManager');
   }
 
- return (
-    <Background>
-      <ContainerHeader>
-        <Header titlePage="Orientações"/>
-      </ContainerHeader>
+  function seguirPageFotoScan() {
+    setVisible(true);
+  }
 
-        <ContainerMain>
+  function getFotoScan() {
+    return (
+      <FotoScan/>
+    );
+  }
 
 
-          <ContainerImageRight>
+  function getMainScreen() {
+    return (
+        <Background>
+        <ContainerHeader>
+          <Header titlePage="Orientações"/>
+        </ContainerHeader>
 
-            <Image
-              source={require('../../assets/IdentidadeFrente.png')}
-              style={{
-                width: 150,
-                height: 150,
-                resizeMode: 'contain'
-              }}
-              />
+          <ContainerMain>
+            <ContainerImageRight>
+
+              <Image
+                source={require('../../assets/IdentidadeFrente.png')}
+                style={{
+                  width: 150,
+                  height: 150,
+                  resizeMode: 'contain'
+                }}
+                />
+                <ContainerDadosView>
+                  <TitleText>Primeira Fotografia: </TitleText>
+                  <ItemText>
+                    1 - Posicione primeiramente o
+                    documento pelo lado que contenha a
+                    foto do documento.
+                  </ItemText>
+                  <ItemText>
+                    2 - Tire a fotografia dessa
+                    parte do documento conforme linhas
+                    de orientação.
+                  </ItemText>
+                </ContainerDadosView>
+            </ContainerImageRight>
+
+            <ContainerImageLeft>
               <ContainerDadosView>
-                <TitleText>Primeira Fotografia: </TitleText>
+                <TitleText>Segunda Fotografia: </TitleText>
                 <ItemText>
-                  1 - Posicione primeiramente o
-                  documento pelo lado que contenha a
-                  foto do documento.
+                    1 - Posicione primeiramente o
+                    documento pelo lado que contenha os
+                    dados do documento.
                 </ItemText>
                 <ItemText>
-                  2 - Tire a fotografia dessa
-                  parte do documento conforme linhas
-                  de orientação.
+                    2 - Tire a fotografia dessa
+                    parte do documento conforme linhas
+                    de orientação.
                 </ItemText>
               </ContainerDadosView>
-          </ContainerImageRight>
 
-          <ContainerImageLeft>
-            <ContainerDadosView>
-              <TitleText>Segunda Fotografia: </TitleText>
-              <ItemText>
-                  1 - Posicione primeiramente o
-                  documento pelo lado que contenha os
-                  dados do documento.
-              </ItemText>
-              <ItemText>
-                  2 - Tire a fotografia dessa
-                  parte do documento conforme linhas
-                  de orientação.
-              </ItemText>
-            </ContainerDadosView>
+              <Image
+                source={require('../../assets/IdentidadeTras.png')}
+                style={{
+                  width: 150,
+                  height: 150,
+                  resizeMode: 'contain'
+                }}
+                />
+            </ContainerImageLeft>
 
-            <Image
-              source={require('../../assets/IdentidadeTras.png')}
-              style={{
-                width: 150,
-                height: 150,
-                resizeMode: 'contain'
-              }}
-              />
-          </ContainerImageLeft>
+            <ContainerScreenButton>
+              <SubmitButton onPress={seguirPageFotoScan}>
+                  <SubmitText>Continuar</SubmitText>
+              </SubmitButton>
+            </ContainerScreenButton>
 
-          <ContainerScreenButton>
-            <SubmitButton onPress={seguirPageFoto}>
-                <SubmitText>Continuar</SubmitText>
-            </SubmitButton>
-          </ContainerScreenButton>
+          </ContainerMain>
+        {/**</SendImageBackground>*/}
 
-        </ContainerMain>
-      {/**</SendImageBackground>*/}
+        <ContainerFooter>
+          <Footer titlePage="AIZON"/>
+        </ContainerFooter>
 
-      <ContainerFooter>
-        <Footer titlePage="AIZON"/>
-      </ContainerFooter>
+      </Background>
+    );
+  }
 
-    </Background>
+  function getMontagemTela() {
+    console.log('getMontagemTela = ', visible);
+
+    if (!visible){
+      return getMainScreen();
+    } else {
+     return getFotoScan();
+    }
+  }
+
+ return (
+    getMontagemTela()
   );
 }

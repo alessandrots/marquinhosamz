@@ -1,34 +1,29 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { Alert, StatusBar, StyleSheet, SafeAreaView,
-  View, Text, RefreshControl, Image, ActivityIndicator,
-  TouchableOpacity, Modal, Dimensions } from 'react-native';
+import { StatusBar, StyleSheet, SafeAreaView, Image, ActivityIndicator,
+  TouchableOpacity, Modal, Dimensions, Alert } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
 
 import { AuthContext } from '../../contexts/auth';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
-import ImageList from "../../components/ImageList/ImageList";
+import Header from '../Header';
+import Footer from '../Footer';
+import ImageList from "../ImageList/ImageList";
 import PhotoService from '../../services/photo/PhotoService';
+import FotoLayerCmp from '../FotoLayerCmp';
 
-//import PhotoBase64Service from '../../services/photoBase64/PhotoBase64Service';
+import OpenCV from '../../NativeModules/OpenCV';
 
 import ImageView from "react-native-image-viewing";
 import Icon from "react-native-vector-icons/MaterialIcons";
-//import FotoCmp from '../../components/FotoCmp';
-import FotoLayerCmp from '../../components/FotoLayerCmp';
 
-
-import { Background, ContainerMain,
+import { Background, ContainerMain,ContainerHeader, ContainerFooter,
   ContainerImageRight, ContainerImageLeft, ContainerImagens,ContainerDadosView,
   ContainerScreenButton, SubmitButton, SubmitText,
   TitleText } from './styles';
 
-import { ContainerHeader, ContainerFooter } from '../Home/styles';
-
 import { alertMessage } from '../../util/util';
 
-export default function PhotoManager({ navigator, route }) {
+export default function FotoScan(props) {
 
   const [images, setImages] = useState([]);
   const [currentImageIndex, setImageIndex] = useState(0);
@@ -51,49 +46,6 @@ export default function PhotoManager({ navigator, route }) {
   const { storageIdUpload } = useContext(AuthContext);
 
 
-  useEffect(() => {
-    //console.log('route PhotoManager = ', route);
-
-    if (route.params?.post) {
-      // Post updated, do something with `route.params.post`
-      // For example, send the post to the server
-
-      //console.log('\n\n PhotoManager route.params.post = ', route.params.post);
-      //console.log('\n\n PhotoManager route.params.side = ', route.params.side);
-
-      if (route.params.side == 0) {
-        new Promise((resolve, reject) => {
-          setImageFrontal(route.params.post.base64);
-          resolve(true);
-        })
-        .then((ret) => {
-          //console.log('\n vai chamar o FRONT ret= ', imageFrontal);
-          if (ret) {
-            showImages();
-          }
-        })
-        .catch(() => {
-            console.log('\n Deu pau na rotina de frente \n ');
-        })
-      } else {
-        new Promise((resolve, reject) => {
-          setImageVerso(route.params.post.base64);
-          resolve(true);
-        })
-        .then((ret) => {
-          //console.log('\n vai chamar o VERSO ret= ', imageVerso);
-          if (ret) {
-            showImages();
-          }
-        })
-        .catch(() => {
-            console.log('\n Deu pau na rotina de frente \n ');
-        })
-      }
-    }
-
-  }, [route.params?.post]);
-
 
   /**
    *
@@ -103,7 +55,6 @@ export default function PhotoManager({ navigator, route }) {
    * aí vẽ se as imagens das identidades do Alexandre são mostradas
    *
    */
-
   const navigation = useNavigation();
 
   const onSelect = (images, index) => {
@@ -133,8 +84,6 @@ export default function PhotoManager({ navigator, route }) {
       setIsVisibleList(true);
     }
   }
-
-
 
   /**
    * Após o clique do showImages ou showImagesTemp
@@ -198,7 +147,6 @@ export default function PhotoManager({ navigator, route }) {
     navigation.navigate('ViewData', { side: '0', 'identificacaoDocumento': data.id});
   }
 
-
   function showNewCompPhotoSideZero() {
     setSidePhoto(0);
     setModalVisibleSideZero(true);
@@ -211,7 +159,6 @@ export default function PhotoManager({ navigator, route }) {
 
   function getModalPhoto() {
     return  (
-
       <Background>
         <ContainerHeader>
           <Header titlePage="Foto de Documento"/>
@@ -228,6 +175,7 @@ export default function PhotoManager({ navigator, route }) {
     setModalVisibleSideZero(false);
   }
 
+  /**
   function getMontagemTela() {
     if (!modalVisibleSideUm && !modalVisibleSideZero){
       return getMainScreen();
@@ -235,13 +183,77 @@ export default function PhotoManager({ navigator, route }) {
       return getModalPhoto();
     }
   }
+  */
+
+ function scanImage(image) {
+    if(Platform.OS === 'android') {
+        OpenCV.callAlessandro(image, (err) => {
+
+            Alert.alert(
+                'Atenção',
+                'Nenhuma imagem detectada',
+                [
+                    {text: 'Ok', onPress: () => {}},
+                ],
+                {cancelable: false},
+            )
+
+        },  (data) => {
+          //console.log('\n scanImage data = ', data);
+          Alert.alert(
+            'AIZON',
+            'OK',
+            [
+                {text: 'Ok', onPress: () => {}},
+            ],
+            {cancelable: false},
+        )
+        });
+    }
+  }
+
+  async function measureLayout() {
+  //const measureLayout = async () => {
+    try {
+      var {
+        relativeX,
+        relativeY,
+        width,
+        height
+      } = await OpenCV.measureLayout(100, 100);
+
+      console.log(
+        relativeX + ':' + relativeY + ':' + width + ':' + height
+      );
+
+      Alert.alert(
+          'AIZON',
+          'measureLayout',
+          [
+              {text: 'Ok', onPress: () => {}},
+          ],
+          {cancelable: false},
+      )
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  function scanner() {
+    console.log('\n\n RNOpenCvLibrary react = ');
+    scanImage('scanner');
+  }
+
+  function getMontagemTela() {
+    return getMainScreen();
+  }
 
   function getMainScreen() {
     return (
 
       <Background>
         <ContainerHeader>
-          <Header titlePage="Orientações"/>
+          <Header titlePage="Foto Scanner"/>
         </ContainerHeader>
 
           <ContainerMain>
@@ -250,9 +262,9 @@ export default function PhotoManager({ navigator, route }) {
             <ContainerImageRight>
 
                 <ContainerDadosView>
-                  <TitleText>Primeira Fotografia: </TitleText>
-                  <SubmitButton onPress={ () => showNewCompPhotoSideZero()}>
-                      <SubmitText>Frontal</SubmitText>
+                  <TitleText> Fotografia (Frente): </TitleText>
+                  <SubmitButton onPress={ () => scanner() }>
+                    <SubmitText>Verso</SubmitText>
                   </SubmitButton>
                 </ContainerDadosView>
 
@@ -282,10 +294,10 @@ export default function PhotoManager({ navigator, route }) {
 
             <ContainerImageLeft>
               <ContainerDadosView>
-                <TitleText>Segunda Fotografia: </TitleText>
-                <SubmitButton onPress={ () => showNewCompPhotoSideOne()}>
+                <TitleText>Fotografia (Verso): </TitleText>
+                  <SubmitButton onPress={ () =>scanner() }>
                     <SubmitText>Verso</SubmitText>
-                </SubmitButton>
+                  </SubmitButton>
               </ContainerDadosView>
 
               {imageVerso && (
@@ -346,12 +358,10 @@ export default function PhotoManager({ navigator, route }) {
 
             <ContainerScreenButton>
               <SubmitButton onPress={ () => uploadBase64ToAizonViaBody()}>
-                  <SubmitText>Upload</SubmitText>
+                  <SubmitText>Processar</SubmitText>
               </SubmitButton>
 
-              <SubmitButton onPress={ () => limparTela()}>
-                  <SubmitText>Limpar</SubmitText>
-              </SubmitButton>
+
             </ContainerScreenButton>
 
           </ContainerMain>

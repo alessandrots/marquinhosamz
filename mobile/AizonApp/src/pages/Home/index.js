@@ -9,9 +9,10 @@ import {  View, Text, StyleSheet, Image,
 
 import Orientation from 'react-native-orientation-locker'
 
-import Camera from '../../components/Camera'
+import Camera from '../../components/Camera';
+import FotoScan from '../../components/FotoScan';
 
-import OpenCV from '../../NativeModules/OpenCV'
+import OpenCV from '../../NativeModules/OpenCV';
 import FotoCmp from '../../components/FotoCmp';
 
 import { Background, ContainerHeader } from '../Home/styles';
@@ -82,7 +83,22 @@ export default function Home(props) {
 
         });
     }
-}
+  }
+
+  const measureLayout = async () => {
+    try {
+      var {
+        relativeX,
+        relativeY,
+        width,
+        height
+      } = await OpenCV.measureLayout(100, 100);
+
+      console.log('\n\n SendDocInfo OK = ', relativeX + ':' + relativeY + ':' + width + ':' + height);
+    } catch (e) {
+      console.log('\n\n SendDocInfo error = ', e);
+    }
+  };
 
   function getModalPhoto () {
     console.log('\n\n getModalPhoto modalVisibleSideUm = ', modalVisibleSideUm);
@@ -142,21 +158,24 @@ export default function Home(props) {
             <SubmitText>Scan Lib</SubmitText>
          </SubmitButton>
 
+         <Background>
+            <ContainerHeader>
+              <Header titlePage="Scanner"/>
+            </ContainerHeader>
+
+            <SubmitButton onPress={scanner}>
+                <SubmitText>Scan Lib</SubmitText>
+            </SubmitButton>
+
+            <SubmitButton onPress={measureLayout}>
+                <SubmitText>MEASURE</SubmitText>
+            </SubmitButton>
+
+        </Background>
+
       */ }
  return (
-
-
-    <Background>
-        <ContainerHeader>
-          <Header titlePage="Scanner"/>
-        </ContainerHeader>
-
-
-        <SubmitButton onPress={scanner}>
-            <SubmitText>Scan Lib</SubmitText>
-         </SubmitButton>
-
-    </Background>
+      <FotoScan/>
   );
 }
 

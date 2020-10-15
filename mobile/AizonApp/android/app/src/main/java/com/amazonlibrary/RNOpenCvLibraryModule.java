@@ -1,10 +1,15 @@
 package com.amazonlibrary;
 
 import com.facebook.react.bridge.ActivityEventListener;
+import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.Callback;
+import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.uimanager.IllegalViewOperationException;
+import com.facebook.react.uimanager.PixelUtil;
 import com.scanlibrary.PassDataInterface;
 import com.scanlibrary.ScanActivity;
 import com.scanlibrary.ScanConstants;
@@ -28,6 +33,8 @@ public class RNOpenCvLibraryModule extends ReactContextBaseJavaModule  implement
 
     private final ReactApplicationContext reactContext;
     private Uri fileUri;
+
+    private static final String E_LAYOUT_ERROR = "E_LAYOUT_ERROR";
 
     public RNOpenCvLibraryModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -63,6 +70,37 @@ public class RNOpenCvLibraryModule extends ReactContextBaseJavaModule  implement
 
         successCallback.invoke("Atividade Criada");
         //successCallback.invoke(relativeX, relativeY, width, height);
+    }
+
+    @ReactMethod
+    public void measureLayout(
+            int tag,
+            int ancestorTag,
+            Promise promise) {
+        try {
+            int preference = ScanConstants.OPEN_CAMERA;
+
+            //measureLayout(tag, ancestorTag, mMeasureBuffer);
+            WritableMap map = Arguments.createMap();
+
+            map.putDouble("relativeX", PixelUtil.toDIPFromPixel(10));
+            map.putDouble("relativeY", PixelUtil.toDIPFromPixel(25));
+            map.putDouble("width", PixelUtil.toDIPFromPixel(30));
+            map.putDouble("height", PixelUtil.toDIPFromPixel(45));
+
+            ScanActivity sc = new ScanActivity(RNOpenCvLibraryModule.this);
+            //Intent i = new Intent(this.reactContext, ScanActivity.class);
+            Intent i = new Intent(this.reactContext, sc.getClass());
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            i.putExtra(ScanConstants.OPEN_INTENT_PREFERENCE, preference);
+
+            //this.reactContext.startActivityForResult(i, 99, new Bundle());
+            this.reactContext.startActivity(i);
+
+            promise.resolve(map);
+        } catch (IllegalViewOperationException e) {
+            promise.reject(E_LAYOUT_ERROR, e);
+        }
     }
 
     private void convertBase64ToImageFile(String imgBase64) {

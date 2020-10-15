@@ -81,7 +81,7 @@ public class ScanActivity extends Activity implements IScanner, ComponentCallbac
         AndroidNetworking.get("https://fierce-cove-29863.herokuapp.com/getAllUsers/{pageNumber}")
                 .addPathParameter("pageNumber", "0")
                 .addQueryParameter("limit", "3")
-                .addHeaders("token", "1234")
+                //.addHeaders("token", "1234")
                 .setTag("test")
                 .setPriority(Priority.LOW)
                 .build()
