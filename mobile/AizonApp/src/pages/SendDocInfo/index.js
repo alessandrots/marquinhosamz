@@ -1,14 +1,16 @@
 import React, { useContext, useState } from 'react';
-import { ImageBackground, View, Text, Button, Image } from 'react-native';
+import { ImageBackground, View, Text, Button, ActivityIndicator, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 
 import { AuthContext } from '../../contexts/auth';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
-import api from '../../services/api';
+import PhotoService from '../../services/photo/PhotoService';
 
 import FotoScan from '../../components/FotoScan';
+
+import { alertMessage } from '../../util/util';
 
 import { Background, ContainerMain, SendImageBackground,
   ContainerImageRight, ContainerImageLeft,ContainerDadosView,
@@ -20,6 +22,8 @@ import { ContainerHeader, ContainerFooter } from '../Home/styles';
 export default function SendDocInfo() {
 
   const [visible, setVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [idProcess, setIdProcess] = useState(0);
 
   const { user } = useContext(AuthContext);
 
@@ -30,12 +34,51 @@ export default function SendDocInfo() {
   }
 
   function seguirPageFotoScan() {
-    setVisible(true);
+    //setVisible(true);
+    generateIdForImages();
+  }
+
+  async function generateIdForImages() {
+
+    alertMessage( 'Gerando do ID de controle', null, null, 'AIZON-UPLOAD')
+
+    setLoading(true);
+
+    const resposta = await PhotoService.getIdForProcessImage('/image/getIdDocument');
+
+    //console.log('SendDocInfo generateIdForImages resposta = ', resposta);
+
+    const res = resposta.res
+
+    //console.log('SendDocInfo generateIdForImages res = ', res);
+
+    if (!resposta.isErro) {
+      setLoading(false);
+
+      let data = res.data;
+
+      console.log('SendDocInfo generateIdForImages data = ', data);
+
+      let msg = "ID gerado com sucesso : " + data.Id;
+
+      setIdProcess(data.Id);
+
+      alertMessage( msg, null, null, 'AIZON-UPLOAD');
+
+      //para abrir a tela q vai chamar o componente de Foto
+      setVisible(true);
+
+      //seguirPageFotoScan();
+
+    } else {
+      setLoading(false);
+      alertMessage( 'Houve erro na geração do ID para processamento', null, null, 'AIZON-UPLOAD')
+    }
   }
 
   function getFotoScan() {
     return (
-      <FotoScan/>
+      <FotoScan idProcess={idProcess} />
     );
   }
 
@@ -48,6 +91,7 @@ export default function SendDocInfo() {
         </ContainerHeader>
 
           <ContainerMain>
+            <ActivityIndicator size="large" color="#0EABB5" animating={loading}/>
             <ContainerImageRight>
 
               <Image
@@ -121,7 +165,7 @@ export default function SendDocInfo() {
     if (!visible){
       return getMainScreen();
     } else {
-     return getFotoScan();
+      return getFotoScan();
     }
   }
 

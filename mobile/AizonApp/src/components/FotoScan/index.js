@@ -42,10 +42,19 @@ export default function FotoScan(props) {
   const [modalVisibleSideUm, setModalVisibleSideUm] = useState(false);
   const [sidePhoto, setSidePhoto] = useState(0);
   const [idUpload, setIdUpload] = useState(0);
+  const [idProcess, setIdProcess] = useState(0);
 
   const { storageIdUpload } = useContext(AuthContext);
 
+  useEffect(() => {
 
+    console.log('SendDocInfo props = ', props);
+
+    if (props?.idProcess) {
+      setIdProcess(props.idProcess);
+    }
+
+  }, []);
 
   /**
    *

@@ -28,12 +28,40 @@ const PhotoService = {
                             me.makeErrorLog(error);
                         });
 
-        console.log('getJson response = ', response);
+        console.log('realGetDataForConfig response = ', response);
 
         if (!response) return null;
 
         return response.data;
     },
+
+    getIdForProcessImage: async function (url) {
+        /**
+        const response = await api.get(url)
+                        .catch(function (error) {
+                            me.makeErrorLog(error);
+                        });
+
+        console.log('getIdForProcessImage response = ', response);
+
+        if (!response) return null;
+        */
+
+        let resposta = {};
+        resposta['isErro'] = false;
+
+        let res = await api.get(url)
+                .catch(function (error) {
+                    resposta['isErro'] = true;
+                    resposta['erro'] = error;
+                    me.makeErrorLog(error);
+                });
+
+        resposta['res'] = res;
+
+        return resposta;
+    },
+
 
     // /image/getDataForConfig/6sn96FINoUghUbh
     getDataForConfig: async function (url, id) {
