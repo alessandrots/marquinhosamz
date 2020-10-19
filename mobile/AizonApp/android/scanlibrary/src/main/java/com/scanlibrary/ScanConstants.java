@@ -24,4 +24,7 @@ public class ScanConstants {
     public final static String SCANNED_IMG_BASE64  = "scannedImageBase64";
     public final static String ORIGINAL_IMG_BASE64 = "originalImageBase64";
     public final static String ARRAY_COORDENADAS_Img   = "arrayCoordenadasImg";
+
+    public final static String ID_PROCESS_SCAN_IMAGE   = "idProcess";
+    public final static String IMAGE_TYPE_SCAN_IMAGE   = "imageType";
 }

@@ -42,7 +42,7 @@ export default function FotoScan(props) {
   const [modalVisibleSideUm, setModalVisibleSideUm] = useState(false);
   const [sidePhoto, setSidePhoto] = useState(0);
   const [idUpload, setIdUpload] = useState(0);
-  const [idProcess, setIdProcess] = useState(0);
+  const [idProcess, setIdProcess] = useState("");
 
   const { storageIdUpload } = useContext(AuthContext);
 
@@ -222,7 +222,6 @@ export default function FotoScan(props) {
   }
 
   async function measureLayout() {
-  //const measureLayout = async () => {
     try {
       var {
         relativeX,
@@ -248,9 +247,41 @@ export default function FotoScan(props) {
     }
   };
 
-  function scanner() {
-    console.log('\n\n RNOpenCvLibrary react = ');
-    scanImage('scanner');
+  /**
+    let promise = new Promise(function(resolve, reject) {
+      //
+    });
+   */
+  async function scanImageForProcess(tipoImagem) {
+    try {
+      var {
+        id
+      } = await OpenCV.scanImageForProcess(idProcess, tipoImagem);
+
+      Alert.alert(
+          'AIZON',
+          'scanImageForProcess - ' + id,
+          [
+              {text: 'Ok', onPress: () => {}},
+          ],
+          {cancelable: false},
+      )
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  function scanner(tipoImagem) {
+    console.log('\n\n RNOpenCvLibrary scanImageForProcess = ');
+
+    /**
+    let promise = new Promise(function(resolve, reject) {
+      //
+    });
+    */
+
+    //scanImage('scanner');
+    scanImageForProcess(tipoImagem);
   }
 
   function getMontagemTela() {
@@ -271,9 +302,9 @@ export default function FotoScan(props) {
             <ContainerImageRight>
 
                 <ContainerDadosView>
-                  <TitleText> Fotografia (Frente): </TitleText>
-                  <SubmitButton onPress={ () => scanner() }>
-                    <SubmitText>Verso</SubmitText>
+                  <TitleText> Foto (Frente): </TitleText>
+                  <SubmitButton onPress={ () => scanner(0) }>
+                    <SubmitText>Frente</SubmitText>
                   </SubmitButton>
                 </ContainerDadosView>
 
@@ -303,8 +334,8 @@ export default function FotoScan(props) {
 
             <ContainerImageLeft>
               <ContainerDadosView>
-                <TitleText>Fotografia (Verso): </TitleText>
-                  <SubmitButton onPress={ () =>scanner() }>
+                <TitleText>Foto (Verso): </TitleText>
+                  <SubmitButton onPress={ () =>scanner(1) }>
                     <SubmitText>Verso</SubmitText>
                   </SubmitButton>
               </ContainerDadosView>

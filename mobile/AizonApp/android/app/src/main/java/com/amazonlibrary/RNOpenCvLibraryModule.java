@@ -103,6 +103,29 @@ public class RNOpenCvLibraryModule extends ReactContextBaseJavaModule  implement
         }
     }
 
+    @ReactMethod
+    public void scanImageForProcess(String idProcesso, int tipoImagem, Promise promise) {
+        try {
+            int preference = ScanConstants.OPEN_CAMERA;
+
+            ScanActivity sc = new ScanActivity(RNOpenCvLibraryModule.this);
+            //Intent i = new Intent(this.reactContext, ScanActivity.class);
+            Intent i = new Intent(this.reactContext, sc.getClass());
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            i.putExtra(ScanConstants.OPEN_INTENT_PREFERENCE, preference);
+
+            i.putExtra(ScanConstants.ID_PROCESS_SCAN_IMAGE, idProcesso);
+            i.putExtra(ScanConstants.IMAGE_TYPE_SCAN_IMAGE, Integer.toString(tipoImagem));
+
+            //this.reactContext.startActivityForResult(i, 99, new Bundle());
+            this.reactContext.startActivity(i);
+
+            promise.resolve(idProcesso);
+        } catch (Exception e) {
+            promise.reject(E_LAYOUT_ERROR, e);
+        }
+    }
+
     private void convertBase64ToImageFile(String imgBase64) {
         // tokenize the data
         String[] parts = imgBase64.split(",");

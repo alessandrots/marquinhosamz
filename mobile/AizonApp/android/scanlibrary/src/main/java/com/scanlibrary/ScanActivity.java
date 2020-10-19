@@ -7,6 +7,7 @@ import android.content.ComponentCallbacks2;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.PointF;
+import android.icu.text.Edits;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -36,6 +37,17 @@ public class ScanActivity extends Activity implements IScanner, ComponentCallbac
     private static final String TAG = "ScanActivity";
 
     private PassDataInterface passDataInterface;
+    private String idProcesso;
+    private Integer tipoImagem;
+
+    private float x1 = 0;
+    private float x2 = 0;
+    private float x3 = 0;
+    private float x4 = 0;
+    private float y1 = 0;
+    private float y2 = 0;
+    private float y3 = 0;
+    private float y4 = 0;
 
     public ScanActivity() {
     }
@@ -100,6 +112,7 @@ public class ScanActivity extends Activity implements IScanner, ComponentCallbac
     }
 
     private void init() {
+
         PickImageFragment fragment = new PickImageFragment();
         Bundle bundle = new Bundle();
         bundle.putInt(ScanConstants.OPEN_INTENT_PREFERENCE, getPreferenceContent());
@@ -108,9 +121,28 @@ public class ScanActivity extends Activity implements IScanner, ComponentCallbac
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.content, fragment);
 
-        executeGet(null);
-        executePost(null);
+        this.getDataFromIntent(ScanConstants.ID_PROCESS_SCAN_IMAGE, 0);
+        this.getDataFromIntent(ScanConstants.IMAGE_TYPE_SCAN_IMAGE, 1);
+
+        //executeGet(null);
+        //executePost(null);
         fragmentTransaction.commit();
+    }
+
+    private void getDataFromIntent(String constante, int escolha) {
+        Intent intentFromModule = getIntent();
+        String tmp = intentFromModule.getStringExtra(constante);
+
+        if (null != tmp && !tmp.equalsIgnoreCase("")) {
+            switch (escolha) {
+                case 0:
+                    this.idProcesso = tmp;
+                    break;
+                case 1:
+                    this.tipoImagem = Integer.parseInt(tmp);
+                    break;
+            }
+        }
     }
 
     protected int getPreferenceContent() {
@@ -185,8 +217,85 @@ public class ScanActivity extends Activity implements IScanner, ComponentCallbac
         data.putExtra(ScanConstants.ORIGINAL_IMG_BASE64, imgBase64Original);
         data.putExtra(ScanConstants.ARRAY_COORDENADAS_Img, mapaPoints);
 
+        Set<Integer> keysPoints = mapaPoints.keySet();
+        Iterator<Integer> ite = keysPoints.iterator();
+
+        while (ite.hasNext()) {
+            Integer key = ite.next();
+            PointF pointMap = (PointF)mapaPoints.get(key);
+
+
+            switch (key) {
+                case 0:
+                    this.x1 = pointMap.x;
+                    this.y1 = pointMap.y;
+                    break;
+                case 1:
+                    this.x2 = pointMap.x;
+                    this.y2 = pointMap.y;
+                    break;
+                case 2:
+                    this.x3 = pointMap.x;
+                    this.y3 = pointMap.y;
+                    break;
+                case 3:
+                    this.x4 = pointMap.x;
+                    this.y4 = pointMap.y;
+                    break;
+            }
+        };
+
+        sendImageToProcess(imgBase64Scanned, imgBase64Original);
+
         setResult(Activity.RESULT_OK, data);
         //this.passDataInterface.onDataReceived(imgBase64Scanned, imgBase64Original, mapaPoints);
+    }
+
+    /**
+     *  id..............: [id do documento]
+     *  imageType.......: [imageType -> 0 - Frente | 1 - Verso]
+     *  fileImageOrigin.: [fileImageOrigin  - base64]
+     *  fileImageScanned: [fileImageScanned - base64]
+     *  x1..............: [vertice 1 - coluna]
+     *  y1..............: [vertice 1 - linha]
+     *  x2..............: [vertice 2 - coluna]
+     *  y2..............: [vertice 2 - linha]
+     *  x3..............: [vertice 3 - coluna]
+     *  y3..............: [vertice 3 - linha]
+     *  x4..............: [vertice 4 - coluna]
+     *  y4..............: [vertice 4 - linha]
+     */
+    public void sendImageToProcess(String imgBase64Scanned, String imgBase64Original) {
+        Log.i(TAG, "sendImageToProcess " );
+
+        AndroidNetworking.post("http://45.4.186.2:5000/image/uploadImageDoc")
+                .addBodyParameter("id", this.idProcesso)
+                .addBodyParameter("imageType", this.tipoImagem.toString())
+                .addBodyParameter("fileImageOrigin", imgBase64Original)
+                .addBodyParameter("fileImageScanned", imgBase64Scanned)
+                .addBodyParameter("x1", Float.toString(this.x1))
+                .addBodyParameter("y1", Float.toString(this.y1))
+                .addBodyParameter("x2", Float.toString(this.x2))
+                .addBodyParameter("y2", Float.toString(this.y2))
+                .addBodyParameter("x3", Float.toString(this.x3))
+                .addBodyParameter("y3", Float.toString(this.y3))
+                .addBodyParameter("x4", Float.toString(this.x4))
+                .addBodyParameter("y4", Float.toString(this.y4))
+                .setTag("test")
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        // do anything with response
+                        Log.i(TAG, "POST onResponse = " + response.toString() );
+                    }
+                    @Override
+                    public void onError(ANError error) {
+                        // handle error
+                        Log.i(TAG, "GET ANError = " + error.toString() );
+                    }
+                });
     }
 
     @Override

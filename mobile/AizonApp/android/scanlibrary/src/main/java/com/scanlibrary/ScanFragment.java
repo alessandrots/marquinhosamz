@@ -42,6 +42,8 @@ public class ScanFragment extends Fragment {
     private IScanner scanner;
     private Bitmap original;
 
+
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
