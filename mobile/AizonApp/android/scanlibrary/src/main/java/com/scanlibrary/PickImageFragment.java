@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import androidx.core.content.FileProvider;
 import android.util.Log;
@@ -199,6 +200,37 @@ public class PickImageFragment extends Fragment {
 
         Bitmap photo = (Bitmap) data.getExtras().get("data");
 
+        Log.i(TAG, "width = " + photo.getWidth());
+        Log.i(TAG, "height = " + photo.getHeight());
+
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new
+                Date());
+        File file = new File(ScanConstants.IMAGE_PATH, "IMG_" + timeStamp +
+                ".jpg");
+
+
+        File path = getActivity().getBaseContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        Log.i(TAG, "path = " + path.getPath());
+        File file1 = new File(path,  "IMG_" + timeStamp + ".jpg");
+        //File file1 = new File(path + "/scanSample",  "IMG_" + timeStamp + ".jpg");
+
+        Log.i(TAG, "file1 = " + file1.getPath());
+        /**
+        try (FileOutputStream out = new FileOutputStream(file)) {
+            photo.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
+            // PNG is a lossless format, the compression factor (100) is ignored
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+         */
+
+        try (FileOutputStream out = new FileOutputStream(file1)) {
+            photo.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
+            // PNG is a lossless format, the compression factor (100) is ignored
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         postImagePick(photo);
 
         /**
@@ -217,7 +249,7 @@ public class PickImageFragment extends Fragment {
 
     protected void postImagePick(Bitmap bitmap) {
         Uri uri = Utils.getUri(getActivity(), bitmap);
-        bitmap.recycle();
+        //bitmap.recycle();
         scanner.onBitmapSelect(uri);
     }
 

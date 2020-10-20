@@ -33,6 +33,8 @@ import java.util.Map;
  */
 public class ScanFragment extends Fragment {
 
+    private static final String TAG = "ScanFragment";
+
     private Button scanButton;
     private ImageView sourceImageView;
     private FrameLayout sourceFrame;
@@ -85,6 +87,10 @@ public class ScanFragment extends Fragment {
         Uri uri = getUri();
         try {
             Bitmap bitmap = Utils.getBitmap(getActivity(), uri);
+
+            Log.i(TAG, "width = " + bitmap.getWidth());
+            Log.i(TAG, "height = " + bitmap.getHeight());
+
             getActivity().getContentResolver().delete(uri, null, null);
             return bitmap;
         } catch (IOException e) {
