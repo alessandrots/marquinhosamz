@@ -4,12 +4,14 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.content.ComponentCallbacks2;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.PointF;
 import android.icu.text.Edits;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -23,7 +25,11 @@ import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -247,8 +253,35 @@ public class ScanActivity extends Activity implements IScanner, ComponentCallbac
 
         sendImageToProcess(imgBase64Scanned, imgBase64Original);
 
+        String coordenadas = this.x1 + " | " + this.y1 + " | ";
+        coordenadas = this.x2 + " | " + this.y2 + " | ";
+        coordenadas = this.x3 + " | " + this.y3 + " | ";
+        coordenadas = this.x4 + " | " + this.y4 + " | ";
+
+        writeToFile(imgBase64Scanned, "IMGSCAN", this.getBaseContext());
+        writeToFile(imgBase64Original, "IMGORIG", this.getBaseContext());
+        writeToFile(coordenadas, "COORDS", this.getBaseContext());
+
         setResult(Activity.RESULT_OK, data);
+
         //this.passDataInterface.onDataReceived(imgBase64Scanned, imgBase64Original, mapaPoints);
+    }
+
+    private void writeToFile(String data, String tipoParametro, Context context) {
+        try {
+            String filename = "dadosImagem_" + tipoParametro + "_";
+
+            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+
+            File path = this.getBaseContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
+
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput(filename + timeStamp + ".txt", Context.MODE_PRIVATE));
+            outputStreamWriter.write(data);
+            outputStreamWriter.close();
+        }
+        catch (IOException e) {
+            Log.e("Exception", "File write failed: " + e.toString());
+        }
     }
 
     /**

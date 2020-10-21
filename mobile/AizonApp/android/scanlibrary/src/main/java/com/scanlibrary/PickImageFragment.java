@@ -123,13 +123,13 @@ public class PickImageFragment extends Fragment {
         startActivityForResult(intent, ScanConstants.PICKFILE_REQUEST_CODE);
     }
 
-    public void openCamera() {
+    public void openCameraNew() {
         Log.i(TAG, "openCamera");
         Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(cameraIntent, ScanConstants.START_CAMERA_REQUEST_CODE);
     }
 
-    public void openCameraOriginal() {
+    public void openCamera() {
         Log.i(TAG, "openCameraOriginal");
 
         Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
@@ -148,8 +148,8 @@ public class PickImageFragment extends Fragment {
         startActivityForResult(cameraIntent, ScanConstants.START_CAMERA_REQUEST_CODE);
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    /**
+    public void onActivityResult2(int requestCode, int resultCode, Intent data) {
         Log.i("", "onActivityResult" + resultCode);
         Bitmap bitmap = null;
         //if (resultCode == Activity.RESULT_OK) {
@@ -167,12 +167,35 @@ public class PickImageFragment extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        /**
-         } else {
-         getActivity().finish();
-         }
-         */
 
+
+        if (bitmap != null) {
+            postImagePick(bitmap);
+        }
+    }
+    */
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d("", "onActivityResult" + resultCode);
+        Bitmap bitmap = null;
+        if (resultCode == Activity.RESULT_OK) {
+            try {
+                switch (requestCode) {
+                    case ScanConstants.START_CAMERA_REQUEST_CODE:
+                        bitmap = getBitmap(fileUri);
+                        break;
+
+                    case ScanConstants.PICKFILE_REQUEST_CODE:
+                        bitmap = getBitmap(data.getData());
+                        break;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            getActivity().finish();
+        }
         if (bitmap != null) {
             postImagePick(bitmap);
         }
@@ -180,10 +203,14 @@ public class PickImageFragment extends Fragment {
 
     private File createImageFile() {
         clearTempImages();
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new
-                Date());
-        File file = new File(ScanConstants.IMAGE_PATH, "IMG_" + timeStamp +
-                ".jpg");
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+
+        File path = getActivity().getBaseContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        Log.i(TAG, "path = " + path.getPath());
+        File file = new File(path,  "IMG_" + timeStamp + ".jpg");
+        //File file1 = new File(path + "/scanSample",  "IMG_" + timeStamp + ".jpg");
+
+        Log.i(TAG, "file1 = " + file.getPath());
 
         try {
             FileOutputStream outputStream = new FileOutputStream(file);
@@ -215,14 +242,6 @@ public class PickImageFragment extends Fragment {
         //File file1 = new File(path + "/scanSample",  "IMG_" + timeStamp + ".jpg");
 
         Log.i(TAG, "file1 = " + file1.getPath());
-        /**
-        try (FileOutputStream out = new FileOutputStream(file)) {
-            photo.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
-            // PNG is a lossless format, the compression factor (100) is ignored
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-         */
 
         try (FileOutputStream out = new FileOutputStream(file1)) {
             photo.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
@@ -249,7 +268,7 @@ public class PickImageFragment extends Fragment {
 
     protected void postImagePick(Bitmap bitmap) {
         Uri uri = Utils.getUri(getActivity(), bitmap);
-        //bitmap.recycle();
+        bitmap.recycle();
         scanner.onBitmapSelect(uri);
     }
 
