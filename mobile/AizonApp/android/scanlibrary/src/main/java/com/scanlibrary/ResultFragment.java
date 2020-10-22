@@ -8,7 +8,10 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,14 +19,21 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 
 /**
  * Created by jhansi on 29/03/15.
  */
 public class ResultFragment extends Fragment {
+
+    private static final String TAG = "ResultFragment";
 
     private View view;
     private ImageView scannedImageView;
@@ -43,6 +53,8 @@ public class ResultFragment extends Fragment {
 
     //Base64 img scanneada
     private String imgBase64Scanned;
+
+    private Bitmap bitmapOriginal;
 
     public ResultFragment() {
     }
@@ -103,7 +115,7 @@ public class ResultFragment extends Fragment {
         //uri da imagem original
         Uri uriOriginal = getUriOriginal();
 
-        Bitmap bitmapOriginal = convertUriToBitmap(uriOriginal);
+        this.bitmapOriginal = convertUriToBitmap(uriOriginal);
 
         //Uri da img scanneada
         Uri uri = getUri();
@@ -119,7 +131,29 @@ public class ResultFragment extends Fragment {
         //Base64 img scanneada
         this.imgBase64Scanned  = encodeImage(bitmapScanned);
 
+        saveImageToDisk(this.imgScanned);
+
         return bitmapScanned;
+    }
+
+    private void saveImageToDisk(Bitmap photo) {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+
+        File path = getActivity().getBaseContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        Log.i(TAG, "path = " + path.getPath());
+
+        File file = new File(path,  "IMG_SCANNED_" + timeStamp + ".png");
+        Log.i(TAG, "file = " + file.getPath());
+
+        try {
+            FileOutputStream outputStream = new FileOutputStream(file);
+            photo.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+            MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), file.getAbsolutePath(), file.getName(), file.getName());
+            outputStream.flush();
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private Uri getUri() {
@@ -183,6 +217,20 @@ public class ResultFragment extends Fragment {
                         data.putExtra(ScanConstants.ORIGINAL_IMG_BASE64, resultFragment.imgBase64Original);
                         data.putExtra(ScanConstants.ARRAY_COORDENADAS_Img, resultFragment.mapaPoints);
 
+                        if (bitmap != null && !bitmap.isRecycled()) {
+                            bitmap.recycle();
+                            bitmap = null;
+                        }
+
+                        if (bitmapOriginal != null && !bitmapOriginal.isRecycled()) {
+                            bitmapOriginal.recycle();
+                            bitmapOriginal = null;
+                        }
+
+                        if (imgScanned != null && !imgScanned.isRecycled()) {
+                            imgScanned.recycle();
+                            imgScanned = null;
+                        }
 
                         getActivity().setResult(Activity.RESULT_OK, data);
 
@@ -192,7 +240,7 @@ public class ResultFragment extends Fragment {
                          * SERá q aqui volta com os dados para o ScanActivity
                          * TODO debugar
                          */
-                        imgScanned.recycle();
+                        //imgScanned.recycle();
                         System.gc();
                         getActivity().runOnUiThread(new Runnable() {
                             @Override

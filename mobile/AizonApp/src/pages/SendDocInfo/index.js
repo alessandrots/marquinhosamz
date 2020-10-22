@@ -39,7 +39,15 @@ export default function SendDocInfo() {
   }
 
   async function generateIdForImages() {
+    alertMessage( msg, null, null, 'AIZON-UPLOAD');
 
+    setIdProcess(100100);
+
+    //para abrir a tela q vai chamar o componente de Foto
+    setVisible(true);
+
+    /**
+     * //TODO
     alertMessage( 'Gerando do ID de controle', null, null, 'AIZON-UPLOAD')
 
     setLoading(true);
@@ -74,11 +82,12 @@ export default function SendDocInfo() {
       setLoading(false);
       alertMessage( 'Houve erro na geração do ID para processamento', null, null, 'AIZON-UPLOAD')
     }
+    */
   }
 
   function getFotoScan() {
     return (
-      <FotoScan idProcess={idProcess} />
+      <FotoScan idProcess={0} />
     );
   }
 
@@ -162,11 +171,14 @@ export default function SendDocInfo() {
   function getMontagemTela() {
     console.log('getMontagemTela = ', visible);
 
+    /**
     if (!visible){
       return getMainScreen();
     } else {
       return getFotoScan();
     }
+     */
+    return getFotoScan();
   }
 
  return (

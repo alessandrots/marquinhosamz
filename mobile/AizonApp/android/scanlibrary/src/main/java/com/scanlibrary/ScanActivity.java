@@ -40,7 +40,7 @@ import java.util.Set;
  */
 public class ScanActivity extends Activity implements IScanner, ComponentCallbacks2 {
 
-    private static final String TAG = "ScanActivity";
+    private static final String TAG = "ScanActivityAPP";
 
     private PassDataInterface passDataInterface;
     private String idProcesso;
@@ -258,9 +258,9 @@ public class ScanActivity extends Activity implements IScanner, ComponentCallbac
         coordenadas = this.x3 + " | " + this.y3 + " | ";
         coordenadas = this.x4 + " | " + this.y4 + " | ";
 
-        writeToFile(imgBase64Scanned, "IMGSCAN", this.getBaseContext());
-        writeToFile(imgBase64Original, "IMGORIG", this.getBaseContext());
-        writeToFile(coordenadas, "COORDS", this.getBaseContext());
+        //writeToFile(imgBase64Scanned, "IMGSCAN", this.getBaseContext());
+        //writeToFile(imgBase64Original, "IMGORIG", this.getBaseContext());
+        //writeToFile(coordenadas, "COORDS", this.getBaseContext());
 
         setResult(Activity.RESULT_OK, data);
 

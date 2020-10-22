@@ -239,7 +239,6 @@ public class PickImageFragment extends Fragment {
         File path = getActivity().getBaseContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         Log.i(TAG, "path = " + path.getPath());
         File file1 = new File(path,  "IMG_" + timeStamp + ".jpg");
-        //File file1 = new File(path + "/scanSample",  "IMG_" + timeStamp + ".jpg");
 
         Log.i(TAG, "file1 = " + file1.getPath());
 
@@ -251,24 +250,16 @@ public class PickImageFragment extends Fragment {
         }
 
         postImagePick(photo);
-
-        /**
-         File file = createImageFile();
-         boolean isDirectoryCreated = file.getParentFile().mkdirs();
-
-         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-         Uri tempFileUri = FileProvider.getUriForFile(getActivity().getApplicationContext(),
-         "com.scanlibrary.provider", // As defined in Manifest
-         file);
-         } else {
-         Uri tempFileUri = Uri.fromFile(file);
-         }
-         */
     }
 
     protected void postImagePick(Bitmap bitmap) {
         Uri uri = Utils.getUri(getActivity(), bitmap);
-        bitmap.recycle();
+
+        if (bitmap != null && !bitmap.isRecycled()) {
+            bitmap.recycle();
+            bitmap = null;
+        }
+
         scanner.onBitmapSelect(uri);
     }
 
