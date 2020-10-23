@@ -15,7 +15,7 @@ public class ScanConstants {
     public final static int OPEN_MEDIA = 5;
     public final static String SCANNED_RESULT = "scannedResult";
     public final static String IMAGE_PATH = Environment
-            .getExternalStorageDirectory().getPath() + "/scanSample";
+            .getExternalStorageDirectory().getPath() + "/AizonApp";
 
     public final static String SELECTED_BITMAP = "selectedBitmap";
     public final static String ORIGINAL_IMG_URI = "originaImgUri";

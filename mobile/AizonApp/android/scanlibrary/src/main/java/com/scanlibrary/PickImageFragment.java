@@ -24,6 +24,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by jhansi on 04/04/15.
@@ -68,18 +69,7 @@ public class PickImageFragment extends Fragment {
         }
     }
 
-    private void clearTempImages() {
-        try {
-            File tempFolder = new File(ScanConstants.IMAGE_PATH);
-            if (!tempFolder.exists()) {
-                tempFolder.mkdir();
-            }
-            for (File f : tempFolder.listFiles())
-                f.delete();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+
 
     private void handleIntentPreference() {
         int preference = getIntentPreference();
@@ -201,14 +191,40 @@ public class PickImageFragment extends Fragment {
         }
     }
 
-    private File createImageFile() {
-        clearTempImages();
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+    private File clearTempImages() {
+        try {
+            File path = getActivity().getBaseContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+            File tempFolder = new File(path, "/AizonApp");
 
-        File path = getActivity().getBaseContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        Log.i(TAG, "path = " + path.getPath());
-        File file = new File(path,  "IMG_" + timeStamp + ".jpg");
-        //File file1 = new File(path + "/scanSample",  "IMG_" + timeStamp + ".jpg");
+            //File tempFolder = new File(ScanConstants.IMAGE_PATH);
+            if (!tempFolder.exists()) {
+                tempFolder.mkdir();
+            }
+
+            for (File f : tempFolder.listFiles()){
+                f.delete();
+            }
+
+            return tempFolder;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    private File createImageFile() {
+        Locale localeBr = new Locale("pt", "BR");
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", localeBr).format(new Date());
+
+        File path = clearTempImages();
+
+        if (path == null) {
+            path = getActivity().getBaseContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+            Log.i(TAG, "path = " + path.getPath());
+        }
+
+        File file = new File(path,  "ORIGINAL_" + timeStamp + ".jpg");
 
         Log.i(TAG, "file1 = " + file.getPath());
 

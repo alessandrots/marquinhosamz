@@ -219,9 +219,9 @@ public class ScanActivity extends Activity implements IScanner, ComponentCallbac
         Bitmap bitmap = null;
         Intent data = new Intent();
 
-        data.putExtra(ScanConstants.SCANNED_IMG_BASE64, imgBase64Scanned);
-        data.putExtra(ScanConstants.ORIGINAL_IMG_BASE64, imgBase64Original);
-        data.putExtra(ScanConstants.ARRAY_COORDENADAS_Img, mapaPoints);
+        //data.putExtra(ScanConstants.SCANNED_IMG_BASE64, imgBase64Scanned);
+        //data.putExtra(ScanConstants.ORIGINAL_IMG_BASE64, imgBase64Original);
+        //data.putExtra(ScanConstants.ARRAY_COORDENADAS_Img, mapaPoints);
 
         Set<Integer> keysPoints = mapaPoints.keySet();
         Iterator<Integer> ite = keysPoints.iterator();

@@ -191,8 +191,9 @@ public class ScanFragment extends Fragment {
     private Bitmap getScannedBitmap(Bitmap original, Map<Integer, PointF> points) {
         int width = original.getWidth();
         int height = original.getHeight();
-        float xRatio = (float) original.getWidth() / sourceImageView.getWidth();
-        float yRatio = (float) original.getHeight() / sourceImageView.getHeight();
+
+        float xRatio = (float) width/ sourceImageView.getWidth();
+        float yRatio = (float) height / sourceImageView.getHeight();
 
         float x1_ = (points.get(0).x) ;
         float x2_ = (points.get(1).x);
@@ -215,7 +216,9 @@ public class ScanFragment extends Fragment {
         float y4 = (points.get(3).y) * yRatio;
 
         Log.i(TAG, "\n POints Scanned (" + x1 + "," + y1 + ")(" + x2 + "," + y2 + ")(" + x3 + "," + y3 + ")(" + x4 + "," + y4 + ")");
+
         Bitmap _bitmap = ((ScanActivity) getActivity()).getScannedBitmap(original, x1, y1, x2, y2, x3, y3, x4, y4);
+
         return _bitmap;
     }
 
@@ -256,10 +259,11 @@ public class ScanFragment extends Fragment {
             Bitmap bitmapScanned =  getScannedBitmap(original, points);
             Uri uriScanned = Utils.getUri(getActivity(), bitmapScanned);
 
-            String imgOriginal = this.encodeImage(original);
-            String imgScanned  = this.encodeImage(bitmapScanned);
+            //String imgOriginal = this.encodeImage(original);
+            //String imgScanned  = this.encodeImage(bitmapScanned);
 
             scanner.onScanFinishByAmazon(uriOriginal, uriScanned, points);
+            
             return bitmapScanned;
         }
 

@@ -27,6 +27,7 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 
 /**
  * Created by jhansi on 29/03/15.
@@ -112,48 +113,26 @@ public class ResultFragment extends Fragment {
     }
 
     private Bitmap generateBitmpasBase64() {
-        //uri da imagem original
-        Uri uriOriginal = getUriOriginal();
 
-        this.bitmapOriginal = convertUriToBitmap(uriOriginal);
+        //Mapa de Points (x,y)
+        this.mapaPoints = getPoints();
 
         //Uri da img scanneada
         Uri uri = getUri();
-
         Bitmap bitmapScanned = convertUriToBitmap(uri); //getBitmap();
         this.imgScanned = bitmapScanned;
+        //Base64 img scanneada
+        this.imgBase64Scanned  = encodeImage(bitmapScanned);
+        //Salvando a imagem scanneada
+        saveImageToDisk(this.imgScanned);
 
-        this.mapaPoints = getPoints();
-
+        //uri da imagem original
+        Uri uriOriginal = getUriOriginal();
+        this.bitmapOriginal = convertUriToBitmap(uriOriginal);
         //Base64 img original
         this.imgBase64Original = encodeImage(bitmapOriginal);
 
-        //Base64 img scanneada
-        this.imgBase64Scanned  = encodeImage(bitmapScanned);
-
-        saveImageToDisk(this.imgScanned);
-
         return bitmapScanned;
-    }
-
-    private void saveImageToDisk(Bitmap photo) {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-
-        File path = getActivity().getBaseContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        Log.i(TAG, "path = " + path.getPath());
-
-        File file = new File(path,  "IMG_SCANNED_" + timeStamp + ".png");
-        Log.i(TAG, "file = " + file.getPath());
-
-        try {
-            FileOutputStream outputStream = new FileOutputStream(file);
-            photo.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
-            MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), file.getAbsolutePath(), file.getName(), file.getName());
-            outputStream.flush();
-            outputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     private Uri getUri() {
@@ -170,6 +149,28 @@ public class ResultFragment extends Fragment {
         Serializable ser = getArguments().getSerializable(ScanConstants.POINTS_MARKED_ORIGINAL_IMG);
         HashMap mapaPoints = (HashMap)ser;
         return mapaPoints;
+    }
+
+    private void saveImageToDisk(Bitmap photo) {
+        Locale localeBr = new Locale("pt", "BR");
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", localeBr).format(new Date());
+
+        File path = getActivity().getBaseContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File tempFolder = new File(path, "/AizonApp");
+        Log.i(TAG, "tempFolder = " + tempFolder.getPath());
+
+        File file = new File(tempFolder,  "SCANNED_" + timeStamp + ".png");
+        Log.i(TAG, "filepath = " + file.getPath());
+
+        try {
+            FileOutputStream outputStream = new FileOutputStream(file);
+            photo.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+            MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), file.getAbsolutePath(), file.getName(), file.getName());
+            outputStream.flush();
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /***
@@ -232,7 +233,7 @@ public class ResultFragment extends Fragment {
                             imgScanned = null;
                         }
 
-                        getActivity().setResult(Activity.RESULT_OK, data);
+                        //getActivity().setResult(Activity.RESULT_OK, data);
 
                         ((ScanActivity)getActivity()).getDataFromFragment(resultFragment.imgBase64Scanned, resultFragment.imgBase64Original,  resultFragment.mapaPoints);
                         /**
