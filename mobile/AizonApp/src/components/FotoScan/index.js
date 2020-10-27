@@ -260,9 +260,9 @@ export default function FotoScan(props) {
 
       Alert.alert(
           'AIZON',
-          'scanImageForProcess - ' + id,
+          'scanImageForProcess',
           [
-              {text: 'Ok', onPress: () => {}},
+              {text: 'Ok', onPress: () => {postScanner(tipoImagem)}},
           ],
           {cancelable: false},
       )
@@ -282,6 +282,55 @@ export default function FotoScan(props) {
 
     //scanImage('scanner');
     scanImageForProcess(tipoImagem);
+  }
+
+  function postScanner(tipoImagem) {
+    console.log('\n\n RNOpenCvLibrary scanImageForProcess = ');
+
+    /**
+    let promise = new Promise(function(resolve, reject) {
+      //
+    });
+    */
+  }
+
+  /**
+   * recuperando a imagem por tipo
+   */
+  async function getImageUploadedForType(tipoImagem) {
+
+    //alertMessage( 'Gerando do ID de controle', null, null, 'AIZON-UPLOAD')
+
+    setLoading(true);
+
+    const resposta = await PhotoService.getImageForIdAndType('/image/getImageForIdAndType/'+ idProcess + "/" + tipoImagem);
+
+    //console.log('SendDocInfo generateIdForImages resposta = ', resposta);
+
+    const res = resposta.res
+
+    //console.log('SendDocInfo generateIdForImages res = ', res);
+
+    if (!resposta.isErro) {
+      setLoading(false);
+
+      let data = res.data;
+
+      console.log('SendDocInfo generateIdForImages data = ', data);
+
+      let msg = "ID gerado com sucesso : " + data.Id;
+
+      setIdProcess(data.Id);
+
+      //alertMessage( msg, null, null, 'AIZON-UPLOAD');
+
+      //para abrir a tela q vai chamar o componente de Foto
+      setVisible(true);
+
+    } else {
+      setLoading(false);
+      //alertMessage( 'Houve erro na geração do ID para processamento', null, null, 'AIZON-UPLOAD')
+    }
   }
 
   function getMontagemTela() {

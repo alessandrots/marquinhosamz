@@ -34,20 +34,22 @@ export default function SendDocInfo() {
   }
 
   function seguirPageFotoScan() {
-    //setVisible(true);
-    generateIdForImages();
+    //generateIdForImages();
+
+    generateIdForImagesTmp();
   }
 
-  async function generateIdForImages() {
+  async function generateIdForImagesTmp() {
     alertMessage( msg, null, null, 'AIZON-UPLOAD');
 
     setIdProcess(100100);
 
     //para abrir a tela q vai chamar o componente de Foto
     setVisible(true);
+  }
 
-    /**
-     * //TODO
+  async function generateIdForImages() {
+
     alertMessage( 'Gerando do ID de controle', null, null, 'AIZON-UPLOAD')
 
     setLoading(true);
@@ -76,13 +78,10 @@ export default function SendDocInfo() {
       //para abrir a tela q vai chamar o componente de Foto
       setVisible(true);
 
-      //seguirPageFotoScan();
-
     } else {
       setLoading(false);
       alertMessage( 'Houve erro na geração do ID para processamento', null, null, 'AIZON-UPLOAD')
     }
-    */
   }
 
   function getFotoScan() {

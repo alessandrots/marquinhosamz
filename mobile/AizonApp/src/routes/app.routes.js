@@ -86,12 +86,6 @@ function AppRoutes(){
             />
 
           <AppDrawer.Screen
-              name="PhotoManager"
-              component={PhotoManager}
-              options={{ title: 'Foto Documental' }}
-              />
-
-          <AppDrawer.Screen
             name="ViewData"
             component={ViewData}
             options={{ title: 'Visualizar Dados' }}/>
@@ -118,6 +112,12 @@ function AppRoutes(){
             options={{ title: 'Home' }}/>
 
 {/**
+ *        <AppDrawer.Screen
+              name="PhotoManager"
+              component={PhotoManager}
+              options={{ title: 'Foto Documental' }}
+              />
+
 
           <AppDrawer.Screen
             name="Home"
