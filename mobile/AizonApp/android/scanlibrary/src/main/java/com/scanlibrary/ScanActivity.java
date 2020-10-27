@@ -182,15 +182,19 @@ public class ScanActivity extends Activity implements IScanner, ComponentCallbac
     }
 
     @Override
-    public void onScanFinishByAmazon(Uri uriOriginal, Uri uriScanned, Map<Integer, PointF> points) {
+    public void onScanFinishByAmazon(Uri uriOriginal, Uri uriScanned, Map<Integer, PointF> points, Map<Integer, PointF> pointsScanned) {
         ResultFragment fragment = new ResultFragment();
         Bundle bundle = new Bundle();
 
         bundle.putParcelable(ScanConstants.SCANNED_RESULT, uriScanned);
         bundle.putParcelable(ScanConstants.ORIGINAL_IMG_URI, uriOriginal);
+        bundle.putString(ScanConstants.ID_PROCESS_SCAN_IMAGE, this.idProcesso);
 
         HashMap<Integer, PointF> mapPoints = convertMapPointsToSerializableHash(points);
         bundle.putSerializable(ScanConstants.POINTS_MARKED_ORIGINAL_IMG, mapPoints);
+
+        HashMap<Integer, PointF> mapPointsScanned = convertMapPointsToSerializableHash(pointsScanned);
+        bundle.putSerializable(ScanConstants.POINTS_SCANNED_IMG, mapPointsScanned);
 
         fragment.setArguments(bundle);
         android.app.FragmentManager fragmentManager = getFragmentManager();
@@ -215,13 +219,11 @@ public class ScanActivity extends Activity implements IScanner, ComponentCallbac
         return mapPoints;
     }
 
-    protected void getDataFromFragment( String imgBase64Scanned, String imgBase64Original, HashMap mapaPoints) {
+    protected void getDataFromFragment2( String idProcesso_, String imgBase64Scanned, String imgBase64Original, HashMap mapaPoints, HashMap mapaPointsScanned) {
         Bitmap bitmap = null;
         Intent data = new Intent();
 
-        //data.putExtra(ScanConstants.SCANNED_IMG_BASE64, imgBase64Scanned);
-        //data.putExtra(ScanConstants.ORIGINAL_IMG_BASE64, imgBase64Original);
-        //data.putExtra(ScanConstants.ARRAY_COORDENADAS_Img, mapaPoints);
+        this.idProcesso = idProcesso_;
 
         Set<Integer> keysPoints = mapaPoints.keySet();
         Iterator<Integer> ite = keysPoints.iterator();
@@ -253,14 +255,42 @@ public class ScanActivity extends Activity implements IScanner, ComponentCallbac
 
         sendImageToProcess(imgBase64Scanned, imgBase64Original);
 
-        String coordenadas = this.x1 + " | " + this.y1 + " | ";
-        coordenadas = this.x2 + " | " + this.y2 + " | ";
-        coordenadas = this.x3 + " | " + this.y3 + " | ";
-        coordenadas = this.x4 + " | " + this.y4 + " | ";
+        setResult(Activity.RESULT_OK, data);
+    }
 
-        //writeToFile(imgBase64Scanned, "IMGSCAN", this.getBaseContext());
-        //writeToFile(imgBase64Original, "IMGORIG", this.getBaseContext());
-        //writeToFile(coordenadas, "COORDS", this.getBaseContext());
+    protected void getDataFromFragment( String imgBase64Scanned, String imgBase64Original, HashMap mapaPoints) {
+        Bitmap bitmap = null;
+        Intent data = new Intent();
+
+        Set<Integer> keysPoints = mapaPoints.keySet();
+        Iterator<Integer> ite = keysPoints.iterator();
+
+        while (ite.hasNext()) {
+            Integer key = ite.next();
+            PointF pointMap = (PointF)mapaPoints.get(key);
+
+
+            switch (key) {
+                case 0:
+                    this.x1 = pointMap.x;
+                    this.y1 = pointMap.y;
+                    break;
+                case 1:
+                    this.x2 = pointMap.x;
+                    this.y2 = pointMap.y;
+                    break;
+                case 2:
+                    this.x3 = pointMap.x;
+                    this.y3 = pointMap.y;
+                    break;
+                case 3:
+                    this.x4 = pointMap.x;
+                    this.y4 = pointMap.y;
+                    break;
+            }
+        };
+
+        sendImageToProcess(imgBase64Scanned, imgBase64Original);
 
         setResult(Activity.RESULT_OK, data);
 
@@ -299,23 +329,58 @@ public class ScanActivity extends Activity implements IScanner, ComponentCallbac
      *  y4..............: [vertice 4 - linha]
      */
     public void sendImageToProcess(String imgBase64Scanned, String imgBase64Original) {
+        String idProcessoTmp = "100020AB";
+
+        if (this.idProcesso != null) {
+            idProcessoTmp = this.idProcesso;
+        }
+
         Log.i(TAG, "sendImageToProcess " );
+        Log.i(TAG, "id  = " + idProcessoTmp);
+        Log.i(TAG, "imageType  = " +this.tipoImagem.toString());
+        Log.i(TAG, "fileImageOrigin  = " +imgBase64Original);
+        Log.i(TAG, "fileImageScanned  = " +imgBase64Scanned);
+        Log.i(TAG, "x1  = " +Integer.toString((int)this.x1));
+        Log.i(TAG, "y1  = " +Integer.toString((int)this.y1));
+        Log.i(TAG, "x2  = " +Integer.toString((int)this.x2));
+        Log.i(TAG, "y2  = " +Integer.toString((int)this.y2));
+        Log.i(TAG, "x3  = " +Integer.toString((int)this.x3));
+        Log.i(TAG, "y3  = " +Integer.toString((int)this.y3));
+        Log.i(TAG, "x4  = " +Integer.toString((int)this.x4));
+        Log.i(TAG, "y4  = " +Integer.toString((int)this.y4));
+        Log.i(TAG, "sx1  = " +Integer.toString((int)this.x1));
+        Log.i(TAG, "sy1  = " +Integer.toString((int)this.y1));
+        Log.i(TAG, "sx2  = " +Integer.toString((int)this.x2));
+        Log.i(TAG, "sy2  = " +Integer.toString((int)this.y2));
+        Log.i(TAG, "sx3  = " +Integer.toString((int)this.x3));
+        Log.i(TAG, "sy3  = " +Integer.toString((int)this.y3));
+        Log.i(TAG, "sx4  = " +Integer.toString((int)this.x4));
+        Log.i(TAG, "sy4  = " +Integer.toString((int)this.y4));
 
         AndroidNetworking.post("http://45.4.186.2:5000/image/uploadImageDoc")
-                .addBodyParameter("id", this.idProcesso)
+                .addBodyParameter("id", idProcessoTmp)
                 .addBodyParameter("imageType", this.tipoImagem.toString())
                 .addBodyParameter("fileImageOrigin", imgBase64Original)
                 .addBodyParameter("fileImageScanned", imgBase64Scanned)
-                .addBodyParameter("x1", Float.toString(this.x1))
-                .addBodyParameter("y1", Float.toString(this.y1))
-                .addBodyParameter("x2", Float.toString(this.x2))
-                .addBodyParameter("y2", Float.toString(this.y2))
-                .addBodyParameter("x3", Float.toString(this.x3))
-                .addBodyParameter("y3", Float.toString(this.y3))
-                .addBodyParameter("x4", Float.toString(this.x4))
-                .addBodyParameter("y4", Float.toString(this.y4))
-                .setTag("test")
-                .setPriority(Priority.MEDIUM)
+                .addBodyParameter("x1", Integer.toString((int)this.x1))
+                .addBodyParameter("y1", Integer.toString((int)this.y1))
+                .addBodyParameter("x2", Integer.toString((int)this.x2))
+                .addBodyParameter("y2", Integer.toString((int)this.y2))
+                .addBodyParameter("x3", Integer.toString((int)this.x3))
+                .addBodyParameter("y3", Integer.toString((int)this.y3))
+                .addBodyParameter("x4", Integer.toString((int)this.x4))
+                .addBodyParameter("y4", Integer.toString((int)this.y4))
+
+                .addBodyParameter("sx1", Integer.toString((int)this.x1))
+                .addBodyParameter("sy1", Integer.toString((int)this.y1))
+                .addBodyParameter("sx2", Integer.toString((int)this.x2))
+                .addBodyParameter("sy2", Integer.toString((int)this.y2))
+                .addBodyParameter("sx3", Integer.toString((int)this.x3))
+                .addBodyParameter("sy3", Integer.toString((int)this.y3))
+                .addBodyParameter("sx4", Integer.toString((int)this.x4))
+                .addBodyParameter("sy4", Integer.toString((int)this.y4))
+                //.setTag("test")
+                //.setPriority(Priority.MEDIUM)
                 .build()
                 .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
@@ -326,7 +391,7 @@ public class ScanActivity extends Activity implements IScanner, ComponentCallbac
                     @Override
                     public void onError(ANError error) {
                         // handle error
-                        Log.i(TAG, "GET ANError = " + error.toString() );
+                        Log.i(TAG, "POST ANError = " + error.getMessage() );
                     }
                 });
     }

@@ -43,7 +43,7 @@ public class ScanFragment extends Fragment {
     private ProgressDialogFragment progressDialogFragment;
     private IScanner scanner;
     private Bitmap original;
-
+    private Map<Integer, PointF> mapaPointScanned;
 
 
     @Override
@@ -192,6 +192,9 @@ public class ScanFragment extends Fragment {
         int width = original.getWidth();
         int height = original.getHeight();
 
+        Log.i(TAG, "width (" + width + ") height (" + height + ")");
+
+
         float xRatio = (float) width/ sourceImageView.getWidth();
         float yRatio = (float) height / sourceImageView.getHeight();
 
@@ -206,18 +209,26 @@ public class ScanFragment extends Fragment {
 
         Log.i(TAG, "POints Original (" + x1_ + "," + y1_ + ")(" + x2_ + "," + y2_ + ")(" + x3_ + "," + y3_ + ")(" + x4_ + "," + y4_ + ")");
 
-        float x1 = (points.get(0).x) * xRatio;
-        float x2 = (points.get(1).x) * xRatio;
-        float x3 = (points.get(2).x) * xRatio;
-        float x4 = (points.get(3).x) * xRatio;
-        float y1 = (points.get(0).y) * yRatio;
-        float y2 = (points.get(1).y) * yRatio;
-        float y3 = (points.get(2).y) * yRatio;
-        float y4 = (points.get(3).y) * yRatio;
+        float sx1 = (points.get(0).x) * xRatio;
+        float sx2 = (points.get(1).x) * xRatio;
+        float sx3 = (points.get(2).x) * xRatio;
+        float sx4 = (points.get(3).x) * xRatio;
+        float sy1 = (points.get(0).y) * yRatio;
+        float sy2 = (points.get(1).y) * yRatio;
+        float sy3 = (points.get(2).y) * yRatio;
+        float sy4 = (points.get(3).y) * yRatio;
 
-        Log.i(TAG, "\n POints Scanned (" + x1 + "," + y1 + ")(" + x2 + "," + y2 + ")(" + x3 + "," + y3 + ")(" + x4 + "," + y4 + ")");
+        Log.i(TAG, "\n POints Scanned (" + sx1 + "," + sy1 + ")(" + sx2 + "," + sy2 + ")(" +sx3 + "," + sy3 + ")(" + sx4 + "," + sy4 + ")");
 
-        Bitmap _bitmap = ((ScanActivity) getActivity()).getScannedBitmap(original, x1, y1, x2, y2, x3, y3, x4, y4);
+        Bitmap _bitmap = ((ScanActivity) getActivity()).getScannedBitmap(original, sx1, sy1, sx2, sy2, sx3, sy3, sx4, sy4);
+
+        List<PointF> pointsScanned = new ArrayList<PointF>();
+        pointsScanned.add(new PointF(sx1, sy1));
+        pointsScanned.add(new PointF(sx2, sy2));
+        pointsScanned.add(new PointF(sx3, sy3));
+        pointsScanned.add(new PointF(sx4, sy4));
+
+        this.mapaPointScanned = this.polygonView.getOrderedPoints(pointsScanned);
 
         return _bitmap;
     }
@@ -262,7 +273,7 @@ public class ScanFragment extends Fragment {
             //String imgOriginal = this.encodeImage(original);
             //String imgScanned  = this.encodeImage(bitmapScanned);
 
-            scanner.onScanFinishByAmazon(uriOriginal, uriScanned, points);
+            scanner.onScanFinishByAmazon(uriOriginal, uriScanned, points, mapaPointScanned);
             
             return bitmapScanned;
         }

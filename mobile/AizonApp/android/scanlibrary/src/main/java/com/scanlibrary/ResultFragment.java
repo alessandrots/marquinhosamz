@@ -49,6 +49,8 @@ public class ResultFragment extends Fragment {
 
     private HashMap mapaPoints;
 
+    private HashMap mapaPointsScanned;
+
     //Base64 img original
     private String imgBase64Original;
 
@@ -56,6 +58,8 @@ public class ResultFragment extends Fragment {
     private String imgBase64Scanned;
 
     private Bitmap bitmapOriginal;
+
+    private String idProcesso;
 
     public ResultFragment() {
     }
@@ -79,6 +83,8 @@ public class ResultFragment extends Fragment {
         bwButton.setOnClickListener(new BWButtonClickListener());
 
         Bitmap bitmapScanned = generateBitmpasBase64();
+
+        idProcesso = getArguments().getString(ScanConstants.ID_PROCESS_SCAN_IMAGE);
 
         setScannedImage(bitmapScanned);
 
@@ -117,6 +123,9 @@ public class ResultFragment extends Fragment {
         //Mapa de Points (x,y)
         this.mapaPoints = getPoints();
 
+        //Mapa de Points (x,y)
+        this.mapaPointsScanned = getPointsScanned();
+
         //Uri da img scanneada
         Uri uri = getUri();
         Bitmap bitmapScanned = convertUriToBitmap(uri); //getBitmap();
@@ -147,6 +156,12 @@ public class ResultFragment extends Fragment {
 
     private HashMap getPoints() {
         Serializable ser = getArguments().getSerializable(ScanConstants.POINTS_MARKED_ORIGINAL_IMG);
+        HashMap mapaPoints = (HashMap)ser;
+        return mapaPoints;
+    }
+
+    private HashMap getPointsScanned() {
+        Serializable ser = getArguments().getSerializable(ScanConstants.POINTS_SCANNED_IMG);
         HashMap mapaPoints = (HashMap)ser;
         return mapaPoints;
     }
@@ -235,12 +250,11 @@ public class ResultFragment extends Fragment {
 
                         //getActivity().setResult(Activity.RESULT_OK, data);
 
-                        ((ScanActivity)getActivity()).getDataFromFragment(resultFragment.imgBase64Scanned, resultFragment.imgBase64Original,  resultFragment.mapaPoints);
-                        /**
-                         *
-                         * SERá q aqui volta com os dados para o ScanActivity
-                         * TODO debugar
-                         */
+                        //((ScanActivity)getActivity()).getDataFromFragment(resultFragment.imgBase64Scanned, resultFragment.imgBase64Original,  resultFragment.mapaPoints);
+
+                        ((ScanActivity)getActivity()).getDataFromFragment2(idProcesso, resultFragment.imgBase64Scanned, resultFragment.imgBase64Original,  resultFragment.mapaPoints, resultFragment.mapaPointsScanned);
+
+
                         //imgScanned.recycle();
                         System.gc();
                         getActivity().runOnUiThread(new Runnable() {

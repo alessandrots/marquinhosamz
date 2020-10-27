@@ -14,5 +14,5 @@ public interface IScanner {
 
     void onScanFinish(Uri uri);
 
-    void onScanFinishByAmazon(Uri uriOriginal, Uri uriScanned, Map<Integer, PointF> points);
+    void onScanFinishByAmazon(Uri uriOriginal, Uri uriScanned, Map<Integer, PointF> points, Map<Integer, PointF> pointsScanned);
 }
