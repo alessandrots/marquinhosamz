@@ -202,6 +202,7 @@ public class ScanActivity extends Activity implements IScanner, ComponentCallbac
         bundle.putParcelable(ScanConstants.SCANNED_RESULT, uriScanned);
         bundle.putParcelable(ScanConstants.ORIGINAL_IMG_URI, uriOriginal);
         bundle.putString(ScanConstants.ID_PROCESS_SCAN_IMAGE, this.idProcesso);
+        bundle.putInt(ScanConstants.IMAGE_TYPE_SCAN_IMAGE, this.tipoImagem);
 
         HashMap<Integer, PointF> mapPoints = convertMapPointsToSerializableHash(points);
         bundle.putSerializable(ScanConstants.POINTS_MARKED_ORIGINAL_IMG, mapPoints);

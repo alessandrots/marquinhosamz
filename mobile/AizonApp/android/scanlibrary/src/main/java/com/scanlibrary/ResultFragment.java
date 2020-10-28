@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.PointF;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -18,6 +19,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
+
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -27,7 +34,9 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Locale;
+import java.util.Set;
 
 /**
  * Created by jhansi on 29/03/15.
@@ -60,6 +69,7 @@ public class ResultFragment extends Fragment {
     private Bitmap bitmapOriginal;
 
     private String idProcesso;
+    private Integer tipoImagem;
 
     public ResultFragment() {
     }
@@ -85,6 +95,7 @@ public class ResultFragment extends Fragment {
         Bitmap bitmapScanned = generateBitmpasBase64();
 
         idProcesso = getArguments().getString(ScanConstants.ID_PROCESS_SCAN_IMAGE);
+        tipoImagem = getArguments().getInt(ScanConstants.IMAGE_TYPE_SCAN_IMAGE);
 
         setScannedImage(bitmapScanned);
 
@@ -213,6 +224,167 @@ public class ResultFragment extends Fragment {
             this.resultFragment = fragment;
         }
 
+        private float x1 = 0;
+        private float x2 = 0;
+        private float x3 = 0;
+        private float x4 = 0;
+        private float y1 = 0;
+        private float y2 = 0;
+        private float y3 = 0;
+        private float y4 = 0;
+
+        private float sx1 = 0;
+        private float sx2 = 0;
+        private float sx3 = 0;
+        private float sx4 = 0;
+        private float sy1 = 0;
+        private float sy2 = 0;
+        private float sy3 = 0;
+        private float sy4 = 0;
+
+
+        protected void getDataFromFragment2( String idProcesso_, String imgBase64Scanned, String imgBase64Original, HashMap mapaPoints, HashMap mapaPointsScanned) {
+            Bitmap bitmap = null;
+            Intent data = new Intent();
+
+            Set<Integer> keysPoints = mapaPoints.keySet();
+            Iterator<Integer> ite = keysPoints.iterator();
+
+            while (ite.hasNext()) {
+                Integer key = ite.next();
+                PointF pointMap = (PointF)mapaPoints.get(key);
+
+
+                switch (key) {
+                    case 0:
+                        this.x1 = pointMap.x;
+                        this.y1 = pointMap.y;
+                        break;
+                    case 1:
+                        this.x2 = pointMap.x;
+                        this.y2 = pointMap.y;
+                        break;
+                    case 2:
+                        this.x3 = pointMap.x;
+                        this.y3 = pointMap.y;
+                        break;
+                    case 3:
+                        this.x4 = pointMap.x;
+                        this.y4 = pointMap.y;
+                        break;
+                }
+            };
+
+            keysPoints = mapaPointsScanned.keySet();
+            ite = keysPoints.iterator();
+
+            while (ite.hasNext()) {
+                Integer key = ite.next();
+                PointF pointMap = (PointF)mapaPointsScanned.get(key);
+
+                switch (key) {
+                    case 0:
+                        this.sx1 = pointMap.x;
+                        this.sy1 = pointMap.y;
+                        break;
+                    case 1:
+                        this.sx2 = pointMap.x;
+                        this.sy2 = pointMap.y;
+                        break;
+                    case 2:
+                        this.sx3 = pointMap.x;
+                        this.sy3 = pointMap.y;
+                        break;
+                    case 3:
+                        this.sx4 = pointMap.x;
+                        this.sy4 = pointMap.y;
+                        break;
+                }
+            };
+
+            sendImageToProcess(imgBase64Scanned, imgBase64Original);
+        }
+
+        public void sendImageToProcess(String imgBase64Scanned, String imgBase64Original) {
+            String idProcessoTmp = "100020AB";
+
+            if (idProcesso != null) {
+                idProcessoTmp = idProcesso;
+            }
+
+            Log.i(TAG, "sendImageToProcess " );
+            Log.i(TAG, "id  = " + idProcessoTmp);
+            Log.i(TAG, "imageType  = " + tipoImagem.toString());
+            Log.i(TAG, "fileImageOrigin  = " +imgBase64Original);
+            Log.i(TAG, "fileImageScanned  = " +imgBase64Scanned);
+            Log.i(TAG, "x1  = " +this.x1);
+            Log.i(TAG, "y1  = " +this.y1);
+            Log.i(TAG, "x2  = " +this.x2);
+            Log.i(TAG, "y2  = " +this.y2);
+            Log.i(TAG, "x3  = " +this.x3);
+            Log.i(TAG, "y3  = " +this.y3);
+            Log.i(TAG, "x4  = " +this.x4);
+            Log.i(TAG, "y4  = " +this.y4);
+            Log.i(TAG, "sx1  = " +this.x1);
+            Log.i(TAG, "sy1  = " +this.y1);
+            Log.i(TAG, "sx2  = " +this.x2);
+            Log.i(TAG, "sy2  = " +this.y2);
+            Log.i(TAG, "sx3  = " +this.x3);
+            Log.i(TAG, "sy3  = " +this.y3);
+            Log.i(TAG, "sx4  = " +this.x4);
+            Log.i(TAG, "sy4  = " +this.y4);
+
+            AndroidNetworking.post("http://45.4.186.2:5000/image/uploadImageDoc")
+                    .addHeaders("Content-Type", "multipart/form-data")
+                    .addBodyParameter("id", idProcessoTmp)
+                    .addBodyParameter("imageType", tipoImagem.toString())
+                    .addBodyParameter("fileImageOrigin", imgBase64Original)
+                    .addBodyParameter("fileImageScanned", imgBase64Scanned)
+                    .addBodyParameter("x1", Float.toString(this.x1))
+                    .addBodyParameter("y1", Float.toString(this.y1))
+                    .addBodyParameter("x2", Float.toString(this.x2))
+                    .addBodyParameter("y2", Float.toString(this.y2))
+                    .addBodyParameter("x3", Float.toString(this.x3))
+                    .addBodyParameter("y3", Float.toString(this.y3))
+                    .addBodyParameter("x4", Float.toString(this.x4))
+                    .addBodyParameter("y4", Float.toString(this.y4))
+
+                    .addBodyParameter("sx1", Float.toString(this.sx1))
+                    .addBodyParameter("sy1", Float.toString(this.sy1))
+                    .addBodyParameter("sx2", Float.toString(this.sx2))
+                    .addBodyParameter("sy2", Float.toString(this.sy2))
+                    .addBodyParameter("sx3", Float.toString(this.sx3))
+                    .addBodyParameter("sy3", Float.toString(this.sy3))
+                    .addBodyParameter("sx4", Float.toString(this.sx4))
+                    .addBodyParameter("sy4", Float.toString(this.sy4))
+                    .build()
+                    .getAsJSONObject(new JSONObjectRequestListener() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            // do anything with response
+                            Log.i(TAG, "POST onResponse = " + response.toString() );
+                            finishAll();
+                        }
+                        @Override
+                        public void onError(ANError error) {
+                            // handle error
+                            Log.i(TAG, "POST ANError = " + error.getMessage() );
+                            finishAll();
+                        }
+                    });
+        }
+
+        private void finishAll() {
+            System.gc();
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    dismissDialog();
+                    getActivity().finish();
+                }
+            });
+        }
+
         @Override
         public void onClick(View v) {
             showProgressDialog(getResources().getString(R.string.loading));
@@ -252,10 +424,9 @@ public class ResultFragment extends Fragment {
 
                         //((ScanActivity)getActivity()).getDataFromFragment(resultFragment.imgBase64Scanned, resultFragment.imgBase64Original,  resultFragment.mapaPoints);
 
-                        ((ScanActivity)getActivity()).getDataFromFragment2(idProcesso, resultFragment.imgBase64Scanned, resultFragment.imgBase64Original,  resultFragment.mapaPoints, resultFragment.mapaPointsScanned);
+                        getDataFromFragment2(idProcesso, resultFragment.imgBase64Scanned, resultFragment.imgBase64Original,  resultFragment.mapaPoints, resultFragment.mapaPointsScanned);
 
-
-                        //imgScanned.recycle();
+                        /**
                         System.gc();
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
@@ -264,6 +435,7 @@ public class ResultFragment extends Fragment {
                                 getActivity().finish();
                             }
                         });
+                         */
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
