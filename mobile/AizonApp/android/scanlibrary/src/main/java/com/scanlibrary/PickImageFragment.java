@@ -39,7 +39,7 @@ public class PickImageFragment extends Fragment {
     private String pictureImagePath = "";
 
 
-    private static final String TAG = "PickImageFragment 2";
+    private static final String TAG = "AIZONApp_PickImageFragment";
 
     @Override
     public void onAttach(Activity activity) {

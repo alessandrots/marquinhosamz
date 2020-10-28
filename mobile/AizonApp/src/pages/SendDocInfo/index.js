@@ -67,7 +67,7 @@ export default function SendDocInfo() {
 
       let data = res.data;
 
-      console.log('SendDocInfo generateIdForImages data = ', data);
+      console.log('AIZONApp_FotoScan_SendDocInfo generateIdForImages data = ', data);
 
       let msg = "ID gerado com sucesso : " + data.Id;
 
@@ -86,7 +86,7 @@ export default function SendDocInfo() {
 
   function getFotoScan() {
     return (
-      <FotoScan idProcess={0} />
+      <FotoScan idProcesso={idProcess} />
     );
   }
 

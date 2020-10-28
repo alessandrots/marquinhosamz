@@ -48,10 +48,10 @@ export default function FotoScan(props) {
 
   useEffect(() => {
 
-    console.log('SendDocInfo props = ', props);
+    console.log('AIZONApp_FotoScan props = ', props);
 
-    if (props?.idProcess) {
-      setIdProcess(props.idProcess);
+    if (props?.idProcesso) {
+      setIdProcess(props.idProcesso);
     }
 
   }, []);
@@ -111,7 +111,7 @@ export default function FotoScan(props) {
 
     const resposta = await PhotoService.uploadBase64ToAizonViaBody('/image/upload3', fileImageFront, fileImageVerso);
 
-    console.log('uploadBase64ToAizonViaBody resposta = ', resposta);
+    console.log('AIZONApp_FotoScan uploadBase64ToAizonViaBody resposta = ', resposta);
 
     const res = resposta.res
 
@@ -194,59 +194,6 @@ export default function FotoScan(props) {
   }
   */
 
- function scanImage(image) {
-    if(Platform.OS === 'android') {
-        OpenCV.callAlessandro(image, (err) => {
-
-            Alert.alert(
-                'Atenção',
-                'Nenhuma imagem detectada',
-                [
-                    {text: 'Ok', onPress: () => {}},
-                ],
-                {cancelable: false},
-            )
-
-        },  (data) => {
-          //console.log('\n scanImage data = ', data);
-          Alert.alert(
-            'AIZON',
-            'OK',
-            [
-                {text: 'Ok', onPress: () => {}},
-            ],
-            {cancelable: false},
-        )
-        });
-    }
-  }
-
-  async function measureLayout() {
-    try {
-      var {
-        relativeX,
-        relativeY,
-        width,
-        height
-      } = await OpenCV.measureLayout(100, 100);
-
-      console.log(
-        relativeX + ':' + relativeY + ':' + width + ':' + height
-      );
-
-      Alert.alert(
-          'AIZON',
-          'measureLayout',
-          [
-              {text: 'Ok', onPress: () => {}},
-          ],
-          {cancelable: false},
-      )
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
   /**
     let promise = new Promise(function(resolve, reject) {
       //
@@ -272,7 +219,7 @@ export default function FotoScan(props) {
   };
 
   function scanner(tipoImagem) {
-    console.log('\n\n RNOpenCvLibrary scanImageForProcess = ');
+    console.log('AIZONApp_FotoScan_scanner');
 
     /**
     let promise = new Promise(function(resolve, reject) {
@@ -285,7 +232,7 @@ export default function FotoScan(props) {
   }
 
   function postScanner(tipoImagem) {
-    console.log('\n\n RNOpenCvLibrary scanImageForProcess = ');
+    console.log('AIZONApp_FotoScan_scanner ');
 
     /**
     let promise = new Promise(function(resolve, reject) {

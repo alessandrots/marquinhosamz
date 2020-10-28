@@ -40,7 +40,7 @@ import java.util.Set;
  */
 public class ScanActivity extends Activity implements IScanner, ComponentCallbacks2 {
 
-    private static final String TAG = "ScanActivityAPP";
+    private static final String TAG = "AIZONApp_ScanActivity";
 
     private PassDataInterface passDataInterface;
     private String idProcesso;
@@ -54,6 +54,15 @@ public class ScanActivity extends Activity implements IScanner, ComponentCallbac
     private float y2 = 0;
     private float y3 = 0;
     private float y4 = 0;
+
+    private float sx1 = 0;
+    private float sx2 = 0;
+    private float sx3 = 0;
+    private float sx4 = 0;
+    private float sy1 = 0;
+    private float sy2 = 0;
+    private float sy3 = 0;
+    private float sy4 = 0;
 
     public ScanActivity() {
     }
@@ -70,6 +79,7 @@ public class ScanActivity extends Activity implements IScanner, ComponentCallbac
         init();
     }
 
+    /**
     public void executePost(View v) {
         Log.i(TAG, "executePost " );
 
@@ -116,8 +126,13 @@ public class ScanActivity extends Activity implements IScanner, ComponentCallbac
                     }
                 });
     }
+     */
 
     private void init() {
+
+        this.getDataFromIntent(ScanConstants.ID_PROCESS_SCAN_IMAGE, 0);
+        this.getDataFromIntent(ScanConstants.IMAGE_TYPE_SCAN_IMAGE, 1);
+
 
         PickImageFragment fragment = new PickImageFragment();
         Bundle bundle = new Bundle();
@@ -127,8 +142,6 @@ public class ScanActivity extends Activity implements IScanner, ComponentCallbac
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.content, fragment);
 
-        this.getDataFromIntent(ScanConstants.ID_PROCESS_SCAN_IMAGE, 0);
-        this.getDataFromIntent(ScanConstants.IMAGE_TYPE_SCAN_IMAGE, 1);
 
         //executeGet(null);
         //executePost(null);
@@ -253,6 +266,33 @@ public class ScanActivity extends Activity implements IScanner, ComponentCallbac
             }
         };
 
+        keysPoints = mapaPointsScanned.keySet();
+        ite = keysPoints.iterator();
+
+        while (ite.hasNext()) {
+            Integer key = ite.next();
+            PointF pointMap = (PointF)mapaPointsScanned.get(key);
+
+            switch (key) {
+                case 0:
+                    this.sx1 = pointMap.x;
+                    this.sy1 = pointMap.y;
+                    break;
+                case 1:
+                    this.sx2 = pointMap.x;
+                    this.sy2 = pointMap.y;
+                    break;
+                case 2:
+                    this.sx3 = pointMap.x;
+                    this.sy3 = pointMap.y;
+                    break;
+                case 3:
+                    this.sx4 = pointMap.x;
+                    this.sy4 = pointMap.y;
+                    break;
+            }
+        };
+
         sendImageToProcess(imgBase64Scanned, imgBase64Original);
 
         setResult(Activity.RESULT_OK, data);
@@ -340,45 +380,46 @@ public class ScanActivity extends Activity implements IScanner, ComponentCallbac
         Log.i(TAG, "imageType  = " +this.tipoImagem.toString());
         Log.i(TAG, "fileImageOrigin  = " +imgBase64Original);
         Log.i(TAG, "fileImageScanned  = " +imgBase64Scanned);
-        Log.i(TAG, "x1  = " +Integer.toString((int)this.x1));
-        Log.i(TAG, "y1  = " +Integer.toString((int)this.y1));
-        Log.i(TAG, "x2  = " +Integer.toString((int)this.x2));
-        Log.i(TAG, "y2  = " +Integer.toString((int)this.y2));
-        Log.i(TAG, "x3  = " +Integer.toString((int)this.x3));
-        Log.i(TAG, "y3  = " +Integer.toString((int)this.y3));
-        Log.i(TAG, "x4  = " +Integer.toString((int)this.x4));
-        Log.i(TAG, "y4  = " +Integer.toString((int)this.y4));
-        Log.i(TAG, "sx1  = " +Integer.toString((int)this.x1));
-        Log.i(TAG, "sy1  = " +Integer.toString((int)this.y1));
-        Log.i(TAG, "sx2  = " +Integer.toString((int)this.x2));
-        Log.i(TAG, "sy2  = " +Integer.toString((int)this.y2));
-        Log.i(TAG, "sx3  = " +Integer.toString((int)this.x3));
-        Log.i(TAG, "sy3  = " +Integer.toString((int)this.y3));
-        Log.i(TAG, "sx4  = " +Integer.toString((int)this.x4));
-        Log.i(TAG, "sy4  = " +Integer.toString((int)this.y4));
+        Log.i(TAG, "x1  = " +this.x1);
+        Log.i(TAG, "y1  = " +this.y1);
+        Log.i(TAG, "x2  = " +this.x2);
+        Log.i(TAG, "y2  = " +this.y2);
+        Log.i(TAG, "x3  = " +this.x3);
+        Log.i(TAG, "y3  = " +this.y3);
+        Log.i(TAG, "x4  = " +this.x4);
+        Log.i(TAG, "y4  = " +this.y4);
+        Log.i(TAG, "sx1  = " +this.x1);
+        Log.i(TAG, "sy1  = " +this.y1);
+        Log.i(TAG, "sx2  = " +this.x2);
+        Log.i(TAG, "sy2  = " +this.y2);
+        Log.i(TAG, "sx3  = " +this.x3);
+        Log.i(TAG, "sy3  = " +this.y3);
+        Log.i(TAG, "sx4  = " +this.x4);
+        Log.i(TAG, "sy4  = " +this.y4);
 
         AndroidNetworking.post("http://45.4.186.2:5000/image/uploadImageDoc")
+                .addHeaders("Content-Type", "multipart/form-data")
                 .addBodyParameter("id", idProcessoTmp)
                 .addBodyParameter("imageType", this.tipoImagem.toString())
                 .addBodyParameter("fileImageOrigin", imgBase64Original)
                 .addBodyParameter("fileImageScanned", imgBase64Scanned)
-                .addBodyParameter("x1", Integer.toString((int)this.x1))
-                .addBodyParameter("y1", Integer.toString((int)this.y1))
-                .addBodyParameter("x2", Integer.toString((int)this.x2))
-                .addBodyParameter("y2", Integer.toString((int)this.y2))
-                .addBodyParameter("x3", Integer.toString((int)this.x3))
-                .addBodyParameter("y3", Integer.toString((int)this.y3))
-                .addBodyParameter("x4", Integer.toString((int)this.x4))
-                .addBodyParameter("y4", Integer.toString((int)this.y4))
+                .addBodyParameter("x1", Float.toString(this.x1))
+                .addBodyParameter("y1", Float.toString(this.y1))
+                .addBodyParameter("x2", Float.toString(this.x2))
+                .addBodyParameter("y2", Float.toString(this.y2))
+                .addBodyParameter("x3", Float.toString(this.x3))
+                .addBodyParameter("y3", Float.toString(this.y3))
+                .addBodyParameter("x4", Float.toString(this.x4))
+                .addBodyParameter("y4", Float.toString(this.y4))
 
-                .addBodyParameter("sx1", Integer.toString((int)this.x1))
-                .addBodyParameter("sy1", Integer.toString((int)this.y1))
-                .addBodyParameter("sx2", Integer.toString((int)this.x2))
-                .addBodyParameter("sy2", Integer.toString((int)this.y2))
-                .addBodyParameter("sx3", Integer.toString((int)this.x3))
-                .addBodyParameter("sy3", Integer.toString((int)this.y3))
-                .addBodyParameter("sx4", Integer.toString((int)this.x4))
-                .addBodyParameter("sy4", Integer.toString((int)this.y4))
+                .addBodyParameter("sx1", Float.toString(this.sx1))
+                .addBodyParameter("sy1", Float.toString(this.sy1))
+                .addBodyParameter("sx2", Float.toString(this.sx2))
+                .addBodyParameter("sy2", Float.toString(this.sy2))
+                .addBodyParameter("sx3", Float.toString(this.sx3))
+                .addBodyParameter("sy3", Float.toString(this.sy3))
+                .addBodyParameter("sx4", Float.toString(this.sx4))
+                .addBodyParameter("sy4", Float.toString(this.sy4))
                 //.setTag("test")
                 //.setPriority(Priority.MEDIUM)
                 .build()

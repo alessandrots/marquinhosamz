@@ -34,7 +34,7 @@ import java.util.Locale;
  */
 public class ResultFragment extends Fragment {
 
-    private static final String TAG = "ResultFragment";
+    private static final String TAG = "AIZONApp_ResultFragment";
 
     private View view;
     private ImageView scannedImageView;

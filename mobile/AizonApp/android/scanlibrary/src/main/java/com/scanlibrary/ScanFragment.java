@@ -33,7 +33,7 @@ import java.util.Map;
  */
 public class ScanFragment extends Fragment {
 
-    private static final String TAG = "ScanFragment";
+    private static final String TAG = "AIZONApp_ScanFragment";
 
     private Button scanButton;
     private ImageView sourceImageView;
