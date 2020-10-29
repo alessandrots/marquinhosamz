@@ -39,7 +39,7 @@ public class PickImageFragment extends Fragment {
     private String pictureImagePath = "";
 
 
-    private static final String TAG = "AIZONApp_PickImageFragment";
+    private static final String TAG = "AIZONApp_PickImageFrag";
 
     @Override
     public void onAttach(Activity activity) {
@@ -138,33 +138,6 @@ public class PickImageFragment extends Fragment {
         startActivityForResult(cameraIntent, ScanConstants.START_CAMERA_REQUEST_CODE);
     }
 
-    /**
-    public void onActivityResult2(int requestCode, int resultCode, Intent data) {
-        Log.i("", "onActivityResult" + resultCode);
-        Bitmap bitmap = null;
-        //if (resultCode == Activity.RESULT_OK) {
-        try {
-            switch (requestCode) {
-                case ScanConstants.START_CAMERA_REQUEST_CODE:
-                    takePhotoCamera(data);
-                    //bitmap = getBitmap(fileUri);
-                    break;
-
-                case ScanConstants.PICKFILE_REQUEST_CODE:
-                    bitmap = getBitmap(data.getData());
-                    break;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-        if (bitmap != null) {
-            postImagePick(bitmap);
-        }
-    }
-    */
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d("", "onActivityResult" + resultCode);
@@ -196,7 +169,6 @@ public class PickImageFragment extends Fragment {
             File path = getActivity().getBaseContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
             File tempFolder = new File(path, "/AizonApp");
 
-            //File tempFolder = new File(ScanConstants.IMAGE_PATH);
             if (!tempFolder.exists()) {
                 tempFolder.mkdir();
             }
@@ -224,48 +196,20 @@ public class PickImageFragment extends Fragment {
             Log.i(TAG, "path = " + path.getPath());
         }
 
-        File file = new File(path,  "ORIGINAL_" + timeStamp + ".jpg");
+        File fileImageOrigin = new File(path,  "ORIGINAL_" + timeStamp + ".jpg");
 
-        Log.i(TAG, "file1 = " + file.getPath());
+        Log.i(TAG, "file1 = " + fileImageOrigin.getPath());
+        this.pictureImagePath = fileImageOrigin.getAbsolutePath();
 
         try {
-            FileOutputStream outputStream = new FileOutputStream(file);
+            FileOutputStream outputStream = new FileOutputStream(fileImageOrigin);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
 
-        fileUri = Uri.fromFile(file);
-        return file;
-    }
+        fileUri = Uri.fromFile(fileImageOrigin);
 
-    public void takePhotoCamera(Intent data) {
-        Log.i(TAG, "openCamera");
-
-        Bitmap photo = (Bitmap) data.getExtras().get("data");
-
-        Log.i(TAG, "width = " + photo.getWidth());
-        Log.i(TAG, "height = " + photo.getHeight());
-
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new
-                Date());
-        File file = new File(ScanConstants.IMAGE_PATH, "IMG_" + timeStamp +
-                ".jpg");
-
-
-        File path = getActivity().getBaseContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        Log.i(TAG, "path = " + path.getPath());
-        File file1 = new File(path,  "IMG_" + timeStamp + ".jpg");
-
-        Log.i(TAG, "file1 = " + file1.getPath());
-
-        try (FileOutputStream out = new FileOutputStream(file1)) {
-            photo.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
-            // PNG is a lossless format, the compression factor (100) is ignored
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        postImagePick(photo);
+        return fileImageOrigin;
     }
 
     protected void postImagePick(Bitmap bitmap) {
@@ -276,7 +220,7 @@ public class PickImageFragment extends Fragment {
             bitmap = null;
         }
 
-        scanner.onBitmapSelect(uri);
+        scanner.onBitmapSelect(uri, this.pictureImagePath);
     }
 
     private Bitmap getBitmap(Uri selectedimg) throws IOException {

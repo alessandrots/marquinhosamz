@@ -12,6 +12,8 @@ public interface IScanner {
 
     void onBitmapSelect(Uri uri);
 
+    void onBitmapSelect(Uri uri, String pathAbsolute);
+
     void onScanFinish(Uri uri);
 
     void onScanFinishByAmazon(Uri uriOriginal, Uri uriScanned, Map<Integer, PointF> points, Map<Integer, PointF> pointsScanned);

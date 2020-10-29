@@ -29,5 +29,6 @@ public class ScanConstants {
 
     public final static String ID_PROCESS_SCAN_IMAGE   = "idProcessScanIMAGE";
     public final static String IMAGE_TYPE_SCAN_IMAGE   = "imageType";
+    public final static String PATH_ABSOLUTE_IMAGE_ORIGIN  = "pathAbsoluteIMAGE";
 
 }

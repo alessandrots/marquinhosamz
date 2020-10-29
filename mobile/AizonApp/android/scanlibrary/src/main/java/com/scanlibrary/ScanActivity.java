@@ -45,6 +45,7 @@ public class ScanActivity extends Activity implements IScanner, ComponentCallbac
     private PassDataInterface passDataInterface;
     private String idProcesso;
     private Integer tipoImagem;
+    private String pathImageOrigin;
 
     private float x1 = 0;
     private float x2 = 0;
@@ -129,10 +130,8 @@ public class ScanActivity extends Activity implements IScanner, ComponentCallbac
      */
 
     private void init() {
-
         this.getDataFromIntent(ScanConstants.ID_PROCESS_SCAN_IMAGE, 0);
         this.getDataFromIntent(ScanConstants.IMAGE_TYPE_SCAN_IMAGE, 1);
-
 
         PickImageFragment fragment = new PickImageFragment();
         Bundle bundle = new Bundle();
@@ -141,7 +140,6 @@ public class ScanActivity extends Activity implements IScanner, ComponentCallbac
         android.app.FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.content, fragment);
-
 
         //executeGet(null);
         //executePost(null);
@@ -182,6 +180,23 @@ public class ScanActivity extends Activity implements IScanner, ComponentCallbac
     }
 
     @Override
+    public void onBitmapSelect(Uri uri, String pathAbsoluteOrigin) {
+        ScanFragment fragment = new ScanFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(ScanConstants.SELECTED_BITMAP, uri);
+
+        //bundle.putString(ScanConstants.ID_PROCESS_SCAN_IMAGE, this.pathImageOrigin);
+        this.pathImageOrigin = pathAbsoluteOrigin;
+
+        fragment.setArguments(bundle);
+        android.app.FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.add(R.id.content, fragment);
+        fragmentTransaction.addToBackStack(ScanFragment.class.toString());
+        fragmentTransaction.commit();
+    }
+
+    @Override
     public void onScanFinish(Uri uri) {
         ResultFragment fragment = new ResultFragment();
         Bundle bundle = new Bundle();
@@ -203,6 +218,7 @@ public class ScanActivity extends Activity implements IScanner, ComponentCallbac
         bundle.putParcelable(ScanConstants.ORIGINAL_IMG_URI, uriOriginal);
         bundle.putString(ScanConstants.ID_PROCESS_SCAN_IMAGE, this.idProcesso);
         bundle.putInt(ScanConstants.IMAGE_TYPE_SCAN_IMAGE, this.tipoImagem);
+        bundle.putString(ScanConstants.PATH_ABSOLUTE_IMAGE_ORIGIN, this.pathImageOrigin);
 
         HashMap<Integer, PointF> mapPoints = convertMapPointsToSerializableHash(points);
         bundle.putSerializable(ScanConstants.POINTS_MARKED_ORIGINAL_IMG, mapPoints);

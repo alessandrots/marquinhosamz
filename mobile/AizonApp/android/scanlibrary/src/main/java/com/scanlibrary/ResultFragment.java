@@ -22,6 +22,8 @@ import android.widget.ImageView;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
+import com.androidnetworking.interfaces.UploadProgressListener;
+import com.androidnetworking.model.MultipartFileBody;
 
 import org.json.JSONObject;
 
@@ -69,7 +71,12 @@ public class ResultFragment extends Fragment {
     private Bitmap bitmapOriginal;
 
     private String idProcesso;
+
     private Integer tipoImagem;
+
+    private String pictureImageScannedPath;
+
+    private String pictureImageOriginPath;
 
     public ResultFragment() {
     }
@@ -137,6 +144,8 @@ public class ResultFragment extends Fragment {
         //Mapa de Points (x,y)
         this.mapaPointsScanned = getPointsScanned();
 
+        this.pictureImageOriginPath = getImageOriginImage();
+
         //Uri da img scanneada
         Uri uri = getUri();
         Bitmap bitmapScanned = convertUriToBitmap(uri); //getBitmap();
@@ -177,6 +186,11 @@ public class ResultFragment extends Fragment {
         return mapaPoints;
     }
 
+    private String getImageOriginImage() {
+        String imgPath = getArguments().getString(ScanConstants.PATH_ABSOLUTE_IMAGE_ORIGIN);
+        return imgPath;
+    }
+
     private void saveImageToDisk(Bitmap photo) {
         Locale localeBr = new Locale("pt", "BR");
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", localeBr).format(new Date());
@@ -185,13 +199,15 @@ public class ResultFragment extends Fragment {
         File tempFolder = new File(path, "/AizonApp");
         Log.i(TAG, "tempFolder = " + tempFolder.getPath());
 
-        File file = new File(tempFolder,  "SCANNED_" + timeStamp + ".png");
-        Log.i(TAG, "filepath = " + file.getPath());
+        File filePathImgScanned = new File(tempFolder,  "SCANNED_" + timeStamp + ".jpg");
+        Log.i(TAG, "filepath = " + filePathImgScanned.getPath());
+
+        this.pictureImageScannedPath = filePathImgScanned.getAbsolutePath();
 
         try {
-            FileOutputStream outputStream = new FileOutputStream(file);
+            FileOutputStream outputStream = new FileOutputStream(filePathImgScanned);
             photo.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
-            MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), file.getAbsolutePath(), file.getName(), file.getName());
+            MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), filePathImgScanned.getAbsolutePath(), filePathImgScanned.getName(), filePathImgScanned.getName());
             outputStream.flush();
             outputStream.close();
         } catch (Exception e) {
@@ -334,44 +350,98 @@ public class ResultFragment extends Fragment {
             Log.i(TAG, "sx4  = " +this.x4);
             Log.i(TAG, "sy4  = " +this.y4);
 
-            AndroidNetworking.post("http://45.4.186.2:5000/image/uploadImageDoc")
-                    .addHeaders("Content-Type", "multipart/form-data")
-                    .addBodyParameter("id", idProcessoTmp)
-                    .addBodyParameter("imageType", tipoImagem.toString())
-                    .addBodyParameter("fileImageOrigin", imgBase64Original)
-                    .addBodyParameter("fileImageScanned", imgBase64Scanned)
-                    .addBodyParameter("x1", Float.toString(this.x1))
-                    .addBodyParameter("y1", Float.toString(this.y1))
-                    .addBodyParameter("x2", Float.toString(this.x2))
-                    .addBodyParameter("y2", Float.toString(this.y2))
-                    .addBodyParameter("x3", Float.toString(this.x3))
-                    .addBodyParameter("y3", Float.toString(this.y3))
-                    .addBodyParameter("x4", Float.toString(this.x4))
-                    .addBodyParameter("y4", Float.toString(this.y4))
+            File fileImagScanned = new File(pictureImageScannedPath);
+            File fileImageOrigin = new File(pictureImageOriginPath);
 
-                    .addBodyParameter("sx1", Float.toString(this.sx1))
-                    .addBodyParameter("sy1", Float.toString(this.sy1))
-                    .addBodyParameter("sx2", Float.toString(this.sx2))
-                    .addBodyParameter("sy2", Float.toString(this.sy2))
-                    .addBodyParameter("sx3", Float.toString(this.sx3))
-                    .addBodyParameter("sy3", Float.toString(this.sy3))
-                    .addBodyParameter("sx4", Float.toString(this.sx4))
-                    .addBodyParameter("sy4", Float.toString(this.sy4))
+            //https://stackoverflow.com/questions/4007969/application-x-www-form-urlencoded-or-multipart-form-data
+
+            AndroidNetworking.upload("http://45.4.186.2:5000/image/uploadImageDoc")
+                    //.addHeaders("Content-Type", "multipart/mixed")
+                    .addMultipartParameter("id", idProcessoTmp)
+                    .addMultipartParameter("imageType", tipoImagem.toString())
+
+                    .addMultipartFile("fileImageOrigin", fileImageOrigin)
+                    .addMultipartFile("fileImageScanned", fileImagScanned)
+
+                    .addMultipartParameter("x1", Float.toString(this.x1))
+                    .addMultipartParameter("y1", Float.toString(this.y1))
+                    .addMultipartParameter("x2", Float.toString(this.x2))
+                    .addMultipartParameter("y2", Float.toString(this.y2))
+                    .addMultipartParameter("x3", Float.toString(this.x3))
+                    .addMultipartParameter("y3", Float.toString(this.y3))
+                    .addMultipartParameter("x4", Float.toString(this.x4))
+                    .addMultipartParameter("y4", Float.toString(this.y4))
+
+                    .addMultipartParameter("sx1", Float.toString(this.sx1))
+                    .addMultipartParameter("sy1", Float.toString(this.sy1))
+                    .addMultipartParameter("sx2", Float.toString(this.sx2))
+                    .addMultipartParameter("sy2", Float.toString(this.sy2))
+                    .addMultipartParameter("sx3", Float.toString(this.sx3))
+                    .addMultipartParameter("sy3", Float.toString(this.sy3))
+                    .addMultipartParameter("sx4", Float.toString(this.sx4))
+                    .addMultipartParameter("sy4", Float.toString(this.sy4))
                     .build()
+                    .setUploadProgressListener(new UploadProgressListener() {
+                        @Override
+                        public void onProgress(long bytesUploaded, long totalBytes) {
+                            // do anything with progress
+                        }
+                    })
                     .getAsJSONObject(new JSONObjectRequestListener() {
                         @Override
                         public void onResponse(JSONObject response) {
                             // do anything with response
-                            Log.i(TAG, "POST onResponse = " + response.toString() );
+                            Log.i(TAG, "upload onResponse = " + response.toString() );
                             finishAll();
                         }
                         @Override
                         public void onError(ANError error) {
                             // handle error
-                            Log.i(TAG, "POST ANError = " + error.getMessage() );
+                            Log.i(TAG, "upload ANError = " + error.getMessage() );
                             finishAll();
                         }
                     });
+
+            /**
+           AndroidNetworking.post("http://45.4.186.2:5000/image/uploadImageDoc")
+                   .addHeaders("Content-Type", "multipart/mixed")
+                   .addBodyParameter("id", idProcessoTmp)
+                   .addBodyParameter("imageType", tipoImagem.toString())
+                   .addBodyParameter("fileImageOrigin", imgBase64Original)
+                   .addBodyParameter("fileImageScanned", imgBase64Scanned)
+                   .addBodyParameter("x1", Float.toString(this.x1))
+                   .addBodyParameter("y1", Float.toString(this.y1))
+                   .addBodyParameter("x2", Float.toString(this.x2))
+                   .addBodyParameter("y2", Float.toString(this.y2))
+                   .addBodyParameter("x3", Float.toString(this.x3))
+                   .addBodyParameter("y3", Float.toString(this.y3))
+                   .addBodyParameter("x4", Float.toString(this.x4))
+                   .addBodyParameter("y4", Float.toString(this.y4))
+
+                   .addBodyParameter("sx1", Float.toString(this.sx1))
+                   .addBodyParameter("sy1", Float.toString(this.sy1))
+                   .addBodyParameter("sx2", Float.toString(this.sx2))
+                   .addBodyParameter("sy2", Float.toString(this.sy2))
+                   .addBodyParameter("sx3", Float.toString(this.sx3))
+                   .addBodyParameter("sy3", Float.toString(this.sy3))
+                   .addBodyParameter("sx4", Float.toString(this.sx4))
+                   .addBodyParameter("sy4", Float.toString(this.sy4))
+                   .build()
+                   .getAsJSONObject(new JSONObjectRequestListener() {
+                       @Override
+                       public void onResponse(JSONObject response) {
+                           // do anything with response
+                           Log.i(TAG, "POST onResponse = " + response.toString() );
+                           finishAll();
+                       }
+                       @Override
+                       public void onError(ANError error) {
+                           // handle error
+                           Log.i(TAG, "POST ANError = " + error.getMessage() );
+                           finishAll();
+                       }
+                   });
+             */
         }
 
         private void finishAll() {
