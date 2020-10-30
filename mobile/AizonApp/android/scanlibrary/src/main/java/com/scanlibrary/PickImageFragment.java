@@ -37,7 +37,8 @@ public class PickImageFragment extends Fragment {
     private Uri fileUri;
     private IScanner scanner;
     private String pictureImagePath = "";
-
+    private String idProcesso;
+    private String tipoImagem;
 
     private static final String TAG = "AIZONApp_PickImageFrag";
 
@@ -62,6 +63,10 @@ public class PickImageFragment extends Fragment {
         cameraButton.setOnClickListener(new CameraButtonClickListener());
         galleryButton = (ImageButton) view.findViewById(R.id.selectButton);
         galleryButton.setOnClickListener(new GalleryClickListener());
+
+        idProcesso = getArguments().getString(ScanConstants.ID_PROCESS_SCAN_IMAGE);
+        tipoImagem = getArguments().getString(ScanConstants.IMAGE_TYPE_SCAN_IMAGE);
+
         if (isIntentPreferenceSet()) {
             handleIntentPreference();
         } else {
@@ -165,17 +170,27 @@ public class PickImageFragment extends Fragment {
     }
 
     private File clearTempImages() {
+        File tempFolder = null;
+
         try {
             File path = getActivity().getBaseContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-            File tempFolder = new File(path, "/AizonApp");
+
+
+            tempFolder = new File(path, "/AizonApp");
 
             if (!tempFolder.exists()) {
                 tempFolder.mkdir();
             }
 
-            for (File f : tempFolder.listFiles()){
-                f.delete();
+            tempFolder = new File(tempFolder.getAbsoluteFile(), "/" + this.idProcesso + "/" + this.tipoImagem);
+
+            if (!tempFolder.exists()) {
+                tempFolder.mkdirs();
             }
+
+            //for (File f : tempFolder.listFiles()){
+                //f.delete();
+            //}
 
             return tempFolder;
         } catch (Exception e) {

@@ -99,10 +99,10 @@ public class ResultFragment extends Fragment {
         bwButton = (Button) view.findViewById(R.id.BWMode);
         bwButton.setOnClickListener(new BWButtonClickListener());
 
-        Bitmap bitmapScanned = generateBitmpasBase64();
-
         idProcesso = getArguments().getString(ScanConstants.ID_PROCESS_SCAN_IMAGE);
         tipoImagem = getArguments().getInt(ScanConstants.IMAGE_TYPE_SCAN_IMAGE);
+
+        Bitmap bitmapScanned = generateBitmpasBase64();
 
         setScannedImage(bitmapScanned);
 
@@ -197,10 +197,16 @@ public class ResultFragment extends Fragment {
 
         File path = getActivity().getBaseContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File tempFolder = new File(path, "/AizonApp");
-        Log.i(TAG, "tempFolder = " + tempFolder.getPath());
+        Log.d(TAG, "tempFolder = " + tempFolder.getPath());
+
+        tempFolder = new File(tempFolder.getAbsoluteFile(), "/" + this.idProcesso + "/" + this.tipoImagem);
+
+        if (!tempFolder.exists()) {
+            tempFolder.mkdirs();
+        }
 
         File filePathImgScanned = new File(tempFolder,  "SCANNED_" + timeStamp + ".jpg");
-        Log.i(TAG, "filepath = " + filePathImgScanned.getPath());
+        Log.d(TAG, "filepath = " + filePathImgScanned.getPath());
 
         this.pictureImageScannedPath = filePathImgScanned.getAbsolutePath();
 
@@ -328,27 +334,27 @@ public class ResultFragment extends Fragment {
                 idProcessoTmp = idProcesso;
             }
 
-            Log.i(TAG, "sendImageToProcess " );
-            Log.i(TAG, "id  = " + idProcessoTmp);
-            Log.i(TAG, "imageType  = " + tipoImagem.toString());
-            Log.i(TAG, "fileImageOrigin  = " +imgBase64Original);
-            Log.i(TAG, "fileImageScanned  = " +imgBase64Scanned);
-            Log.i(TAG, "x1  = " +this.x1);
-            Log.i(TAG, "y1  = " +this.y1);
-            Log.i(TAG, "x2  = " +this.x2);
-            Log.i(TAG, "y2  = " +this.y2);
-            Log.i(TAG, "x3  = " +this.x3);
-            Log.i(TAG, "y3  = " +this.y3);
-            Log.i(TAG, "x4  = " +this.x4);
-            Log.i(TAG, "y4  = " +this.y4);
-            Log.i(TAG, "sx1  = " +this.x1);
-            Log.i(TAG, "sy1  = " +this.y1);
-            Log.i(TAG, "sx2  = " +this.x2);
-            Log.i(TAG, "sy2  = " +this.y2);
-            Log.i(TAG, "sx3  = " +this.x3);
-            Log.i(TAG, "sy3  = " +this.y3);
-            Log.i(TAG, "sx4  = " +this.x4);
-            Log.i(TAG, "sy4  = " +this.y4);
+            Log.d(TAG, "sendImageToProcess " );
+            Log.d(TAG, "id  = " + idProcessoTmp);
+            Log.d(TAG, "imageType  = " + tipoImagem.toString());
+            Log.d(TAG, "fileImageOrigin  = " +imgBase64Original);
+            Log.d(TAG, "fileImageScanned  = " +imgBase64Scanned);
+            Log.d(TAG, "x1  = " +this.x1);
+            Log.d(TAG, "y1  = " +this.y1);
+            Log.d(TAG, "x2  = " +this.x2);
+            Log.d(TAG, "y2  = " +this.y2);
+            Log.d(TAG, "x3  = " +this.x3);
+            Log.d(TAG, "y3  = " +this.y3);
+            Log.d(TAG, "x4  = " +this.x4);
+            Log.d(TAG, "y4  = " +this.y4);
+            Log.d(TAG, "sx1  = " +this.x1);
+            Log.d(TAG, "sy1  = " +this.y1);
+            Log.d(TAG, "sx2  = " +this.x2);
+            Log.d(TAG, "sy2  = " +this.y2);
+            Log.d(TAG, "sx3  = " +this.x3);
+            Log.d(TAG, "sy3  = " +this.y3);
+            Log.d(TAG, "sx4  = " +this.x4);
+            Log.d(TAG, "sy4  = " +this.y4);
 
             File fileImagScanned = new File(pictureImageScannedPath);
             File fileImageOrigin = new File(pictureImageOriginPath);
@@ -391,57 +397,16 @@ public class ResultFragment extends Fragment {
                         @Override
                         public void onResponse(JSONObject response) {
                             // do anything with response
-                            Log.i(TAG, "upload onResponse = " + response.toString() );
+                            Log.d(TAG, "upload onResponse = " + response.toString() );
                             finishAll();
                         }
                         @Override
                         public void onError(ANError error) {
                             // handle error
-                            Log.i(TAG, "upload ANError = " + error.getMessage() );
+                            Log.d(TAG, "upload ANError = " + error.getMessage() );
                             finishAll();
                         }
                     });
-
-            /**
-           AndroidNetworking.post("http://45.4.186.2:5000/image/uploadImageDoc")
-                   .addHeaders("Content-Type", "multipart/mixed")
-                   .addBodyParameter("id", idProcessoTmp)
-                   .addBodyParameter("imageType", tipoImagem.toString())
-                   .addBodyParameter("fileImageOrigin", imgBase64Original)
-                   .addBodyParameter("fileImageScanned", imgBase64Scanned)
-                   .addBodyParameter("x1", Float.toString(this.x1))
-                   .addBodyParameter("y1", Float.toString(this.y1))
-                   .addBodyParameter("x2", Float.toString(this.x2))
-                   .addBodyParameter("y2", Float.toString(this.y2))
-                   .addBodyParameter("x3", Float.toString(this.x3))
-                   .addBodyParameter("y3", Float.toString(this.y3))
-                   .addBodyParameter("x4", Float.toString(this.x4))
-                   .addBodyParameter("y4", Float.toString(this.y4))
-
-                   .addBodyParameter("sx1", Float.toString(this.sx1))
-                   .addBodyParameter("sy1", Float.toString(this.sy1))
-                   .addBodyParameter("sx2", Float.toString(this.sx2))
-                   .addBodyParameter("sy2", Float.toString(this.sy2))
-                   .addBodyParameter("sx3", Float.toString(this.sx3))
-                   .addBodyParameter("sy3", Float.toString(this.sy3))
-                   .addBodyParameter("sx4", Float.toString(this.sx4))
-                   .addBodyParameter("sy4", Float.toString(this.sy4))
-                   .build()
-                   .getAsJSONObject(new JSONObjectRequestListener() {
-                       @Override
-                       public void onResponse(JSONObject response) {
-                           // do anything with response
-                           Log.i(TAG, "POST onResponse = " + response.toString() );
-                           finishAll();
-                       }
-                       @Override
-                       public void onError(ANError error) {
-                           // handle error
-                           Log.i(TAG, "POST ANError = " + error.getMessage() );
-                           finishAll();
-                       }
-                   });
-             */
         }
 
         private void finishAll() {

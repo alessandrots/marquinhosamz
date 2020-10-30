@@ -93,6 +93,53 @@ export default function FotoScan(props) {
       setIsVisibleList(true);
     }
   }
+  /**
+    let promise = new Promise(function(resolve, reject) {
+      //
+    });
+   */
+  async function scanImageForProcess(tipoImagem) {
+    try {
+      var {
+        id
+      } = await OpenCV.scanImageForProcess(idProcess, tipoImagem);
+
+      let msg = "scanImageForProcess";
+
+
+      /**
+      Alert.alert(
+          'AIZON',
+          'scanImageForProcess',
+          [
+              {text: 'Ok', onPress: () => {postScanner(tipoImagem)}},
+          ],
+          {cancelable: false},
+      )
+      */
+
+      alertMessage( msg, null, null, 'AIZON-IMAGE');
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  function scanner(tipoImagem) {
+    console.log('AIZONApp_FotoScan_scanner');
+
+    /**
+    let promise = new Promise(function(resolve, reject) {
+      //
+    });
+    */
+
+    //scanImage('scanner');
+    scanImageForProcess(tipoImagem);
+  }
+
+  function postScanner(tipoImagem) {
+    console.log('AIZONApp_FotoScan_scanner ');
+  }
 
   /**
    * Após o clique do showImages ou showImagesTemp
@@ -125,7 +172,6 @@ export default function FotoScan(props) {
       storageIdUpload(data.id);
 
       let msg = "Processamento realizado com sucesso. ID: " + data.id; //+ ' => Data: '+ data.date_time;
-      //alertMessage(msg, true, data);
 
       let fnGo = goToDataVisualization;
 
@@ -182,63 +228,6 @@ export default function FotoScan(props) {
   function closeModalPhoto() {
     setModalVisibleSideUm(false);
     setModalVisibleSideZero(false);
-  }
-
-  /**
-  function getMontagemTela() {
-    if (!modalVisibleSideUm && !modalVisibleSideZero){
-      return getMainScreen();
-    } else {
-      return getModalPhoto();
-    }
-  }
-  */
-
-  /**
-    let promise = new Promise(function(resolve, reject) {
-      //
-    });
-   */
-  async function scanImageForProcess(tipoImagem) {
-    try {
-      var {
-        id
-      } = await OpenCV.scanImageForProcess(idProcess, tipoImagem);
-
-      Alert.alert(
-          'AIZON',
-          'scanImageForProcess',
-          [
-              {text: 'Ok', onPress: () => {postScanner(tipoImagem)}},
-          ],
-          {cancelable: false},
-      )
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  function scanner(tipoImagem) {
-    console.log('AIZONApp_FotoScan_scanner');
-
-    /**
-    let promise = new Promise(function(resolve, reject) {
-      //
-    });
-    */
-
-    //scanImage('scanner');
-    scanImageForProcess(tipoImagem);
-  }
-
-  function postScanner(tipoImagem) {
-    console.log('AIZONApp_FotoScan_scanner ');
-
-    /**
-    let promise = new Promise(function(resolve, reject) {
-      //
-    });
-    */
   }
 
   /**

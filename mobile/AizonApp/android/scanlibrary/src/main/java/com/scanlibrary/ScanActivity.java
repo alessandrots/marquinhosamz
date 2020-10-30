@@ -80,62 +80,17 @@ public class ScanActivity extends Activity implements IScanner, ComponentCallbac
         init();
     }
 
-    /**
-    public void executePost(View v) {
-        Log.i(TAG, "executePost " );
-
-        AndroidNetworking.post("https://fierce-cove-29863.herokuapp.com/createAnUser")
-                .addBodyParameter("firstname", "Amit")
-                .addBodyParameter("lastname", "Shekhar")
-                .setTag("test")
-                .setPriority(Priority.MEDIUM)
-                .build()
-                .getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        // do anything with response
-                        Log.i(TAG, "POST onResponse = " + response.toString() );
-                    }
-                    @Override
-                    public void onError(ANError error) {
-                        // handle error
-                        Log.i(TAG, "GET ANError = " + error.toString() );
-                    }
-                });
-    }
-
-    public void executeGet(View v) {
-        Log.i(TAG, "executeGet " );
-
-        AndroidNetworking.get("https://fierce-cove-29863.herokuapp.com/getAllUsers/{pageNumber}")
-                .addPathParameter("pageNumber", "0")
-                .addQueryParameter("limit", "3")
-                //.addHeaders("token", "1234")
-                .setTag("test")
-                .setPriority(Priority.LOW)
-                .build()
-                .getAsJSONArray(new JSONArrayRequestListener() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        // do anything with response
-                        Log.i(TAG, "GET onResponse = " + response.toString() );
-                    }
-                    @Override
-                    public void onError(ANError error) {
-                        // handle error
-                        Log.i(TAG, "GET ANError = " + error.toString() );
-                    }
-                });
-    }
-     */
-
     private void init() {
         this.getDataFromIntent(ScanConstants.ID_PROCESS_SCAN_IMAGE, 0);
         this.getDataFromIntent(ScanConstants.IMAGE_TYPE_SCAN_IMAGE, 1);
 
         PickImageFragment fragment = new PickImageFragment();
         Bundle bundle = new Bundle();
+
+        bundle.putString(ScanConstants.ID_PROCESS_SCAN_IMAGE, this.idProcesso);
+        bundle.putString(ScanConstants.IMAGE_TYPE_SCAN_IMAGE, Integer.toString(this.tipoImagem));
         bundle.putInt(ScanConstants.OPEN_INTENT_PREFERENCE, getPreferenceContent());
+
         fragment.setArguments(bundle);
         android.app.FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
