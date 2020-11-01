@@ -8,6 +8,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.bridge.WritableNativeMap;
 import com.facebook.react.uimanager.IllegalViewOperationException;
 import com.facebook.react.uimanager.PixelUtil;
 import com.scanlibrary.PassDataInterface;
@@ -20,6 +21,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.SparseArray;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -33,6 +35,7 @@ public class RNOpenCvLibraryModule extends ReactContextBaseJavaModule  implement
 
     private final ReactApplicationContext reactContext;
     private Uri fileUri;
+    private final SparseArray<Promise> mPromises;
 
     private static final String E_LAYOUT_ERROR = "E_LAYOUT_ERROR";
 
@@ -40,11 +43,18 @@ public class RNOpenCvLibraryModule extends ReactContextBaseJavaModule  implement
         super(reactContext);
         this.reactContext = reactContext;
         this.reactContext.addActivityEventListener(this);
+        mPromises = new SparseArray<>();
     }
 
     @Override
     public String getName() {
         return "RNOpenCvLibrary";
+    }
+
+    @Override
+    public void onCatalystInstanceDestroy() {
+        super.onCatalystInstanceDestroy();
+        getReactApplicationContext().removeActivityEventListener(this);
     }
 
     @ReactMethod
@@ -117,12 +127,26 @@ public class RNOpenCvLibraryModule extends ReactContextBaseJavaModule  implement
             i.putExtra(ScanConstants.ID_PROCESS_SCAN_IMAGE, idProcesso);
             i.putExtra(ScanConstants.IMAGE_TYPE_SCAN_IMAGE, Integer.toString(tipoImagem));
 
-            //this.reactContext.startActivityForResult(i, 99, new Bundle());
             this.reactContext.startActivity(i);
-
             promise.resolve(idProcesso);
+
+            sc.startActivityForResult(i, 1);
+            mPromises.put(1, promise);
+
         } catch (Exception e) {
             promise.reject(E_LAYOUT_ERROR, e);
+        }
+    }
+
+    @Override
+    public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
+        Promise promise = mPromises.get(requestCode);
+
+        if (promise != null) {
+            WritableMap result = new WritableNativeMap();
+            result.putInt("resultCode", resultCode);
+            result.putMap("data", Arguments.makeNativeMap(data.getExtras()));
+            promise.resolve(result);
         }
     }
 
@@ -196,6 +220,7 @@ public class RNOpenCvLibraryModule extends ReactContextBaseJavaModule  implement
 
     }
 
+    /**
     @Override
     public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
         if (requestCode == Activity.RESULT_OK) {
@@ -203,6 +228,9 @@ public class RNOpenCvLibraryModule extends ReactContextBaseJavaModule  implement
             Bundle bundle = data.getExtras();
         }
     }
+    */
+
+
 
     @Override
     public void onNewIntent(Intent intent) {

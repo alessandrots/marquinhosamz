@@ -11,6 +11,7 @@ import PhotoService from '../../services/photo/PhotoService';
 import FotoScan from '../../components/FotoScan';
 
 import { alertMessage } from '../../util/util';
+import RNFetchBlob from 'rn-fetch-blob';
 
 import { Background, ContainerMain, SendImageBackground,
   ContainerImageRight, ContainerImageLeft,ContainerDadosView,
@@ -48,7 +49,48 @@ export default function SendDocInfo() {
     setVisible(true);
   }
 
+  function getUtf8(file) {
+    const fs = RNFetchBlob.fs;
+
+      fs.readFile(file)
+      .then((dataF) => {
+        console.log('====================================');
+        console.log('\n\n AIZONApp_ getUtf8 = ', dataF);
+        console.log('====================================');
+      }).catch((err) => {
+        console.log('AIZONApp_ getUtf8 err = ', err);
+      });
+  }
+
+  function getBase64(file) {
+    const fs = RNFetchBlob.fs;
+
+      fs.readFile(file, 'base64')
+      .then((dataF) => {
+        console.log('====================================');
+        console.log('\n\n AIZONApp_ getBase64 = ', dataF);
+        console.log('====================================');
+      }).catch((err) => {
+        console.log('AIZONApp_ getBase64 err = ', err);
+      });
+  }
+
   async function generateIdForImages() {
+
+    /**
+    const dirs = RNFetchBlob.fs.dirs;
+    console.log('\n\n AIZONApp_ DocumentDir = ', dirs.DocumentDir);
+    console.log('\n\n AIZONApp_ CacheDir = ', dirs.CacheDir);
+    console.log('\n\n AIZONApp_ DCIMDir = ', dirs.DCIMDir);
+    console.log('\n\n AIZONApp_ DownloadDir = ', dirs.DownloadDir);
+    console.log('\n\n AIZONApp_ PictureDir = ', dirs.PictureDir);
+
+    getBase64('/storage/emulated/0/Android/data/com.aizonapp/files/Pictures/AizonApp/80EjSqdua3vIPVi/0/SCANNED_20201031_195303.jpg');
+    getUtf8('/storage/emulated/0/Android/data/com.aizonapp/files/Pictures/AizonApp/80EjSqdua3vIPVi/0/SCANNED_20201031_195303.jpg');
+
+    //getBase64(dirs.PictureDir);
+    //getUtf8(dirs.PictureDir);
+     */
 
     alertMessage( 'Gerando do ID de controle', null, null, 'AIZON-IMAGE')
 

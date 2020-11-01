@@ -100,9 +100,9 @@ export default function FotoScan(props) {
    */
   async function scanImageForProcess(tipoImagem) {
     try {
-      var {
-        id
-      } = await OpenCV.scanImageForProcess(idProcess, tipoImagem);
+      const response = await OpenCV.scanImageForProcess(idProcess, tipoImagem);
+
+      console.log('\n\n AIZONApp_ response = ', response);
 
       let msg = "scanImageForProcess";
 
@@ -252,16 +252,8 @@ export default function FotoScan(props) {
 
       let data = res.data;
 
-      console.log('SendDocInfo generateIdForImages data = ', data);
+      console.log('AIZONApp_ data = ', data);
 
-      let msg = "ID gerado com sucesso : " + data.Id;
-
-      setIdProcess(data.Id);
-
-      //alertMessage( msg, null, null, 'AIZON-UPLOAD');
-
-      //para abrir a tela q vai chamar o componente de Foto
-      setVisible(true);
 
     } else {
       setLoading(false);
@@ -382,6 +374,10 @@ export default function FotoScan(props) {
             </ContainerImagens>
 
             <ContainerScreenButton>
+              <SubmitButton onPress={ () => getImageUploadedForType(0)}>
+                  <SubmitText>Imagens Scan</SubmitText>
+              </SubmitButton>
+
               <SubmitButton onPress={ () => uploadBase64ToAizonViaBody()}>
                   <SubmitText>Processar</SubmitText>
               </SubmitButton>

@@ -337,8 +337,8 @@ public class ResultFragment extends Fragment {
             Log.d(TAG, "sendImageToProcess " );
             Log.d(TAG, "id  = " + idProcessoTmp);
             Log.d(TAG, "imageType  = " + tipoImagem.toString());
-            Log.d(TAG, "fileImageOrigin  = " +imgBase64Original);
-            Log.d(TAG, "fileImageScanned  = " +imgBase64Scanned);
+            //Log.d(TAG, "fileImageOrigin  = " +imgBase64Original);
+            //Log.d(TAG, "fileImageScanned  = " +imgBase64Scanned);
             Log.d(TAG, "x1  = " +this.x1);
             Log.d(TAG, "y1  = " +this.y1);
             Log.d(TAG, "x2  = " +this.x2);
