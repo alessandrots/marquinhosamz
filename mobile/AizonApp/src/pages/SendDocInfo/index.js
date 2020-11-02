@@ -25,6 +25,7 @@ export default function SendDocInfo() {
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [idProcess, setIdProcess] = useState(0);
+  const [imageFrontal, setImageFrontal] = useState(null);
 
   const { user } = useContext(AuthContext);
 
@@ -70,12 +71,15 @@ export default function SendDocInfo() {
         console.log('====================================');
         console.log('\n\n AIZONApp_ getBase64 = ', dataF);
         console.log('====================================');
+        setImageFrontal(dataF);
       }).catch((err) => {
         console.log('AIZONApp_ getBase64 err = ', err);
       });
   }
 
   async function generateIdForImages() {
+
+    getBase64('/storage/emulated/0/Android/data/com.aizonapp/files/Pictures/AizonApp/80EjSqdua3vIPVi/0/SCANNED_20201031_195303.jpg');
 
     /**
     const dirs = RNFetchBlob.fs.dirs;
@@ -92,17 +96,14 @@ export default function SendDocInfo() {
     //getUtf8(dirs.PictureDir);
      */
 
+
+     /**
     alertMessage( 'Gerando do ID de controle', null, null, 'AIZON-IMAGE')
 
     setLoading(true);
 
     const resposta = await PhotoService.getIdForProcessImage('/image/getIdDocument');
-
-    //console.log('SendDocInfo generateIdForImages resposta = ', resposta);
-
     const res = resposta.res
-
-    //console.log('SendDocInfo generateIdForImages res = ', res);
 
     if (!resposta.isErro) {
       setLoading(false);
@@ -124,6 +125,8 @@ export default function SendDocInfo() {
       setLoading(false);
       alertMessage( 'Houve erro na geração do ID para processamento', null, null, 'AIZON-UPLOAD')
     }
+     */
+
   }
 
   function getFotoScan() {
@@ -152,6 +155,30 @@ export default function SendDocInfo() {
                   resizeMode: 'contain'
                 }}
                 />
+
+                {imageFrontal && (
+                    <Image
+                      source={{uri: `data:image/gif;base64,${imageFrontal}`}}
+                      style={{
+                        width: 150,
+                        height: 100,
+                        resizeMode: 'contain'
+                      }}
+                      />
+                )}
+
+                {!imageFrontal && (
+                    <Image
+                      source={require('../../assets/IdentidadeFrente.png')}
+                      style={{
+                        width: 150,
+                        height: 150,
+                        resizeMode: 'contain'
+                      }}
+                      />
+                )}
+
+
                 <ContainerDadosView>
                   <TitleText>Primeira Fotografia: </TitleText>
                   <ItemText>
