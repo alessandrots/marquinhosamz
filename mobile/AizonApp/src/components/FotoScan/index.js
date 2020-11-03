@@ -16,6 +16,8 @@ import OpenCV from '../../NativeModules/OpenCV';
 import ImageView from "react-native-image-viewing";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
+import RNFetchBlob from 'rn-fetch-blob';
+
 import { Background, ContainerMain,ContainerHeader, ContainerFooter,
   ContainerImageRight, ContainerImageLeft, ContainerImagens,ContainerDadosView,
   ContainerScreenButton, SubmitButton, SubmitText,
@@ -43,6 +45,7 @@ export default function FotoScan(props) {
   const [sidePhoto, setSidePhoto] = useState(0);
   const [idUpload, setIdUpload] = useState(0);
   const [idProcess, setIdProcess] = useState("");
+  const [title, setTitle] = useState("");
 
   const { storageIdUpload } = useContext(AuthContext);
 
@@ -52,6 +55,7 @@ export default function FotoScan(props) {
 
     if (props?.idProcesso) {
       setIdProcess(props.idProcesso);
+      setTitle("Foto Scanner - " + props.idProcesso);
     }
 
   }, []);
@@ -93,36 +97,6 @@ export default function FotoScan(props) {
       setIsVisibleList(true);
     }
   }
-  /**
-    let promise = new Promise(function(resolve, reject) {
-      //
-    });
-   */
-  async function scanImageForProcess(tipoImagem) {
-    try {
-      const response = await OpenCV.scanImageForProcess(idProcess, tipoImagem);
-
-      console.log('\n\n AIZONApp_ response = ', response);
-
-      let msg = "scanImageForProcess";
-
-
-      /**
-      Alert.alert(
-          'AIZON',
-          'scanImageForProcess',
-          [
-              {text: 'Ok', onPress: () => {postScanner(tipoImagem)}},
-          ],
-          {cancelable: false},
-      )
-      */
-
-      alertMessage( msg, null, null, 'AIZON-IMAGE');
-    } catch (e) {
-      console.error(e);
-    }
-  };
 
   function scanner(tipoImagem) {
     console.log('AIZONApp_FotoScan_scanner');
@@ -137,8 +111,83 @@ export default function FotoScan(props) {
     scanImageForProcess(tipoImagem);
   }
 
+  /**
+    let promise = new Promise(function(resolve, reject) {
+      //
+    });
+   */
+  async function scanImageForProcess(tipoImagem) {
+    try {
+      const response = await OpenCV.scanImageForProcess(idProcess, tipoImagem);
+
+      console.log('\n\n AIZONApp_ response = ', response);
+
+      let msg = "scanImageForProcess";
+
+      /**
+      Alert.alert(
+          'AIZON',
+          'scanImageForProcess',
+          [
+              {text: 'Ok', onPress: () => {postScanner(tipoImagem)}},
+          ],
+          {cancelable: false},
+      )
+      */
+      postScanner(tipoImagem);
+
+      alertMessage( msg, null, null, 'AIZON-IMAGE');
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+
+
   function postScanner(tipoImagem) {
-    console.log('AIZONApp_FotoScan_scanner ');
+    console.log('AIZONApp_ postScanner');
+
+    let myVar = null;
+     let filename = 'SCANNED.jpg'
+
+     if (tipoImagem == 0) {
+      filename = 'ORIGINAL.jpg'
+     }
+
+     let sTipoImg = tipoImagem.toString();
+
+     let file = '/storage/emulated/0/Android/data/com.aizonapp/files/Pictures/AizonApp/' + idProcess + '/' + sTipoImg + '/' + filename ;
+     //80EjSqdua3vIPVi/0/SCANNED.jpg';
+
+     //getBase64('/storage/emulated/0/Android/data/com.aizonapp/files/Pictures/AizonApp/80EjSqdua3vIPVi/0/SCANNED_20201031_195303.jpg');
+
+     myVar = setTimeout(() => {
+       //this.setState({ position: 1 });
+       console.log('\n\n AIZONApp_ postScanner = ');
+
+       const fs = RNFetchBlob.fs;
+
+       fs.readFile(file, 'base64')
+       .then((dataF) => {
+         console.log('\n\n AIZONApp_ setTimeout = ', dataF);
+
+         if (dataF) {
+          if (tipoImagem == 0) {
+            setImageFrontal(dataF);
+          } else {
+            setImageVerso(dataF);
+          }
+
+           console.log('\n\n AIZONApp_ clearTimeout');
+           clearTimeout(myVar);
+         }
+
+       }).catch((err) => {
+         console.log('AIZONApp_ readFile err = ', err);
+         clearTimeout(myVar);
+       });
+
+     }, 3000);
   }
 
   /**
@@ -212,19 +261,6 @@ export default function FotoScan(props) {
     setModalVisibleSideUm(true);
   }
 
-  function getModalPhoto() {
-    return  (
-      <Background>
-        <ContainerHeader>
-          <Header titlePage="Foto de Documento"/>
-        </ContainerHeader>
-
-        <FotoLayerCmp side={sidePhoto} onClose= {() => closeModalPhoto() }/>
-
-      </Background>
-    );
-  }
-
   function closeModalPhoto() {
     setModalVisibleSideUm(false);
     setModalVisibleSideZero(false);
@@ -236,7 +272,6 @@ export default function FotoScan(props) {
   async function getImageUploadedForType(tipoImagem) {
 
     //alertMessage( 'Gerando do ID de controle', null, null, 'AIZON-UPLOAD')
-
     setLoading(true);
 
     const resposta = await PhotoService.getImageForIdAndType('/image/getImageForIdAndType/'+ idProcess + "/" + tipoImagem);
@@ -261,6 +296,19 @@ export default function FotoScan(props) {
     }
   }
 
+  function getModalPhoto() {
+    return  (
+      <Background>
+        <ContainerHeader>
+          <Header titlePage="Foto de Documento"/>
+        </ContainerHeader>
+
+        <FotoLayerCmp side={sidePhoto} onClose= {() => closeModalPhoto() }/>
+
+      </Background>
+    );
+  }
+
   function getMontagemTela() {
     return getMainScreen();
   }
@@ -270,7 +318,7 @@ export default function FotoScan(props) {
 
       <Background>
         <ContainerHeader>
-          <Header titlePage="Foto Scanner"/>
+        <Header titlePage="Foto Scanner"/>
         </ContainerHeader>
 
           <ContainerMain>
@@ -279,9 +327,9 @@ export default function FotoScan(props) {
             <ContainerImageRight>
 
                 <ContainerDadosView>
-                  <TitleText> Foto (Frente): </TitleText>
+                  <TitleText> Frente - {idProcess}: </TitleText>
                   <SubmitButton onPress={ () => scanner(0) }>
-                    <SubmitText>Frente</SubmitText>
+                    <SubmitText>Foto</SubmitText>
                   </SubmitButton>
                 </ContainerDadosView>
 
@@ -311,9 +359,9 @@ export default function FotoScan(props) {
 
             <ContainerImageLeft>
               <ContainerDadosView>
-                <TitleText>Foto (Verso): </TitleText>
+                <TitleText>Verso- {idProcess}: </TitleText>
                   <SubmitButton onPress={ () =>scanner(1) }>
-                    <SubmitText>Verso</SubmitText>
+                    <SubmitText>Foto</SubmitText>
                   </SubmitButton>
               </ContainerDadosView>
 

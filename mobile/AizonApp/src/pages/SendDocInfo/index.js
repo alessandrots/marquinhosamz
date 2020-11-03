@@ -78,26 +78,6 @@ export default function SendDocInfo() {
   }
 
   async function generateIdForImages() {
-
-    getBase64('/storage/emulated/0/Android/data/com.aizonapp/files/Pictures/AizonApp/80EjSqdua3vIPVi/0/SCANNED_20201031_195303.jpg');
-
-    /**
-    const dirs = RNFetchBlob.fs.dirs;
-    console.log('\n\n AIZONApp_ DocumentDir = ', dirs.DocumentDir);
-    console.log('\n\n AIZONApp_ CacheDir = ', dirs.CacheDir);
-    console.log('\n\n AIZONApp_ DCIMDir = ', dirs.DCIMDir);
-    console.log('\n\n AIZONApp_ DownloadDir = ', dirs.DownloadDir);
-    console.log('\n\n AIZONApp_ PictureDir = ', dirs.PictureDir);
-
-    getBase64('/storage/emulated/0/Android/data/com.aizonapp/files/Pictures/AizonApp/80EjSqdua3vIPVi/0/SCANNED_20201031_195303.jpg');
-    getUtf8('/storage/emulated/0/Android/data/com.aizonapp/files/Pictures/AizonApp/80EjSqdua3vIPVi/0/SCANNED_20201031_195303.jpg');
-
-    //getBase64(dirs.PictureDir);
-    //getUtf8(dirs.PictureDir);
-     */
-
-
-     /**
     alertMessage( 'Gerando do ID de controle', null, null, 'AIZON-IMAGE')
 
     setLoading(true);
@@ -125,7 +105,6 @@ export default function SendDocInfo() {
       setLoading(false);
       alertMessage( 'Houve erro na geração do ID para processamento', null, null, 'AIZON-UPLOAD')
     }
-     */
 
   }
 
@@ -135,6 +114,19 @@ export default function SendDocInfo() {
     );
   }
 
+  /**
+   *
+   *  {imageFrontal && (
+                    <Image
+                      source={{uri: `data:image/gif;base64,${imageFrontal}`}}
+                      style={{
+                        width: 150,
+                        height: 100,
+                        resizeMode: 'contain'
+                      }}
+                      />
+                )}
+   */
 
   function getMainScreen() {
     return (
@@ -155,29 +147,6 @@ export default function SendDocInfo() {
                   resizeMode: 'contain'
                 }}
                 />
-
-                {imageFrontal && (
-                    <Image
-                      source={{uri: `data:image/gif;base64,${imageFrontal}`}}
-                      style={{
-                        width: 150,
-                        height: 100,
-                        resizeMode: 'contain'
-                      }}
-                      />
-                )}
-
-                {!imageFrontal && (
-                    <Image
-                      source={require('../../assets/IdentidadeFrente.png')}
-                      style={{
-                        width: 150,
-                        height: 150,
-                        resizeMode: 'contain'
-                      }}
-                      />
-                )}
-
 
                 <ContainerDadosView>
                   <TitleText>Primeira Fotografia: </TitleText>

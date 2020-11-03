@@ -211,7 +211,8 @@ public class PickImageFragment extends Fragment {
             Log.i(TAG, "path = " + path.getPath());
         }
 
-        File fileImageOrigin = new File(path,  "ORIGINAL_" + timeStamp + ".jpg");
+        //File fileImageOrigin = new File(path,  "ORIGINAL_" + timeStamp + ".jpg");
+        File fileImageOrigin = new File(path,  "ORIGINAL" + ".jpg");
 
         Log.i(TAG, "file1 = " + fileImageOrigin.getPath());
         this.pictureImagePath = fileImageOrigin.getAbsolutePath();

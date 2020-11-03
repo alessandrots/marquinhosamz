@@ -205,7 +205,8 @@ public class ResultFragment extends Fragment {
             tempFolder.mkdirs();
         }
 
-        File filePathImgScanned = new File(tempFolder,  "SCANNED_" + timeStamp + ".jpg");
+        //File filePathImgScanned = new File(tempFolder,  "SCANNED_" + timeStamp + ".jpg");
+        File filePathImgScanned = new File(tempFolder,  "SCANNED" + ".jpg");
         Log.d(TAG, "filepath = " + filePathImgScanned.getPath());
 
         this.pictureImageScannedPath = filePathImgScanned.getAbsolutePath();
