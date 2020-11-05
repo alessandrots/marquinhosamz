@@ -170,6 +170,34 @@ const PhotoService = {
         return resposta;
     },
 
+    processPipeline: async function (url, id){
+        let me = this;
+
+        let body = JSON.stringify({id: id});
+
+        //console.log('body = ', body);
+
+
+        let headersImg= {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+        };
+
+        let resposta = {};
+        resposta['isErro'] = false;
+
+        let res = await api.post(url, body, { headers: headersImg })
+                .catch(function (error) {
+                    resposta['isErro'] = true;
+                    resposta['erro'] = error;
+                    me.makeErrorLog(error);
+                });
+
+        resposta['res'] = res;
+
+        return resposta;
+    },
+
     makeErrorLog: function(error) {
         //console.log('makeErrorLog 2 = ', error);
         if (error) {

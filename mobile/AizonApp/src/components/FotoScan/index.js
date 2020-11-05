@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { StatusBar, StyleSheet, SafeAreaView, Image, ActivityIndicator,
-  TouchableOpacity, Modal, Dimensions, Alert } from 'react-native';
+  TouchableOpacity, Modal, Dimensions, Alert, TouchableHighlight} from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
 
@@ -46,6 +46,7 @@ export default function FotoScan(props) {
   const [idUpload, setIdUpload] = useState(0);
   const [idProcess, setIdProcess] = useState("");
   const [title, setTitle] = useState("");
+  const [modalVisible, setModalVisible] = useState(true);
 
   const { storageIdUpload } = useContext(AuthContext);
 
@@ -76,27 +77,7 @@ export default function FotoScan(props) {
     setIsVisible(true);
   };
 
-  async function showImages () {
 
-    if (imageFrontal && imageVerso) {
-      let arr = [];
-
-      let imgObjFrontal = {};
-      imgObjFrontal['thumbnail'] = 'data:image/jpeg;base64,' + imageFrontal;
-      imgObjFrontal['uri'] = 'data:image/jpeg;base64,' + imageFrontal;
-
-      arr.push(imgObjFrontal);
-
-      let imgObjVerso = {};
-      imgObjVerso['thumbnail'] = 'data:image/jpeg;base64,' + imageVerso;
-      imgObjVerso['uri'] = 'data:image/jpeg;base64,' + imageVerso;
-
-      arr.push(imgObjVerso);
-
-      setImages(arr);
-      setIsVisibleList(true);
-    }
-  }
 
   function scanner(tipoImagem) {
     console.log('AIZONApp_FotoScan_scanner');
@@ -157,9 +138,6 @@ export default function FotoScan(props) {
      let sTipoImg = tipoImagem.toString();
 
      let file = '/storage/emulated/0/Android/data/com.aizonapp/files/Pictures/AizonApp/' + idProcess + '/' + sTipoImg + '/' + filename ;
-     //80EjSqdua3vIPVi/0/SCANNED.jpg';
-
-     //getBase64('/storage/emulated/0/Android/data/com.aizonapp/files/Pictures/AizonApp/80EjSqdua3vIPVi/0/SCANNED_20201031_195303.jpg');
 
      myVar = setTimeout(() => {
        //this.setState({ position: 1 });
@@ -195,19 +173,23 @@ export default function FotoScan(props) {
    */
   async function uploadBase64ToAizonViaBody() {
 
+    /**
     if (!images || images.length < 2) {
       alertMessage('Clique no botão refresh!', null, null, 'AIZON-UPLOAD');
       return;
     }
+     */
+
+    refreshTela();
 
     setLoading(true);
 
     let fileImageFront = images[0]['uri'];
     let fileImageVerso = images[1]['uri'];
 
-    const resposta = await PhotoService.uploadBase64ToAizonViaBody('/image/upload3', fileImageFront, fileImageVerso);
+    const resposta = await PhotoService.processPipeline('/image/processPipeline', idProcess);
 
-    console.log('AIZONApp_FotoScan uploadBase64ToAizonViaBody resposta = ', resposta);
+    console.log('AIZONApp_FotoScan processPipeline resposta = ', resposta);
 
     const res = resposta.res
 
@@ -216,18 +198,40 @@ export default function FotoScan(props) {
 
       let data = res.data;
 
-      setIdUpload(data.id);
+      //setIdUpload(data.id);
 
-      storageIdUpload(data.id);
+      //storageIdUpload(data.id);
 
       let msg = "Processamento realizado com sucesso. ID: " + data.id; //+ ' => Data: '+ data.date_time;
 
       let fnGo = goToDataVisualization;
 
-      alertMessage(msg, fnGo, data, 'Aizon-Upload');
+      //alertMessage(msg, fnGo, data, 'Aizon-Upload');
     } else {
       setLoading(false);
       alertMessage( 'Houve erro no upload das imagens', null, null, 'AIZON-UPLOAD')
+    }
+  }
+
+  async function showImages () {
+
+    if (imageFrontal && imageVerso) {
+      let arr = [];
+
+      let imgObjFrontal = {};
+      imgObjFrontal['thumbnail'] = 'data:image/jpeg;base64,' + imageFrontal;
+      imgObjFrontal['uri'] = 'data:image/jpeg;base64,' + imageFrontal;
+
+      arr.push(imgObjFrontal);
+
+      let imgObjVerso = {};
+      imgObjVerso['thumbnail'] = 'data:image/jpeg;base64,' + imageVerso;
+      imgObjVerso['uri'] = 'data:image/jpeg;base64,' + imageVerso;
+
+      arr.push(imgObjVerso);
+
+      setImages(arr);
+      setIsVisibleList(true);
     }
   }
 
@@ -296,22 +300,154 @@ export default function FotoScan(props) {
     }
   }
 
-  function getModalPhoto() {
-    return  (
+  function getModalPhotoReal() {
+    return (
       <Background>
-        <ContainerHeader>
-          <Header titlePage="Foto de Documento"/>
-        </ContainerHeader>
+          <ContainerHeader>
+            <Header titlePage="Foto Scanner"/>
+          </ContainerHeader>
 
-        <FotoLayerCmp side={sidePhoto} onClose= {() => closeModalPhoto() }/>
+        <ContainerMain>
+
+            <ActivityIndicator size="large" color="#0EABB5" animating={loading}/>
+
+            <View style={photoStyles.container}>
+                    <Modal
+                      animationType="slide"
+                      transparent={true}
+                      visible={modalVisible}
+                      onRequestClose={() => {
+                        Alert.alert("Modal has been closed.");
+                      }}
+                    >
+                      <View style={photoStyles.modalView}>
+
+                          <ContainerImageRight>
+
+                                <ContainerDadosView>
+                                  <TitleText> Frente - {idProcess}: </TitleText>
+                                  <SubmitButton onPress={ () => scanner(0) }>
+                                    <SubmitText>Foto</SubmitText>
+                                  </SubmitButton>
+                                </ContainerDadosView>
+
+                                {imageFrontal && (
+                                    <Image
+                                      source={{uri: `data:image/gif;base64,${imageFrontal}`}}
+                                      style={{
+                                        width: 150,
+                                        height: 100,
+                                        resizeMode: 'contain'
+                                      }}
+                                      />
+                                )}
+
+                                {!imageFrontal && (
+                                    <Image
+                                      source={require('../../assets/IdentidadeFrente.png')}
+                                      style={{
+                                        width: 150,
+                                        height: 150,
+                                        resizeMode: 'contain'
+                                      }}
+                                      />
+                                )}
+
+                          </ContainerImageRight>
+
+                          <ContainerImageLeft>
+                                  <ContainerDadosView>
+                                    <TitleText>Verso- {idProcess}: </TitleText>
+                                      <SubmitButton onPress={ () =>scanner(1) }>
+                                        <SubmitText>Foto</SubmitText>
+                                      </SubmitButton>
+                                  </ContainerDadosView>
+
+                                  {imageVerso && (
+                                      <Image
+                                        source={{uri: `data:image/gif;base64,${imageVerso}`}}
+                                        style={{
+                                          width: 150,
+                                          height: 100,
+                                          marginTop: 10,
+                                          resizeMode: 'contain'
+                                        }}
+                                        />
+                                  )}
+
+                                  {!imageVerso && (
+                                      <Image
+                                        source={require('../../assets/IdentidadeTras.png')}
+                                        style={{
+                                          width: 150,
+                                          height: 150,
+                                          resizeMode: 'contain'
+                                        }}
+                                        />
+                                  )}
+                              </ContainerImageLeft>
+
+                              <ContainerScreenButton>
+                                  <SubmitButton onPress={ () => uploadBase64ToAizonViaBody()}>
+                                    <SubmitText>Processar</SubmitText>
+                                  </SubmitButton>
+                              </ContainerScreenButton>
+
+                      </View>
+
+                          <TouchableHighlight
+                              style={photoStyles.closeButton}
+                              onPress={() => {
+                                setModalVisible(!modalVisible);
+                              }}
+                            >
+                              <Text style={photoStyles.textStyle}>Fechar</Text>
+                          </TouchableHighlight>
+
+                    </Modal>
+
+                  </View>
+
+        </ContainerMain>
+
+        <ContainerFooter>
+          <Footer titlePage="AIZON"/>
+        </ContainerFooter>
 
       </Background>
     );
   }
 
-  function getMontagemTela() {
-    return getMainScreen();
+  function getMainScreen2() {
+    return (
+      <Background>
+          <ContainerHeader>
+            <Header titlePage="Certificado"/>
+
+          </ContainerHeader>
+
+        <ContainerMain>
+            <View style={photoStyles.containerRow}>
+                <TouchableHighlight
+                  style={photoStyles.openButton}
+                  onPress={() => {
+                    setModalVisible(true);
+                  }}
+                >
+                  <Text style={photoStyles.textStyle}>Abrir PDF</Text>
+                </TouchableHighlight>
+            </View>
+
+        </ContainerMain>
+
+        <ContainerFooter>
+          <Footer titlePage="AIZON"/>
+        </ContainerFooter>
+
+      </Background>
+    );
   }
+
 
   function getMainScreen() {
     return (
@@ -422,9 +558,7 @@ export default function FotoScan(props) {
             </ContainerImagens>
 
             <ContainerScreenButton>
-              <SubmitButton onPress={ () => getImageUploadedForType(0)}>
-                  <SubmitText>Imagens Scan</SubmitText>
-              </SubmitButton>
+
 
               <SubmitButton onPress={ () => uploadBase64ToAizonViaBody()}>
                   <SubmitText>Processar</SubmitText>
@@ -441,6 +575,14 @@ export default function FotoScan(props) {
 
       </Background>
     );
+  }
+
+  function getMontagemTela() {
+    //return getMainScreen();
+
+    //return getModalPhotoReal();
+
+    return getMainScreen2();
   }
 
  return (
@@ -556,5 +698,130 @@ const styles = StyleSheet.create({
     marginTop:20
   }
 
+
+});
+
+
+const photoStyles = StyleSheet.create({
+
+
+  container: {
+      flex: 1,
+      justifyContent: 'flex-start',
+      margin: 20,
+  },
+
+  containerRow: {
+    flex: 1,
+    //backgroundColor :'#CC0000',
+    flexDirection: 'column',
+    margin: 20,
+  },
+
+  pdf: {
+      flex:1,
+      width:Dimensions.get('window').width,
+      height:Dimensions.get('window').height,
+  },
+
+  modalView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    margin: 20,
+    backgroundColor: "transparent",
+    borderRadius: 10,
+    padding: 10,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5
+  },
+  openButton: {
+    backgroundColor: "#CC0BB5",
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2
+  },
+
+  closeButton: {
+    backgroundColor: "#0EABB5",
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+    width: 130,
+    height: 40,
+    marginLeft: 120,
+    marginRight: 20,
+    marginBottom: 35,
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center"
+  },
+
+  textStyleButton: {
+    color: "#F0B42F",
+    fontWeight: "bold",
+    textAlign: "center",
+    marginTop:20
+  },
+
+  viewPrincipal:{
+    flex:1,
+    flexDirection: "column",
+  },
+
+  viewLine1: {
+    flex: 1,
+    flexDirection: "row",
+    backgroundColor: "#a0efef",
+    ...Platform.select({
+      android: { paddingTop: 10, paddingBottom: 10 },
+      default: null,
+    }),
+  },
+  viewLine2: {
+    flex: 1,
+    flexDirection: "row",
+    backgroundColor: "#FFF",
+    ...Platform.select({
+      android: { paddingTop: 10, paddingBottom: 10},
+      default: null,
+    }),
+  },
+
+  safeAreaViewCmp: {
+    flex: 1,
+    //marginTop: Constants.statusBarHeight,
+    marginTop: 10,
+  },
+
+  scrollView: {
+    backgroundColor: "#FFF",
+    marginHorizontal: 15,
+  },
+
+  textDataFirst: {
+    fontSize: 12,
+    fontWeight: "bold",
+    color: "#000",
+    marginLeft: 10,
+
+  },
+
+  textTitleError: {
+    fontSize: 14,
+    color: "#CC0000",
+    fontWeight: "bold",
+    marginLeft: 10,
+    marginRight: 80,
+  },
 
 });
