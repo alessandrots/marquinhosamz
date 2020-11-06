@@ -56,7 +56,7 @@ export default function FotoScan(props) {
 
     if (props?.idProcesso) {
       setIdProcess(props.idProcesso);
-      setTitle("Foto Scanner - " + props.idProcesso);
+      setTitle("AizonApp_ Scanner - " + props.idProcesso);
     }
 
   }, []);
@@ -105,16 +105,6 @@ export default function FotoScan(props) {
 
       let msg = "scanImageForProcess";
 
-      /**
-      Alert.alert(
-          'AIZON',
-          'scanImageForProcess',
-          [
-              {text: 'Ok', onPress: () => {postScanner(tipoImagem)}},
-          ],
-          {cancelable: false},
-      )
-      */
       postScanner(tipoImagem);
 
       alertMessage( msg, null, null, 'AIZON-IMAGE');
@@ -122,7 +112,6 @@ export default function FotoScan(props) {
       console.error(e);
     }
   };
-
 
 
   function postScanner(tipoImagem) {
@@ -300,155 +289,6 @@ export default function FotoScan(props) {
     }
   }
 
-  function getModalPhotoReal() {
-    return (
-      <Background>
-          <ContainerHeader>
-            <Header titlePage="Foto Scanner"/>
-          </ContainerHeader>
-
-        <ContainerMain>
-
-            <ActivityIndicator size="large" color="#0EABB5" animating={loading}/>
-
-            <View style={photoStyles.container}>
-                    <Modal
-                      animationType="slide"
-                      transparent={true}
-                      visible={modalVisible}
-                      onRequestClose={() => {
-                        Alert.alert("Modal has been closed.");
-                      }}
-                    >
-                      <View style={photoStyles.modalView}>
-
-                          <ContainerImageRight>
-
-                                <ContainerDadosView>
-                                  <TitleText> Frente - {idProcess}: </TitleText>
-                                  <SubmitButton onPress={ () => scanner(0) }>
-                                    <SubmitText>Foto</SubmitText>
-                                  </SubmitButton>
-                                </ContainerDadosView>
-
-                                {imageFrontal && (
-                                    <Image
-                                      source={{uri: `data:image/gif;base64,${imageFrontal}`}}
-                                      style={{
-                                        width: 150,
-                                        height: 100,
-                                        resizeMode: 'contain'
-                                      }}
-                                      />
-                                )}
-
-                                {!imageFrontal && (
-                                    <Image
-                                      source={require('../../assets/IdentidadeFrente.png')}
-                                      style={{
-                                        width: 150,
-                                        height: 150,
-                                        resizeMode: 'contain'
-                                      }}
-                                      />
-                                )}
-
-                          </ContainerImageRight>
-
-                          <ContainerImageLeft>
-                                  <ContainerDadosView>
-                                    <TitleText>Verso- {idProcess}: </TitleText>
-                                      <SubmitButton onPress={ () =>scanner(1) }>
-                                        <SubmitText>Foto</SubmitText>
-                                      </SubmitButton>
-                                  </ContainerDadosView>
-
-                                  {imageVerso && (
-                                      <Image
-                                        source={{uri: `data:image/gif;base64,${imageVerso}`}}
-                                        style={{
-                                          width: 150,
-                                          height: 100,
-                                          marginTop: 10,
-                                          resizeMode: 'contain'
-                                        }}
-                                        />
-                                  )}
-
-                                  {!imageVerso && (
-                                      <Image
-                                        source={require('../../assets/IdentidadeTras.png')}
-                                        style={{
-                                          width: 150,
-                                          height: 150,
-                                          resizeMode: 'contain'
-                                        }}
-                                        />
-                                  )}
-                              </ContainerImageLeft>
-
-                              <ContainerScreenButton>
-                                  <SubmitButton onPress={ () => uploadBase64ToAizonViaBody()}>
-                                    <SubmitText>Processar</SubmitText>
-                                  </SubmitButton>
-                              </ContainerScreenButton>
-
-                      </View>
-
-                          <TouchableHighlight
-                              style={photoStyles.closeButton}
-                              onPress={() => {
-                                setModalVisible(!modalVisible);
-                              }}
-                            >
-                              <Text style={photoStyles.textStyle}>Fechar</Text>
-                          </TouchableHighlight>
-
-                    </Modal>
-
-                  </View>
-
-        </ContainerMain>
-
-        <ContainerFooter>
-          <Footer titlePage="AIZON"/>
-        </ContainerFooter>
-
-      </Background>
-    );
-  }
-
-  function getMainScreen2() {
-    return (
-      <Background>
-          <ContainerHeader>
-            <Header titlePage="Certificado"/>
-
-          </ContainerHeader>
-
-        <ContainerMain>
-            <View style={photoStyles.containerRow}>
-                <TouchableHighlight
-                  style={photoStyles.openButton}
-                  onPress={() => {
-                    setModalVisible(true);
-                  }}
-                >
-                  <Text style={photoStyles.textStyle}>Abrir PDF</Text>
-                </TouchableHighlight>
-            </View>
-
-        </ContainerMain>
-
-        <ContainerFooter>
-          <Footer titlePage="AIZON"/>
-        </ContainerFooter>
-
-      </Background>
-    );
-  }
-
-
   function getMainScreen() {
     return (
 
@@ -559,9 +399,12 @@ export default function FotoScan(props) {
 
             <ContainerScreenButton>
 
-
               <SubmitButton onPress={ () => uploadBase64ToAizonViaBody()}>
                   <SubmitText>Processar</SubmitText>
+              </SubmitButton>
+
+              <SubmitButton onPress={ () => props.onFecharModal()}>
+                  <SubmitText>Fechar</SubmitText>
               </SubmitButton>
 
 
@@ -578,11 +421,11 @@ export default function FotoScan(props) {
   }
 
   function getMontagemTela() {
-    //return getMainScreen();
+    return getMainScreen();
 
     //return getModalPhotoReal();
 
-    return getMainScreen2();
+    //return getMainScreen2();
   }
 
  return (
