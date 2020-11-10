@@ -1,4 +1,5 @@
-import api from '../api'
+import api from '../api';
+import axios from 'axios'
 import moment from "moment";
 
 
@@ -7,6 +8,29 @@ import moment from "moment";
  * ver o ValidationService
  */
 const PhotoService = {
+
+    //axios.get(`https://jsonplaceholder.typicode.com/users`)
+    getJsonAxios: async function (){
+        /**
+        axios.get(`http://45.4.186.2:5000/estados`)
+          .then(res => {
+            const persons = res.data;
+            console.log('AIZONApp_ ESTADOS = ', persons);
+          })
+          */
+
+          const response = await api.get('/estados')
+                        .catch(function (error) {
+                            me.makeErrorLog(error);
+                        });
+
+            console.log('AIZONApp_ response = ', response);
+
+            if (!response) return null;
+
+            return response.data;
+    },
+
     getJson: async function (url){
         const response = await api.get(url)
                         .catch(function (error) {

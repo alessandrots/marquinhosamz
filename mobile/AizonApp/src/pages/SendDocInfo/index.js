@@ -46,6 +46,10 @@ export default function SendDocInfo() {
     //generateIdForImagesTmp();
   }
 
+  function seguirPageIP () {
+    PhotoService.getJsonAxios();
+  }
+
   async function generateIdForImagesTmp() {
     console.log('AIZONApp_  generateIdForImagesTmp = ');
     //alertMessage( 'generateIdForImagesTmp', null, null, 'AIZON-UPLOAD');
@@ -215,7 +219,11 @@ export default function SendDocInfo() {
 
             <ContainerScreenButton>
               <SubmitButton onPress={seguirPageFotoScan}>
-                  <SubmitText>Continuar</SubmitText>
+                  <SubmitText>Cont...</SubmitText>
+              </SubmitButton>
+
+              <SubmitButton onPress={seguirPageIP}>
+                  <SubmitText>axios</SubmitText>
               </SubmitButton>
             </ContainerScreenButton>
 
