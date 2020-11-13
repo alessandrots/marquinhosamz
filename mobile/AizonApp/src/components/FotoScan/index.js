@@ -39,6 +39,7 @@ export default function FotoScan(props) {
   const [loading, setLoading] = useState(false);
 
   const [idProcess, setIdProcess] = useState("");
+  const [urlsPipeline, setUrlsPipeline] = useState([]);
 
   useEffect(() => {
 
@@ -48,6 +49,13 @@ export default function FotoScan(props) {
       alertMessage( 'Gerado do ID de controle ' + props.idProcesso, null, null, 'AIZON-IMAGE')
       storageStatusProcessingImage(2);
       setIdProcess(props.idProcesso);
+      let urls = new Array();
+      urls.push("/image/classification2");
+      urls.push("/image/pre_process_image2");
+      urls.push("/image/data_extract2");
+      urls.push("/image/data_validate2");
+      urls.push("/image/pdf_process_certify2");
+      setUrlsPipeline(urls);
     }
 
   }, []);
@@ -138,10 +146,101 @@ export default function FotoScan(props) {
      }, 3000);
   }
 
-  /**
-   * Após o clique do showImages ou showImagesTemp
-   */
   async function uploadBase64ToAizonViaBody() {
+
+    if (!images || images.length == 0) {
+      alertMessage('Não foi tirado nenhuma foto para processamento!', null, null, 'AIZON-PROCESS');
+      return;
+    }
+
+    //Executando
+    storageStatusProcessingImage(2);
+
+    //setLoading(true);
+
+    executePromisePipeline(0);//await PhotoService.processPipeline('/image/processPipeline', idProcess);
+  }
+
+   /**
+   * Após o clique do showImages ou showImagesTemp
+   * Sugestão - Execução do Pipeline pelo Front:
+   *  0- http://45.4.186.2:5000//image/classification2/{{id}}
+   *  1- http://45.4.186.2:5000//image/pre_process_image2/{{id}}
+   *  2- http://45.4.186.2:5000//image/data_extract2/{{id}}
+   *  3- http://45.4.186.2:5000//image/data_validate2/{{id}}
+   *  4- http://45.4.186.2:5000//image/pdf_process_certify2/{{id}}
+   */
+  function executePromisePipeline(contador) {
+    setLoading(true);
+
+    new Promise((resolve, reject) => {
+      let retorno = processSequencePipeline(urlsPipeline[contador]);
+
+      if (retorno) {
+        contador++;
+        console.log('AIZONApp_ Sucesso na execução do pipeline. ' + contador.toString() + ' Fluxo : ', urlsPipeline[contador]);
+        resolve(true);
+      } else {
+        throw new Error('Erro na execução do pipeline.');
+      }
+    })
+    .then((ret) => {
+      if (ret && (contador < urlsPipeline.length())) {
+        executePromisePipeline(contador);
+      } else {
+         setLoading(false);
+
+         console.log('AIZONApp_ Finalização da execução do pipeline.');
+
+         let msg = "Processamento do pipeline realizado com sucesso.";
+
+        //Finalizado
+        storageStatusProcessingImage(3);
+
+        alertMessage(msg, null, null, 'AIZON-PROCESS');
+      }
+    })
+    .catch((err) => {
+      setLoading(false);
+      console.log('AIZONApp_ Erro na execução do pipeline. Fluxo : ', urlsPipeline[contador]);
+      storageStatusProcessingImage(4);
+      alertMessage( 'Houve erro no processamento das imagens', null, null, 'AIZON-PROCESS');
+    })
+  }
+
+
+   async function processSequencePipeline(url) {
+      const resposta = await PhotoService.processPipeline(url, idProcess);
+
+      //console.log('AIZONApp_ FotoScan processSequencePipeline resposta = ', resposta);
+
+      const res = resposta.res
+
+      if (!resposta.isErro) {
+        //setLoading(false);
+
+        let data = res.data;
+
+        console.log('AIZONApp_ FotoScan processSequencePipeline data = ', data);
+
+        //let msg = "Processamento realizado com sucesso. ID: " + data.id; //+ ' => Data: '+ data.date_time;
+
+        //Finalizado
+        //storageStatusProcessingImage(3);
+        //alertMessage(msg, null, null, 'AIZON-PROCESS');
+        return true;
+      } else {
+        //storageStatusProcessingImage(4);
+        //setLoading(false);
+        //alertMessage( 'Houve erro no processamento das imagens', null, null, 'AIZON-PROCESS');
+
+        return false;
+      }
+   }
+
+
+
+  async function uploadBase64ToAizonViaBodyOLD() {
 
     if (!images || images.length == 0) {
       alertMessage('Não foi tirado nenhuma foto para processamento!', null, null, 'AIZON-PROCESS');
@@ -167,7 +266,7 @@ export default function FotoScan(props) {
 
       let data = res.data;
 
-      let msg = "Processamento realizado com sucesso. ID: " + data.id; //+ ' => Data: '+ data.date_time;
+      let msg = "Processamento realizado com sucesso. ID: " + data.id;
 
       //Finalizado
       storageStatusProcessingImage(3);
