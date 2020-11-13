@@ -23,40 +23,31 @@ import { Background, ContainerMain,ContainerHeader, ContainerFooter,
   ContainerScreenButton, SubmitButton, SubmitText,
   TitleText } from './styles';
 
-import { alertMessage } from '../../util/util';
+import { alertMessage, storageStatusProcessingImage } from '../../util/util';
 
 export default function FotoScan(props) {
 
   const [images, setImages] = useState([]);
   const [currentImageIndex, setImageIndex] = useState(0);
   const [visible, setIsVisible] = useState(false);
-  const [imagesOriginal, setImagesOriginal] = useState();
 
+  const [imagesOriginal, setImagesOriginal] = useState();
   const [imageFrontal, setImageFrontal] = useState(null);
   const [imageVerso, setImageVerso]     = useState(null);
 
   const [visibleList, setIsVisibleList] = useState(false);
-
-  const [toggleCheckBox, setToggleCheckBox] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const [modalVisibleSideZero, setModalVisibleSideZero] = useState(false);
-  const [modalVisibleSideUm, setModalVisibleSideUm] = useState(false);
-  const [sidePhoto, setSidePhoto] = useState(0);
-  const [idUpload, setIdUpload] = useState(0);
   const [idProcess, setIdProcess] = useState("");
-  const [title, setTitle] = useState("");
-  const [modalVisible, setModalVisible] = useState(true);
-
-  const { storageIdUpload } = useContext(AuthContext);
 
   useEffect(() => {
 
     console.log('AIZONApp_FotoScan props = ', props);
 
     if (props?.idProcesso) {
+      alertMessage( 'Gerado do ID de controle ' + props.idProcesso, null, null, 'AIZON-IMAGE')
+      storageStatusProcessingImage(2);
       setIdProcess(props.idProcesso);
-      setTitle("AizonApp_ Scanner - " + props.idProcesso);
     }
 
   }, []);
@@ -81,12 +72,6 @@ export default function FotoScan(props) {
 
   function scanner(tipoImagem) {
     console.log('AIZONApp_FotoScan_scanner');
-
-    /**
-    let promise = new Promise(function(resolve, reject) {
-      //
-    });
-    */
 
     //scanImage('scanner');
     scanImageForProcess(tipoImagem);
@@ -118,31 +103,27 @@ export default function FotoScan(props) {
     console.log('AIZONApp_ postScanner');
 
     let myVar = null;
-     let filename = 'SCANNED.jpg'
+    let filename = 'SCANNED.jpg'
 
-     if (tipoImagem == 0) {
-      filename = 'ORIGINAL.jpg'
-     }
+    let sTipoImg = tipoImagem.toString();
 
-     let sTipoImg = tipoImagem.toString();
-
-     let file = '/storage/emulated/0/Android/data/com.aizonapp/files/Pictures/AizonApp/' + idProcess + '/' + sTipoImg + '/' + filename ;
+    let file = '/storage/emulated/0/Android/data/com.aizonapp/files/Pictures/AizonApp/' + idProcess + '/' + sTipoImg + '/' + filename ;
 
      myVar = setTimeout(() => {
-       //this.setState({ position: 1 });
-       console.log('\n\n AIZONApp_ postScanner = ');
 
        const fs = RNFetchBlob.fs;
 
        fs.readFile(file, 'base64')
        .then((dataF) => {
-         console.log('\n\n AIZONApp_ setTimeout = ', dataF);
+         //console.log('\n\n AIZONApp_ setTimeout = ', dataF);
 
          if (dataF) {
           if (tipoImagem == 0) {
             setImageFrontal(dataF);
+            showImageFrontal(dataF);
           } else {
             setImageVerso(dataF);
+            showImageVerso(dataF);
           }
 
            console.log('\n\n AIZONApp_ clearTimeout');
@@ -162,14 +143,13 @@ export default function FotoScan(props) {
    */
   async function uploadBase64ToAizonViaBody() {
 
-    /**
-    if (!images || images.length < 2) {
-      alertMessage('Clique no botão refresh!', null, null, 'AIZON-UPLOAD');
+    if (!images || images.length == 0) {
+      alertMessage('Não foi tirado nenhuma foto para processamento!', null, null, 'AIZON-PROCESS');
       return;
     }
-     */
 
-    refreshTela();
+    //Executando
+    storageStatusProcessingImage(2);
 
     setLoading(true);
 
@@ -178,7 +158,7 @@ export default function FotoScan(props) {
 
     const resposta = await PhotoService.processPipeline('/image/processPipeline', idProcess);
 
-    console.log('AIZONApp_FotoScan processPipeline resposta = ', resposta);
+    console.log('AIZONApp_ FotoScan processPipeline resposta = ', resposta);
 
     const res = resposta.res
 
@@ -187,19 +167,72 @@ export default function FotoScan(props) {
 
       let data = res.data;
 
-      //setIdUpload(data.id);
-
-      //storageIdUpload(data.id);
-
       let msg = "Processamento realizado com sucesso. ID: " + data.id; //+ ' => Data: '+ data.date_time;
 
-      let fnGo = goToDataVisualization;
+      //Finalizado
+      storageStatusProcessingImage(3);
 
-      //alertMessage(msg, fnGo, data, 'Aizon-Upload');
+      alertMessage(msg, null, null, 'AIZON-PROCESS');
     } else {
+      storageStatusProcessingImage(4);
       setLoading(false);
-      alertMessage( 'Houve erro no upload das imagens', null, null, 'AIZON-UPLOAD')
+      alertMessage( 'Houve erro no processamento das imagens', null, null, 'AIZON-PROCESS')
     }
+  }
+
+  async function showImageFrontal (imgBase64) {
+    if (imgBase64) {
+      let imgObjFrontal = {};
+      imgObjFrontal['thumbnail'] = 'data:image/jpeg;base64,' + imgBase64;
+      imgObjFrontal['uri'] = 'data:image/jpeg;base64,' + imgBase64;
+
+      let arrTmp = [];
+
+      if (images) {
+        arrTmp = [...images];
+        arrTmp.push(imgObjFrontal);
+        console.log('AIZONApp_ showImageFrontal if = ');
+        setImages(arrTmp);
+        setIsVisibleList(true);
+      } else {
+        arrTmp.push(imgObjFrontal);
+        console.log('AIZONApp_ showImageFrontal else = ');
+        setImages(arrTmp);
+        setIsVisibleList(true);
+      }
+
+      console.log('AIZONApp_ showImageFrontal f = ', images.length());
+    }
+
+  }
+
+  async function showImageVerso (imgBase64) {
+    if (imgBase64) {
+      let imgObjVerso = {};
+      imgObjVerso['thumbnail'] = 'data:image/jpeg;base64,' + imgBase64;
+      imgObjVerso['uri'] = 'data:image/jpeg;base64,' + imgBase64;
+
+      let arrTmp = [];
+
+      if (images) {
+        arrTmp = [...images];
+        arrTmp.push(imgObjVerso);
+        console.log('AIZONApp_ showImageVerso if = ');
+        setImages(arrTmp);
+        setIsVisibleList(true);
+      } else {
+        arrTmp.push(imgObjVerso);
+        console.log('AIZONApp_ showImageVerso else = ');
+        setImages(arrTmp);
+        setIsVisibleList(true);
+      }
+
+      console.log('AIZONApp_ showImageVerso V = ', images.length());
+    }
+  }
+
+  function refreshTela() {
+    showImages ();
   }
 
   async function showImages () {
@@ -224,56 +257,29 @@ export default function FotoScan(props) {
     }
   }
 
-  function refreshTela() {
-    console.log(images);
-    showImages ();
-  }
-
   function limparTela() {
     setImages([]);
     setIsVisibleList(false);
-    setToggleCheckBox(true);
     setImageFrontal(null);
     setImageVerso(null);
     setLoading(false);
-    setModalVisibleSideUm(false);
-    setModalVisibleSideZero(false);
   }
 
   function goToDataVisualization(data) {
     navigation.navigate('ViewData', { side: '0', 'identificacaoDocumento': data.id});
   }
 
-  function showNewCompPhotoSideZero() {
-    setSidePhoto(0);
-    setModalVisibleSideZero(true);
-  }
-
-  function showNewCompPhotoSideOne() {
-    setSidePhoto(1);
-    setModalVisibleSideUm(true);
-  }
-
-  function closeModalPhoto() {
-    setModalVisibleSideUm(false);
-    setModalVisibleSideZero(false);
-  }
 
   /**
    * recuperando a imagem por tipo
-   */
+
   async function getImageUploadedForType(tipoImagem) {
 
-    //alertMessage( 'Gerando do ID de controle', null, null, 'AIZON-UPLOAD')
     setLoading(true);
 
     const resposta = await PhotoService.getImageForIdAndType('/image/getImageForIdAndType/'+ idProcess + "/" + tipoImagem);
 
-    //console.log('SendDocInfo generateIdForImages resposta = ', resposta);
-
     const res = resposta.res
-
-    //console.log('SendDocInfo generateIdForImages res = ', res);
 
     if (!resposta.isErro) {
       setLoading(false);
@@ -285,9 +291,9 @@ export default function FotoScan(props) {
 
     } else {
       setLoading(false);
-      //alertMessage( 'Houve erro na geração do ID para processamento', null, null, 'AIZON-UPLOAD')
     }
   }
+  */
 
   function getMainScreen() {
     return (
@@ -376,11 +382,10 @@ export default function FotoScan(props) {
                   )}
 
                   <TouchableOpacity onPress={() => refreshTela()} style={styles.capture}>
-                    <Icon name="refresh" size={20} color={"#F0B42F"} />
+                    <Icon name="refresh" size={30} color={"#F0B42F"} />
                   </TouchableOpacity>
 
                   {visibleList && (
-
                     <ImageView
                         images={imagesOriginal}
                         imageIndex={currentImageIndex}

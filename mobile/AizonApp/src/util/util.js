@@ -73,6 +73,20 @@ export async function loadTermoUso(){
   return await AsyncStorage.getItem('@AizonApp:TermoUso');
 }
 
+/**
+ * 1 Não Iniciado
+ * 2 Em Execução
+ * 3 Finalizado
+ * 4 Erro
+ */
+export async function storageStatusProcessingImage(status){
+  await AsyncStorage.setItem('@AizonApp:processingImage', JSON.stringify(status));
+}
+
+export async function loadStatusProcessingImage(){
+  return await AsyncStorage.getItem('@AizonApp:processingImage');
+}
+
 export function alertMessage( msg, fnGoToDataVisualization, data, title) {
   let arr =[
     {

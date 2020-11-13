@@ -13,7 +13,7 @@ import PhotoService from '../../services/photo/PhotoService';
 
 import FotoScan from '../../components/FotoScan';
 
-import { alertMessage } from '../../util/util';
+import { alertMessage, storageUpload, loadStatusProcessingImage, loadStorageUpload} from '../../util/util';
 import RNFetchBlob from 'rn-fetch-blob';
 
 import { Background, ContainerMain, SendImageBackground,
@@ -45,6 +45,39 @@ export default function SendDocInfo() {
 
     //generateIdForImagesTmp();
   }
+
+  async function generateIdForImages() {
+    //alertMessage( 'Gerando do ID de controle', null, null, 'AIZON-IMAGE')
+
+    setLoading(true);
+
+    const resposta = await PhotoService.getIdForProcessImage('/image/getIdDocument');
+    const res = resposta.res
+
+    if (!resposta.isErro) {
+      setLoading(false);
+
+      let data = res.data;
+
+      console.log('AIZONApp_FotoScan_SendDocInfo generateIdForImages data = ', data);
+
+      let msg = "ID gerado com sucesso : " + data.Id;
+
+      setIdProcess(data.Id);
+
+      storageUpload(data.id);
+
+      //alertMessage( msg, null, null, 'AIZON-IMAGE');
+
+      //para abrir a tela q vai chamar o componente de Foto
+      setVisible(true);
+
+    } else {
+      setLoading(false);
+      alertMessage( 'Houve erro na geração do ID para processamento', null, null, 'AIZON-UPLOAD')
+    }
+  }
+
 
   function seguirPageIP () {
     PhotoService.getJsonAxios();
@@ -83,35 +116,45 @@ export default function SendDocInfo() {
       });
   }
 
-  async function generateIdForImages() {
-    alertMessage( 'Gerando do ID de controle', null, null, 'AIZON-IMAGE')
 
-    setLoading(true);
+  async function fecharModal () {
+    const status = await loadStatusProcessingImage();
 
-    const resposta = await PhotoService.getIdForProcessImage('/image/getIdDocument');
-    const res = resposta.res
+    console.log('AIZONApp_ fecharModal  = ', status);
 
-    if (!resposta.isErro) {
-      setLoading(false);
+    if (status) {
+      if (status === 2) {
+        alertMessage( 'Em Processamento! Tela Não pode ser fechada', null, null, 'AIZON-PROCESS');
+        return;
+      } else if (status === 3) {
+        setVisible(!visible);
 
-      let data = res.data;
+        const id_ = await loadStorageUpload();
 
-      console.log('AIZONApp_FotoScan_SendDocInfo generateIdForImages data = ', data);
+        let myData = {};
+        myData['id'] = id_;
+        let fnGo = goToDataVisualization;
 
-      let msg = "ID gerado com sucesso : " + data.Id;
+        alertMessage( 'Processamento Finalizado com Sucesso', fnGo, myData, 'AIZON-PROCESS');
 
-      setIdProcess(data.Id);
 
-      alertMessage( msg, null, null, 'AIZON-IMAGE');
+        //TODO chamar para redirecionar para a página de Visualizar
+      } else if (status === 4) {
+        setVisible(!visible);
 
-      //para abrir a tela q vai chamar o componente de Foto
-      setVisible(true);
+        alertMessage( 'Houve erro no processamento. Tente Novamente!', fnGo, myData, 'AIZON-PROCESS');
 
-    } else {
-      setLoading(false);
-      alertMessage( 'Houve erro na geração do ID para processamento', null, null, 'AIZON-UPLOAD')
+        //TODO chamar para redirecionar para a página de Visualizar
+      }else {
+        setVisible(!visible);
+      }
+    } else  {
+      setVisible(!visible);
     }
+  }
 
+  function goToDataVisualization(data) {
+    navigation.navigate('ViewData', { side: '0', 'identificacaoDocumento': data.id});
   }
 
   function getFotoScan() {
@@ -191,7 +234,7 @@ export default function SendDocInfo() {
                           }}
                         >
                           <View style={photoStyles.modalView}>
-                              <FotoScan idProcesso={idProcess} onFecharModal={() => { setVisible(!visible)} }/>
+                              <FotoScan idProcesso={idProcess} onFecharModal={ () => fecharModal()}/>
                           </View>
 
                         </Modal>
@@ -222,9 +265,12 @@ export default function SendDocInfo() {
                   <SubmitText>Cont...</SubmitText>
               </SubmitButton>
 
+              {/**
               <SubmitButton onPress={seguirPageIP}>
                   <SubmitText>axios</SubmitText>
               </SubmitButton>
+              */}
+
             </ContainerScreenButton>
 
           </ContainerMain>

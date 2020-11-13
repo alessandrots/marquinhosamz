@@ -16,7 +16,7 @@ import { Background, ContainerHeader, ContainerFooter, ContainerMain, Link, Link
 
 export default function PdfView({ navigator, route }) {
 
-  const { loadStorageIdUpload } = useContext(AuthContext);
+  const { loadStorageUpload } = useContext(AuthContext);
 
   const navigation = useNavigation();
 
@@ -70,7 +70,7 @@ export default function PdfView({ navigator, route }) {
     setImageBase64(null);
     setLoading(true);
 
-    const id = await loadStorageIdUpload();
+    const id = await loadStorageUpload();
 
      console.log('====================================');
      console.log(' PdfView ID = ', id);
@@ -94,9 +94,7 @@ export default function PdfView({ navigator, route }) {
   }
 
   function getDataErro() {
-
     if (dataErro) {
-
       return (
         <SafeAreaView style={styles.safeAreaViewCmp}>
 
