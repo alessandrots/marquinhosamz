@@ -156,7 +156,7 @@ export default function FotoScan(props) {
     //Executando
     storageStatusProcessingImage(2);
 
-    //setLoading(true);
+    setLoading(true);
 
     executePromisePipeline(0);//await PhotoService.processPipeline('/image/processPipeline', idProcess);
   }
@@ -171,14 +171,15 @@ export default function FotoScan(props) {
    *  4- http://45.4.186.2:5000//image/pdf_process_certify2/{{id}}
    */
   function executePromisePipeline(contador) {
-    setLoading(true);
+    //setLoading(true);
+    console.log('AIZONApp_ Contador = ' + contador.toString() );
 
     new Promise((resolve, reject) => {
       let retorno = processSequencePipeline(urlsPipeline[contador]);
 
       if (retorno) {
+        console.log('AIZONApp_ Sucesso na execução do pipeline. Fluxo : ', urlsPipeline[contador]);
         contador++;
-        console.log('AIZONApp_ Sucesso na execução do pipeline. ' + contador.toString() + ' Fluxo : ', urlsPipeline[contador]);
         resolve(true);
       } else {
         throw new Error('Erro na execução do pipeline.');
@@ -186,6 +187,7 @@ export default function FotoScan(props) {
     })
     .then((ret) => {
       if (ret && (contador < urlsPipeline.length())) {
+        console.log('AIZONApp_ resolve true execute again ');
         executePromisePipeline(contador);
       } else {
          setLoading(false);
@@ -210,11 +212,11 @@ export default function FotoScan(props) {
 
 
    async function processSequencePipeline(url) {
-      const resposta = await PhotoService.processPipeline(url, idProcess);
+      const resposta = await PhotoService.processPipelineViaGet(url, idProcess);
 
-      //console.log('AIZONApp_ FotoScan processSequencePipeline resposta = ', resposta);
+      console.log('AIZONApp_ FotoScan processSequencePipeline resposta = ', resposta);
 
-      const res = resposta.res
+      const res = resposta.res;
 
       if (!resposta.isErro) {
         //setLoading(false);
@@ -239,7 +241,7 @@ export default function FotoScan(props) {
    }
 
 
-
+/**
   async function uploadBase64ToAizonViaBodyOLD() {
 
     if (!images || images.length == 0) {
@@ -278,6 +280,145 @@ export default function FotoScan(props) {
       alertMessage( 'Houve erro no processamento das imagens', null, null, 'AIZON-PROCESS')
     }
   }
+   */
+
+  //************************************************************ */
+
+  async function processAll() {
+
+    if (!images || images.length == 0) {
+      alertMessage('Não foi tirado nenhuma foto para processamento!', null, null, 'AIZON-PROCESS');
+      return;
+    }
+
+    //Executando
+    storageStatusProcessingImage(2);
+
+    setLoading(true);
+
+    await classification();
+  }
+
+  async function classification() {
+
+    const resposta = await PhotoService.processPipelineViaGet(urlsPipeline[0], idProcess);
+
+    console.log('AIZONApp_ FotoScan classification resposta = ', resposta);
+
+    const res = resposta.res;
+
+    if (!resposta.isErro) {
+      //setLoading(false);
+
+      let data = res.data;
+
+      console.log('AIZONApp_ FotoScan classification data = ', data);
+
+      preProcessImage();
+    } else {
+      storageStatusProcessingImage(4);
+      setLoading(false);
+      alertMessage( 'Houve erro no classification das imagens', null, null, 'AIZON-PROCESS');
+    }
+  }
+
+  async function preProcessImage() {
+
+    const resposta = await PhotoService.processPipelineViaGet(urlsPipeline[1], idProcess);
+
+    console.log('AIZONApp_ FotoScan preProcessImage resposta = ', resposta);
+
+    const res = resposta.res;
+
+    if (!resposta.isErro) {
+      //setLoading(false);
+
+      let data = res.data;
+
+      console.log('AIZONApp_ FotoScan preProcessImage data = ', data);
+
+      dataExtract();
+    } else {
+      storageStatusProcessingImage(4);
+      setLoading(false);
+      alertMessage( 'Houve erro no preProcessImage imagens', null, null, 'AIZON-PROCESS');
+    }
+  }
+
+  async function dataExtract() {
+
+    const resposta = await PhotoService.processPipelineViaGet(urlsPipeline[2], idProcess);
+
+    console.log('AIZONApp_ FotoScan data_extract2 resposta = ', resposta);
+
+    const res = resposta.res;
+
+    if (!resposta.isErro) {
+      //setLoading(false);
+
+      let data = res.data;
+
+      console.log('AIZONApp_ FotoScan data_extract2 data = ', data);
+
+      dataValidate();
+    } else {
+      storageStatusProcessingImage(4);
+      setLoading(false);
+      alertMessage( 'Houve erro no data_extract2 das imagens', null, null, 'AIZON-PROCESS');
+    }
+  }
+
+  async function dataValidate() {
+
+    const resposta = await PhotoService.processPipelineViaGet(urlsPipeline[3], idProcess);
+
+    console.log('AIZONApp_ FotoScan dataValidate resposta = ', resposta);
+
+    const res = resposta.res;
+
+    if (!resposta.isErro) {
+      //setLoading(false);
+
+      let data = res.data;
+
+      console.log('AIZONApp_ FotoScan dataValidate data = ', data);
+
+      pdfProcessCertify();
+    } else {
+      storageStatusProcessingImage(4);
+      setLoading(false);
+      alertMessage( 'Houve erro no dataValidate das imagens', null, null, 'AIZON-PROCESS');
+    }
+  }
+
+  async function pdfProcessCertify() {
+
+    const resposta = await PhotoService.processPipelineViaGet(urlsPipeline[4], idProcess);
+
+    console.log('AIZONApp_ FotoScan pdfProcessCertify resposta = ', resposta);
+
+    const res = resposta.res;
+
+    if (!resposta.isErro) {
+      setLoading(false);
+
+      let data = res.data;
+
+      console.log('AIZONApp_ FotoScan pdfProcessCertify data = ', data);
+
+      let msg = "Processamento das imagens realizado com sucesso."; //+ ' => Data: '+ data.date_time;
+
+      //Finalizado
+      storageStatusProcessingImage(3);
+      alertMessage(msg, null, null, 'AIZON-PROCESS');
+    } else {
+      storageStatusProcessingImage(4);
+      setLoading(false);
+      alertMessage( 'Houve erro no pdfProcessCertify das imagens', null, null, 'AIZON-PROCESS');
+    }
+  }
+
+  //************************************************************ */
 
   async function showImageFrontal (imgBase64) {
     if (imgBase64) {
@@ -503,7 +644,7 @@ export default function FotoScan(props) {
 
             <ContainerScreenButton>
 
-              <SubmitButton onPress={ () => uploadBase64ToAizonViaBody()}>
+              <SubmitButton onPress={ () => processAll()}>
                   <SubmitText>Processar</SubmitText>
               </SubmitButton>
 
