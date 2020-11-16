@@ -13,7 +13,7 @@ import PhotoService from '../../services/photo/PhotoService';
 
 import FotoScan from '../../components/FotoScan';
 
-import { alertMessage, storageUpload, loadStatusProcessingImage, loadStorageUpload} from '../../util/util';
+import { alertMessage, storageUpload, loadStatusProcessingImage, loadStorageUpload, loadBase64PdfView} from '../../util/util';
 import RNFetchBlob from 'rn-fetch-blob';
 
 import { Background, ContainerMain, SendImageBackground,
@@ -130,15 +130,15 @@ export default function SendDocInfo() {
         setVisible(!visible);
 
         const id_ = await loadStorageUpload();
+        const base64 = await loadBase64PdfView();
 
         let myData = {};
         myData['id'] = id_;
+        myData['base64Pdf'] = base64;
         let fnGo = goToDataVisualization;
 
-        alertMessage( 'Processamento Finalizado com Sucesso', fnGo, myData, 'AIZON-PROCESS');
-
-
         //TODO chamar para redirecionar para a página de Visualizar
+        alertMessage( 'Processamento Finalizado com Sucesso', fnGo, myData, 'AIZON-PROCESS');
       } else if (status === 4) {
         setVisible(!visible);
 
@@ -154,7 +154,7 @@ export default function SendDocInfo() {
   }
 
   function goToDataVisualization(data) {
-    navigation.navigate('ViewData', { side: '0', 'identificacaoDocumento': data.id});
+    navigation.navigate('PdfView', { 'idProcess': data.id, 'base64Pdf': data.base64Pdf});
   }
 
   function getFotoScan() {
@@ -262,7 +262,7 @@ export default function SendDocInfo() {
 
             <ContainerScreenButton>
               <SubmitButton onPress={seguirPageFotoScan}>
-                  <SubmitText>Cont...</SubmitText>
+                  <SubmitText>Continuar</SubmitText>
               </SubmitButton>
 
               {/**

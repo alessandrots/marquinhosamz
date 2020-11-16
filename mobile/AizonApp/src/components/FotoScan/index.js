@@ -23,7 +23,7 @@ import { Background, ContainerMain,ContainerHeader, ContainerFooter,
   ContainerScreenButton, SubmitButton, SubmitText,
   TitleText } from './styles';
 
-import { alertMessage, storageStatusProcessingImage } from '../../util/util';
+import { alertMessage, storageStatusProcessingImage, storageBase64PdfView } from '../../util/util';
 
 export default function FotoScan(props) {
 
@@ -303,13 +303,9 @@ export default function FotoScan(props) {
 
     const resposta = await PhotoService.processPipelineViaGet(urlsPipeline[0], idProcess);
 
-    console.log('AIZONApp_ FotoScan classification resposta = ', resposta);
-
     const res = resposta.res;
 
     if (!resposta.isErro) {
-      //setLoading(false);
-
       let data = res.data;
 
       console.log('AIZONApp_ FotoScan classification data = ', data);
@@ -326,13 +322,9 @@ export default function FotoScan(props) {
 
     const resposta = await PhotoService.processPipelineViaGet(urlsPipeline[1], idProcess);
 
-    console.log('AIZONApp_ FotoScan preProcessImage resposta = ', resposta);
-
     const res = resposta.res;
 
     if (!resposta.isErro) {
-      //setLoading(false);
-
       let data = res.data;
 
       console.log('AIZONApp_ FotoScan preProcessImage data = ', data);
@@ -349,13 +341,9 @@ export default function FotoScan(props) {
 
     const resposta = await PhotoService.processPipelineViaGet(urlsPipeline[2], idProcess);
 
-    console.log('AIZONApp_ FotoScan data_extract2 resposta = ', resposta);
-
     const res = resposta.res;
 
     if (!resposta.isErro) {
-      //setLoading(false);
-
       let data = res.data;
 
       console.log('AIZONApp_ FotoScan data_extract2 data = ', data);
@@ -372,13 +360,9 @@ export default function FotoScan(props) {
 
     const resposta = await PhotoService.processPipelineViaGet(urlsPipeline[3], idProcess);
 
-    console.log('AIZONApp_ FotoScan dataValidate resposta = ', resposta);
-
     const res = resposta.res;
 
     if (!resposta.isErro) {
-      //setLoading(false);
-
       let data = res.data;
 
       console.log('AIZONApp_ FotoScan dataValidate data = ', data);
@@ -395,8 +379,6 @@ export default function FotoScan(props) {
 
     const resposta = await PhotoService.processPipelineViaGet(urlsPipeline[4], idProcess);
 
-    console.log('AIZONApp_ FotoScan pdfProcessCertify resposta = ', resposta);
-
     const res = resposta.res;
 
     if (!resposta.isErro) {
@@ -404,9 +386,11 @@ export default function FotoScan(props) {
 
       let data = res.data;
 
-      console.log('AIZONApp_ FotoScan pdfProcessCertify data = ', data);
+      console.log('AIZONApp_ FotoScan pdfProcessCertify base64 = ', data.pdf);
 
-      let msg = "Processamento das imagens realizado com sucesso."; //+ ' => Data: '+ data.date_time;
+      storageBase64PdfView(data.pdf)
+
+      let msg = "Processamento finalizado. Feche a janela."; //+ ' => Data: '+ data.date_time;
 
       //Finalizado
       storageStatusProcessingImage(3);

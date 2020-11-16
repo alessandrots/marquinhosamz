@@ -87,6 +87,14 @@ export async function loadStatusProcessingImage(){
   return await AsyncStorage.getItem('@AizonApp:processingImage');
 }
 
+export async function storageBase64PdfView(base64){
+  await AsyncStorage.setItem('@AizonApp:base64PdfView', JSON.stringify(base64));
+}
+
+export async function loadBase64PdfView(){
+  return await AsyncStorage.getItem('@AizonApp:base64PdfView');
+}
+
 export function alertMessage( msg, fnGoToDataVisualization, data, title) {
   let arr =[
     {
