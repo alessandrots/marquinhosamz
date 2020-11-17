@@ -493,32 +493,6 @@ export default function FotoScan(props) {
     navigation.navigate('ViewData', { side: '0', 'identificacaoDocumento': data.id});
   }
 
-
-  /**
-   * recuperando a imagem por tipo
-
-  async function getImageUploadedForType(tipoImagem) {
-
-    setLoading(true);
-
-    const resposta = await PhotoService.getImageForIdAndType('/image/getImageForIdAndType/'+ idProcess + "/" + tipoImagem);
-
-    const res = resposta.res
-
-    if (!resposta.isErro) {
-      setLoading(false);
-
-      let data = res.data;
-
-      console.log('AIZONApp_ data = ', data);
-
-
-    } else {
-      setLoading(false);
-    }
-  }
-  */
-
   function getMainScreen() {
     return (
 

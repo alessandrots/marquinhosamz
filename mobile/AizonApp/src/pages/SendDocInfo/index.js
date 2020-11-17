@@ -142,13 +142,12 @@ export default function SendDocInfo() {
         console.log('AIZONApp_ myData  = ', myData);
 
         //TODO chamar para redirecionar para a página de Visualizar
-        alertMessage( 'Processamento Finalizado com Sucesso', fnGo, myData, 'AIZON-PROCESS');
+        alertMessage( 'O PDF foi gerado com sucesso. Clique para abrir a janela.', fnGo, myData, 'AIZON-PROCESS');
       } else if (status === '4') {
         setVisible(!visible);
 
         alertMessage( 'Houve erro no processamento. Tente Novamente!', fnGo, myData, 'AIZON-PROCESS');
 
-        //TODO chamar para redirecionar para a página de Visualizar
       } else {
         console.log('AIZONApp_ else 2 ');
         setVisible(!visible);

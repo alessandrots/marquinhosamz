@@ -31,9 +31,10 @@ export default function PdfView(props) {
     console.log('AIZONApp_ PdfView props = ', props);
 
     if (props?.route?.params?.base64Pdf) {
-      setImageBase64(props.route.params.base64Pdf);
+      setImageBase64('data:application/pdf;base64,' + props.route.params.base64Pdf);
     } else {
-      getDataForConfigToObj();
+      //getDataForConfigToObj();
+      pdfProcessCertify();
     }
 
   }, []);
@@ -79,8 +80,6 @@ export default function PdfView(props) {
 
     let res = await PhotoService.getDataForConfig('/image/getDataForConfig', id);
 
-    console.log('res = ', res);
-
     if (res && res.data) {
       if (res.data.data_extract) {
         setImageBase64('data:application/pdf;base64,' + res.data.certification);
@@ -91,6 +90,31 @@ export default function PdfView(props) {
         setDataErro(res.data.Erro)
         setIdUpload(id);
       }
+    }
+  }
+
+  async function pdfProcessCertify() {
+
+    setLoading(true);
+
+    const id = await loadStorageUpload();
+
+    const resposta = await PhotoService.processPipelineViaGet("/image/pdf_process_certify2", id);
+
+    const res = resposta.res;
+
+    if (!resposta.isErro) {
+      setLoading(false);
+
+      let data = res.data;
+
+      console.log('AIZONApp_ PdfView pdfProcessCertify base64 = ', data.pdf);
+
+      setImageBase64('data:application/pdf;base64,' + data.pdf);
+    } else {
+      storageStatusProcessingImage(4);
+      setLoading(false);
+      alertMessage( 'Houve erro no pdfProcessCertify das imagens', null, null, 'AIZON-PROCESS');
     }
   }
 
