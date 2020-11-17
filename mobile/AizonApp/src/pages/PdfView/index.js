@@ -14,7 +14,7 @@ import Pdf from 'react-native-pdf';
 
 import { Background, ContainerHeader, ContainerFooter, ContainerMain, Link, LinkText} from './styles';
 
-export default function PdfView({ navigator, route }) {
+export default function PdfView(props) {
 
   const { loadStorageUpload } = useContext(AuthContext);
 
@@ -28,9 +28,12 @@ export default function PdfView({ navigator, route }) {
   const [idUpload, setIdUpload] = useState(null);
 
   useEffect(() => {
-    getDataForConfigToObj();
-    return () => {
-      //como se fosse o componentWillUnmount
+    console.log('AIZONApp_ PdfView props = ', props);
+
+    if (props?.route?.params?.base64Pdf) {
+      setImageBase64(props.route.params.base64Pdf);
+    } else {
+      getDataForConfigToObj();
     }
 
   }, []);
@@ -72,9 +75,7 @@ export default function PdfView({ navigator, route }) {
 
     const id = await loadStorageUpload();
 
-     console.log('====================================');
-     console.log(' PdfView ID = ', id);
-     console.log('====================================');
+    console.log('AIZONApp_ getDataForConfigToObj id = ', id);
 
     let res = await PhotoService.getDataForConfig('/image/getDataForConfig', id);
 

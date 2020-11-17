@@ -43,11 +43,11 @@ export default function FotoScan(props) {
 
   useEffect(() => {
 
-    console.log('AIZONApp_FotoScan props = ', props);
+    console.log('AIZONApp_ FotoScan props = ', props);
 
     if (props?.idProcesso) {
       alertMessage( 'Gerado do ID de controle ' + props.idProcesso, null, null, 'AIZON-IMAGE')
-      storageStatusProcessingImage(2);
+      storageStatusProcessingImage(1);
       setIdProcess(props.idProcesso);
       let urls = new Array();
       urls.push("/image/classification2");

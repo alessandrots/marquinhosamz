@@ -65,7 +65,7 @@ export default function SendDocInfo() {
 
       setIdProcess(data.Id);
 
-      storageUpload(data.id);
+      storageUpload(data.Id);
 
       //alertMessage( msg, null, null, 'AIZON-IMAGE');
 
@@ -123,38 +123,46 @@ export default function SendDocInfo() {
     console.log('AIZONApp_ fecharModal  = ', status);
 
     if (status) {
-      if (status === 2) {
+      if (status === '2') {
         alertMessage( 'Em Processamento! Tela Não pode ser fechada', null, null, 'AIZON-PROCESS');
         return;
-      } else if (status === 3) {
+      } else if (status === '3') {
         setVisible(!visible);
 
         const id_ = await loadStorageUpload();
-        const base64 = await loadBase64PdfView();
+        console.log('AIZONApp_ fecharModal  id_ = ', id_);
+        const base64Pdf = await loadBase64PdfView();
+        console.log('AIZONApp_ fecharModal  base64Pdf = ', base64Pdf);
 
         let myData = {};
         myData['id'] = id_;
-        myData['base64Pdf'] = base64;
+        myData['base64Pdf'] = base64Pdf;
         let fnGo = goToDataVisualization;
+
+        console.log('AIZONApp_ myData  = ', myData);
 
         //TODO chamar para redirecionar para a página de Visualizar
         alertMessage( 'Processamento Finalizado com Sucesso', fnGo, myData, 'AIZON-PROCESS');
-      } else if (status === 4) {
+      } else if (status === '4') {
         setVisible(!visible);
 
         alertMessage( 'Houve erro no processamento. Tente Novamente!', fnGo, myData, 'AIZON-PROCESS');
 
         //TODO chamar para redirecionar para a página de Visualizar
-      }else {
+      } else {
+        console.log('AIZONApp_ else 2 ');
         setVisible(!visible);
       }
     } else  {
+      console.log('AIZONApp_ else main ');
       setVisible(!visible);
     }
   }
 
   function goToDataVisualization(data) {
-    navigation.navigate('PdfView', { 'idProcess': data.id, 'base64Pdf': data.base64Pdf});
+    console.log('AIZONApp_ goToDataVisualization = ', data);
+
+    navigation.navigate('PdfCertificate', { 'idProcess': data.id, 'base64Pdf': data.base64Pdf});
   }
 
   function getFotoScan() {

@@ -86,11 +86,6 @@ function AppRoutes(){
             />
 
           <AppDrawer.Screen
-            name="ViewData"
-            component={ViewData}
-            options={{ title: 'Visualizar Dados' }}/>
-
-          <AppDrawer.Screen
               name="PdfCertificate"
               component={PdfView}
               options={{ title: 'Certificado' }}
@@ -112,7 +107,13 @@ function AppRoutes(){
             options={{ title: 'Home' }}/>
 
 {/**
- *        <AppDrawer.Screen
+ *
+    <AppDrawer.Screen
+            name="ViewData"
+            component={ViewData}
+            options={{ title: 'Visualizar Dados' }}/>
+
+ * <AppDrawer.Screen
               name="PhotoManager"
               component={PhotoManager}
               options={{ title: 'Foto Documental' }}
