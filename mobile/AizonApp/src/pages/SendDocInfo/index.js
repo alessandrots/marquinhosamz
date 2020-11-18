@@ -34,12 +34,6 @@ export default function SendDocInfo() {
 
   const navigation = useNavigation();
 
-  /**
-  function seguirPageFoto() {
-    navigation.navigate('PhotoManager');
-  }
-   */
-
   function seguirPageFotoScan() {
     generateIdForImages();
 
@@ -47,8 +41,6 @@ export default function SendDocInfo() {
   }
 
   async function generateIdForImages() {
-    //alertMessage( 'Gerando do ID de controle', null, null, 'AIZON-IMAGE')
-
     setLoading(true);
 
     const resposta = await PhotoService.getIdForProcessImage('/image/getIdDocument');
@@ -59,15 +51,13 @@ export default function SendDocInfo() {
 
       let data = res.data;
 
-      console.log('AIZONApp_FotoScan_SendDocInfo generateIdForImages data = ', data);
+      console.log('AIZONApp_ SendDocInfo generateIdForImages = ', data);
 
       let msg = "ID gerado com sucesso : " + data.Id;
 
       setIdProcess(data.Id);
 
       storageUpload(data.Id);
-
-      //alertMessage( msg, null, null, 'AIZON-IMAGE');
 
       //para abrir a tela q vai chamar o componente de Foto
       setVisible(true);
@@ -78,14 +68,14 @@ export default function SendDocInfo() {
     }
   }
 
-
+  /**
   function seguirPageIP () {
     PhotoService.getJsonAxios();
   }
+   */
 
   async function generateIdForImagesTmp() {
     console.log('AIZONApp_  generateIdForImagesTmp = ');
-    //alertMessage( 'generateIdForImagesTmp', null, null, 'AIZON-UPLOAD');
 
     setIdProcess('1001001');
 
@@ -130,9 +120,7 @@ export default function SendDocInfo() {
         setVisible(!visible);
 
         const id_ = await loadStorageUpload();
-        console.log('AIZONApp_ fecharModal  id_ = ', id_);
         const base64Pdf = await loadBase64PdfView();
-        console.log('AIZONApp_ fecharModal  base64Pdf = ', base64Pdf);
 
         let myData = {};
         myData['id'] = id_;
@@ -141,19 +129,17 @@ export default function SendDocInfo() {
 
         console.log('AIZONApp_ myData  = ', myData);
 
-        //TODO chamar para redirecionar para a página de Visualizar
-        alertMessage( 'O PDF foi gerado com sucesso. Clique para abrir a janela.', fnGo, myData, 'AIZON-PROCESS');
+       // alertMessage( 'O PDF foi gerado com sucesso. Clique para abrir a janela.', fnGo, myData, 'AIZOshowProgressN-PROCESS');
+       goToDataVisualization({'id': id_,'base64Pdf':base64Pdf});
       } else if (status === '4') {
         setVisible(!visible);
 
         alertMessage( 'Houve erro no processamento. Tente Novamente!', fnGo, myData, 'AIZON-PROCESS');
 
       } else {
-        console.log('AIZONApp_ else 2 ');
         setVisible(!visible);
       }
     } else  {
-      console.log('AIZONApp_ else main ');
       setVisible(!visible);
     }
   }
@@ -227,8 +213,6 @@ export default function SendDocInfo() {
   }
 
   function getModalPhotoReal() {
-        console.log('AIZONApp_  getModalPhotoReal = ');
-
         return (
           <>
               <View style={photoStyles.container}>
@@ -272,12 +256,6 @@ export default function SendDocInfo() {
                   <SubmitText>Continuar</SubmitText>
               </SubmitButton>
 
-              {/**
-              <SubmitButton onPress={seguirPageIP}>
-                  <SubmitText>axios</SubmitText>
-              </SubmitButton>
-              */}
-
             </ContainerScreenButton>
 
           </ContainerMain>
@@ -291,8 +269,6 @@ export default function SendDocInfo() {
   }
 
   function getMontagemTela() {
-    console.log('AIZONApp_ getMontagemTela = ', visible);
-
     return getMainScreen();
   }
 

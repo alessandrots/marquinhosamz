@@ -10,7 +10,8 @@
     <string name="cantCrop">Cant crop the image, change the points</string>
     <string name="ok">Ok</string>
     <string name="loading">Carregando...</string>
-    <string name="applying_filter">Aplicando filtro</string>
+    <string name="applying_filter">Filtrando</string>
     <string name="low_memory">Memória Baixa</string>
+    <string name="sending">Salvando e Enviando</string>
     <string name="low_memory_message">Seu fone está com pouca memória, você pode ter alguns lags enquanto edita imagem.</string>
 </resources>

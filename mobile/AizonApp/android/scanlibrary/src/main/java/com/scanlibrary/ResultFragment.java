@@ -423,7 +423,7 @@ public class ResultFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            showProgressDialog(getResources().getString(R.string.loading));
+            showProgressDialog(getResources().getString(R.string.sending));
             AsyncTask.execute(new Runnable() {
                 @Override
                 public void run() {

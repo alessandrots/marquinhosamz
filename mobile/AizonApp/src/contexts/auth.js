@@ -49,7 +49,7 @@ function AuthProvider({ children }){
        loadStorage();
     }, []);
 
-    /**
+    /** */
     async function signIn(email, password){
         console.log('email = ', email);
         console.log('signIn FAKE!');
@@ -65,8 +65,8 @@ function AuthProvider({ children }){
 
         storageUser(data);
     }
-    */
 
+    /**
     //Funcao para logar o usario
     async function signIn(email, password){
         //setLoading(true);
@@ -96,6 +96,7 @@ function AuthProvider({ children }){
             alertMessage( 'Houve erro na autenticação', null, null, 'AIZON-LOGIN');
         }
     }
+     */
 
     async function getUserForStorage(idUser) {
         const resposta = await SecurityService.getUserForID('/register/users', idUser);
