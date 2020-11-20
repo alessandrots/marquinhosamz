@@ -335,6 +335,7 @@ public class ResultFragment extends Fragment {
                 idProcessoTmp = idProcesso;
             }
 
+            /**
             Log.d(TAG, "sendImageToProcess " );
             Log.d(TAG, "id  = " + idProcessoTmp);
             Log.d(TAG, "imageType  = " + tipoImagem.toString());
@@ -356,6 +357,7 @@ public class ResultFragment extends Fragment {
             Log.d(TAG, "sy3  = " +this.y3);
             Log.d(TAG, "sx4  = " +this.x4);
             Log.d(TAG, "sy4  = " +this.y4);
+             */
 
             File fileImagScanned = new File(pictureImageScannedPath);
             File fileImageOrigin = new File(pictureImageOriginPath);

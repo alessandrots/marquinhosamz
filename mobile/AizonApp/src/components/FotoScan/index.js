@@ -336,17 +336,18 @@ export default function FotoScan(props) {
     if (!resposta.isErro) {
       setLoading(false);
 
+      //Finalizado
+      storageStatusProcessingImage(3);
+
       let data = res.data;
 
       console.log('AIZONApp_ FotoScan pdfProcessCertify base64 = ', data.pdf);
 
       storageBase64PdfView(data.pdf)
 
-      let msg = "Processamento finalizado com sucesso. Feche a janela.";
+      let msg = "Processamento finalizado com sucesso.";
 
-      //Finalizado
-      storageStatusProcessingImage(3);
-      alertMessage(msg, null, null, 'AIZON-PROCESS');
+      alertMessage(msg, props.onFecharModal, null, 'AIZON-PROCESS');
     } else {
       storageStatusProcessingImage(4);
       setLoading(false);

@@ -104,13 +104,23 @@ export function alertMessage( msg, fnGoToDataVisualization, data, title) {
   ]
 
   if (fnGoToDataVisualization) {
-    arr = [
-      {
-        text: "Ok",
-        onPress: () => fnGoToDataVisualization(data),
-        style: "ok"
-      }
-    ]
+    if (data) {
+      arr = [
+        {
+          text: "Ok",
+          onPress: () => fnGoToDataVisualization(data),
+          style: "ok"
+        }
+      ]
+    } else {
+      arr = [
+        {
+          text: "Ok",
+          onPress: () => fnGoToDataVisualization(),
+          style: "ok"
+        }
+      ]
+    }
   }
 
   Alert.alert(

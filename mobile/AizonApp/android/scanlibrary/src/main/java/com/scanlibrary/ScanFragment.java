@@ -192,8 +192,7 @@ public class ScanFragment extends Fragment {
         int width = original.getWidth();
         int height = original.getHeight();
 
-        Log.i(TAG, "width (" + width + ") height (" + height + ")");
-
+        //Log.i(TAG, "width (" + width + ") height (" + height + ")");
 
         float xRatio = (float) width/ sourceImageView.getWidth();
         float yRatio = (float) height / sourceImageView.getHeight();
@@ -207,7 +206,7 @@ public class ScanFragment extends Fragment {
         float y3_ = (points.get(2).y) ;
         float y4_ = (points.get(3).y) ;
 
-        Log.i(TAG, "POints Original (" + x1_ + "," + y1_ + ")(" + x2_ + "," + y2_ + ")(" + x3_ + "," + y3_ + ")(" + x4_ + "," + y4_ + ")");
+        //Log.i(TAG, "POints Original (" + x1_ + "," + y1_ + ")(" + x2_ + "," + y2_ + ")(" + x3_ + "," + y3_ + ")(" + x4_ + "," + y4_ + ")");
 
         float sx1 = (points.get(0).x) * xRatio;
         float sx2 = (points.get(1).x) * xRatio;
@@ -218,7 +217,7 @@ public class ScanFragment extends Fragment {
         float sy3 = (points.get(2).y) * yRatio;
         float sy4 = (points.get(3).y) * yRatio;
 
-        Log.i(TAG, "\n POints Scanned (" + sx1 + "," + sy1 + ")(" + sx2 + "," + sy2 + ")(" +sx3 + "," + sy3 + ")(" + sx4 + "," + sy4 + ")");
+        //Log.i(TAG, "\n POints Scanned (" + sx1 + "," + sy1 + ")(" + sx2 + "," + sy2 + ")(" +sx3 + "," + sy3 + ")(" + sx4 + "," + sy4 + ")");
 
         Bitmap _bitmap = ((ScanActivity) getActivity()).getScannedBitmap(original, sx1, sy1, sx2, sy2, sx3, sy3, sx4, sy4);
 

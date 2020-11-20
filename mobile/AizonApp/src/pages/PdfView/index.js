@@ -7,6 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 import { AuthContext } from '../../contexts/auth';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
+import { alertMessage, loadStorageUpload} from '../../util/util';
 
 import PhotoService from '../../services/photo/PhotoService';
 //import { WebView } from 'react-native-webview';
@@ -16,7 +17,7 @@ import { Background, ContainerHeader, ContainerFooter, ContainerMain, Link, Link
 
 export default function PdfView(props) {
 
-  const { loadStorageUpload } = useContext(AuthContext);
+  //const { loadStorageUpload } = useContext(AuthContext);
 
   const navigation = useNavigation();
 
@@ -30,12 +31,14 @@ export default function PdfView(props) {
   useEffect(() => {
     console.log('AIZONApp_ PdfView props = ', props);
 
+    /**
     if (props?.route?.params?.base64Pdf) {
       setImageBase64('data:application/pdf;base64,' + props.route.params.base64Pdf);
     } else {
       //getDataForConfigToObj();
-      pdfProcessCertify();
-    }
+       */
+      //pdfProcessCertify();
+    //}
 
   }, []);
 
@@ -99,12 +102,17 @@ export default function PdfView(props) {
 
     const id = await loadStorageUpload();
 
-    const resposta = await PhotoService.processPipelineViaGet("/image/pdf_process_certify2", id);
+    console.log('AIZONApp_ PdfView pdfProcessCertify id = ', JSON.parse(id));
+
+    const resposta = await PhotoService.processPipelineViaGet("/image/pdf_process_certify2", JSON.parse(id));
+
+    console.log('AIZONApp_ pdfProcessCertify resposta = ', resposta);
 
     const res = resposta.res;
 
     if (!resposta.isErro) {
       setLoading(false);
+      setModalVisible(true);
 
       let data = res.data;
 
@@ -150,7 +158,7 @@ export default function PdfView(props) {
       <ContainerMain>
         <ActivityIndicator size="large" color="#0EABB5" animating={loading}/>
 
-        {imageBase64 && (
+
           <View style={styles.container}>
                       <Modal
                         animationType="slide"
@@ -190,9 +198,7 @@ export default function PdfView(props) {
                           <View style={styles.containerRow}>
                               <TouchableHighlight
                                 style={styles.openButton}
-                                onPress={() => {
-                                  setModalVisible(true);
-                                }}
+                                onPress={() => { pdfProcessCertify(); }}
                               >
                                 <Text style={styles.textStyle}>Abrir PDF</Text>
                               </TouchableHighlight>
@@ -200,7 +206,6 @@ export default function PdfView(props) {
                           </View>
 
                 </View>
-              )}
 
               {getDataErro()}
 
