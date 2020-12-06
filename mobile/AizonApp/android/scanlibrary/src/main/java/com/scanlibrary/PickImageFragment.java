@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -118,12 +119,6 @@ public class PickImageFragment extends Fragment {
         startActivityForResult(intent, ScanConstants.PICKFILE_REQUEST_CODE);
     }
 
-    public void openCameraNew() {
-        Log.i(TAG, "openCamera");
-        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(cameraIntent, ScanConstants.START_CAMERA_REQUEST_CODE);
-    }
-
     public void openCamera() {
         Log.i(TAG, "openCameraOriginal");
 
@@ -141,6 +136,17 @@ public class PickImageFragment extends Fragment {
             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, tempFileUri);
         }
         startActivityForResult(cameraIntent, ScanConstants.START_CAMERA_REQUEST_CODE);
+    }
+
+    public static Camera getCameraInstance() {
+
+        Camera c = null;
+        try {
+            c = Camera.open();// attempt to get a Camera instance
+        } catch (Exception e) {
+            // Camera is not available (in use or does not exist)
+        }
+        return c; // returns null if camera is unavailable
     }
 
     @Override

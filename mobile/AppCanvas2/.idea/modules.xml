@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Android-Camera2-API-Example.iml" filepath="$PROJECT_DIR$/Android-Camera2-API-Example.iml" />
+      <module fileurl="file://$PROJECT_DIR$/AppCanvas2.iml" filepath="$PROJECT_DIR$/AppCanvas2.iml" group="AppCanvas2" />
+      <module fileurl="file://$PROJECT_DIR$/app/AppCanvas2-app.iml" filepath="$PROJECT_DIR$/app/AppCanvas2-app.iml" group="AppCanvas2/app" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/camera/cameraduanhong.iml" filepath="$PROJECT_DIR$/camera/cameraduanhong.iml" group="AppCanvas2/cameraduanhong" />
+    </modules>
+  </component>
+</project>
