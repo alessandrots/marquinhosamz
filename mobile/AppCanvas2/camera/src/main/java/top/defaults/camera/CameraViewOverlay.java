@@ -12,6 +12,7 @@ import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.animation.DecelerateInterpolator;
@@ -22,6 +23,8 @@ class CameraViewOverlay extends SurfaceView {
     private Point focusPoint;
     private CanvasDrawer canvasDrawer;
     private Paint[] paints;
+
+    private static final String TAG = "AIZONApp_CamOverlay";
 
     public CameraViewOverlay(Context context) {
         this(context, null);
@@ -39,12 +42,22 @@ class CameraViewOverlay extends SurfaceView {
         holder.addCallback(new SurfaceHolder.Callback() {
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
+
                 clear();
+
+                if (holder.getSurface().isValid()) {
+                    Log.i(TAG, "getSurface surfaceCreated   " );
+                }
             }
 
             @Override
             public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
                 clear();
+
+                if (holder.getSurface().isValid()) {
+                    Log.i(TAG, "getSurface surfaceChanged   " );
+                    focusRequestAt(300, 350);
+                }
             }
 
             @Override
@@ -60,6 +73,9 @@ class CameraViewOverlay extends SurfaceView {
     }
 
     void focusRequestAt(int x, int y) {
+        Log.i(TAG, "focusRequestAt x =  " + Integer.toString(x) + "focusRequestAt y =  " + Integer.toString(y));
+        Log.i(TAG, "focusRequestAt getMeasuredWidth  =  " + Integer.toString(getMeasuredWidth()) + "focusRequestAt getMeasuredHeight =  " + Integer.toString(getMeasuredHeight()));
+
         if (x >= 0 && x <= getMeasuredWidth() && y >= 0 && y <= getMeasuredHeight()) {
             focusPoint = new Point(x, y);
         }
@@ -69,7 +85,7 @@ class CameraViewOverlay extends SurfaceView {
 
     void focusFinished() {
         focusPoint = null;
-        postDelayed(this::clear, 300);
+        postDelayed(this::clear, 15000);
     }
 
     private void drawIndicator() {
@@ -95,7 +111,7 @@ class CameraViewOverlay extends SurfaceView {
         }
     }
 
-    private static final int SHUTTER_ONE_WAY_TIME = 150;
+    private static final int SHUTTER_ONE_WAY_TIME = 60000;
 
     public void shot() {
         int colorFrom = Color.TRANSPARENT;

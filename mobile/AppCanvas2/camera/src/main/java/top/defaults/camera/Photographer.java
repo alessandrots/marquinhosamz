@@ -126,4 +126,6 @@ public interface Photographer {
 
         void onError(Error error);
     }
+
+    void startCanvasRequestFocus();
 }

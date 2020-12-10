@@ -155,13 +155,16 @@ public class CameraView extends RelativeLayout {
 
     public void setFocusIndicatorDrawer(CanvasDrawer drawer) {
         overlay.setCanvasDrawer(drawer);
+        //overlay.focusRequestAt(50, 50);
     }
 
     void focusRequestAt(int x, int y) {
+
         overlay.focusRequestAt(x, y);
     }
 
     void focusFinished() {
+
         overlay.focusFinished();
     }
 

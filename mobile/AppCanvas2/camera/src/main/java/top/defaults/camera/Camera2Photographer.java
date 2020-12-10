@@ -301,6 +301,7 @@ public class Camera2Photographer implements InternalPhotographer {
         if (orientationEventListener != null) {
             orientationEventListener.enable();
         }
+
         isPreviewStarted = true;
     }
 
@@ -412,7 +413,7 @@ public class Camera2Photographer implements InternalPhotographer {
 
             //imageReader =  ImageReader.newInstance(2048, 1536, ImageFormat.JPEG,2);//OK
 
-            imageReader =  ImageReader.newInstance(2592, 19444, ImageFormat.JPEG,2);//OK
+            imageReader =  ImageReader.newInstance(2592, 1944, ImageFormat.JPEG,2);//OK
 
             imageReader.setOnImageAvailableListener(onImageAvailableListener, null);
         } else if (mode == Values.MODE_VIDEO) {
@@ -447,6 +448,11 @@ public class Camera2Photographer implements InternalPhotographer {
         } catch (CameraAccessException e) {
             callbackHandler.onError(new Error(Error.ERROR_CAMERA, "Failed to open camera: " + cameraId, e));
         }
+    }
+
+    @Override
+    public void startCanvasRequestFocus() {
+        preview.focusRequestAt(200, 250);
     }
 
     @Override
