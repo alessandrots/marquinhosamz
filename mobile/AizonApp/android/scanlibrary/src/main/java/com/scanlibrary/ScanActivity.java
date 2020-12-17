@@ -8,21 +8,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.PointF;
-import android.icu.text.Edits;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.util.Log;
-import android.view.View;
 
 import com.androidnetworking.AndroidNetworking;
-import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
-import com.androidnetworking.interfaces.JSONArrayRequestListener;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -77,10 +71,42 @@ public class ScanActivity extends Activity implements IScanner, ComponentCallbac
         super.onCreate(savedInstanceState);
         AndroidNetworking.initialize(getApplicationContext());
         setContentView(R.layout.scan_layout);
-        init();
+        //init();
+        startCanvasActivity();
     }
 
+    /**
     private void init() {
+        this.getDataFromIntent(ScanConstants.ID_PROCESS_SCAN_IMAGE, 0);
+        this.getDataFromIntent(ScanConstants.IMAGE_TYPE_SCAN_IMAGE, 1);
+
+        PickImageFragment fragment = new PickImageFragment();
+        Bundle bundle = new Bundle();
+
+        bundle.putString(ScanConstants.ID_PROCESS_SCAN_IMAGE, this.idProcesso);
+        bundle.putString(ScanConstants.IMAGE_TYPE_SCAN_IMAGE, Integer.toString(this.tipoImagem));
+        bundle.putInt(ScanConstants.OPEN_INTENT_PREFERENCE, getPreferenceContent());
+
+        fragment.setArguments(bundle);
+        android.app.FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.add(R.id.content, fragment);
+
+        //executeGet(null);
+        //executePost(null);
+        fragmentTransaction.commit();
+    }
+    */
+
+    public void startCanvasActivity() {
+        Intent intent = new Intent(this, CanvasPhotoActivity.class);
+        //EditText editText = (EditText) findViewById(R.id.editText);
+        //String message = editText.getText().toString();
+        //intent.putExtra(EXTRA_MESSAGE, message);
+        startActivity(intent);
+    }
+
+    private void initPickFragment() {
         this.getDataFromIntent(ScanConstants.ID_PROCESS_SCAN_IMAGE, 0);
         this.getDataFromIntent(ScanConstants.IMAGE_TYPE_SCAN_IMAGE, 1);
 

@@ -4,7 +4,9 @@ import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.CaptureResult;
 import android.hardware.camera2.TotalCaptureResult;
+
 import androidx.annotation.NonNull;
+
 
 /**
  * A {@link CameraCaptureSession.CaptureCallback} for capturing a still picture.

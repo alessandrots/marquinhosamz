@@ -8,7 +8,9 @@ import android.hardware.camera2.CaptureFailure;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.MeteringRectangle;
+
 import androidx.annotation.NonNull;
+
 
 class FocusHandler {
 

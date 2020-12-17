@@ -24,12 +24,13 @@ import android.media.MediaRecorder;
 import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
-import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import android.util.SparseIntArray;
 import android.view.MotionEvent;
 import android.view.OrientationEventListener;
 import android.view.Surface;
+
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -274,6 +275,8 @@ public class Camera2Photographer implements InternalPhotographer {
     @Override
     public void startPreview() {
         throwIfNotInitialized();
+
+        /** */
         for (String permission: RECORD_VIDEO_PERMISSIONS) {
             int permissionCheck = ContextCompat.checkSelfPermission(activityContext, permission);
             if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
@@ -281,6 +284,8 @@ public class Camera2Photographer implements InternalPhotographer {
                 return;
             }
         }
+
+
         startBackgroundThread();
 
         if (!chooseCameraIdByFacing()) {
@@ -290,15 +295,14 @@ public class Camera2Photographer implements InternalPhotographer {
         if (!collectCameraInfo()) {
             return;
         }
-
         prepareWorkers();
-        //prepareWorkers2();
 
         callbackHandler.onDeviceConfigured();
         startOpeningCamera();
         if (orientationEventListener != null) {
             orientationEventListener.enable();
         }
+
         isPreviewStarted = true;
     }
 
@@ -400,15 +404,18 @@ public class Camera2Photographer implements InternalPhotographer {
             }
             size = imageSize;
 
-            //imageReader = ImageReader.newInstance(imageSize.getWidth(), imageSize.getHeight(), ImageFormat.JPEG,2);
+            //imageReader = ImageReader.newInstance(imageSize.getWidth(), imageSize.getHeight(), ImageFormat.JPEG,2);//NOK
 
-            //imageReader = ImageReader.newInstance(imageSize.getWidth(), imageSize.getHeight(), ImageFormat.RAW_SENSOR, 1);
+            //imageReader =  ImageReader.newInstance(640, 480, ImageFormat.JPEG,2);//OK
 
-            imageReader =  ImageReader.newInstance(640, 480, ImageFormat.JPEG,2);
+            //imageReader =  ImageReader.newInstance(3200, 2400, ImageFormat.JPEG,2);//NOK
 
-            /**
-             * https://stackoverflow.com/questions/46997776/camera2-api-error-failed-to-create-capture-session
-             */
+            //imageReader =  ImageReader.newInstance(1024, 768, ImageFormat.JPEG,2);//OK
+
+            //imageReader =  ImageReader.newInstance(2048, 1536, ImageFormat.JPEG,2);//OK
+
+            imageReader =  ImageReader.newInstance(2592, 1944, ImageFormat.JPEG,2);//OK
+
             imageReader.setOnImageAvailableListener(onImageAvailableListener, null);
         } else if (mode == Values.MODE_VIDEO) {
             if (videoSize == null) {
@@ -435,31 +442,6 @@ public class Camera2Photographer implements InternalPhotographer {
         }
     }
 
-    private void prepareWorkers2() {
-        Size size;
-
-        if (videoSize == null) {
-            // determine video size
-            SortedSet<Size> sizesWithAspectRatio = videoSizeMap.sizes(aspectRatio);
-            if (sizesWithAspectRatio != null && sizesWithAspectRatio.size() > 0) {
-                videoSize = sizesWithAspectRatio.last();
-            } else {
-                videoSize = chooseVideoSize(supportedVideoSizes);
-            }
-        }
-        size = videoSize;
-        mediaRecorder = new MediaRecorder();
-
-        previewSize = chooseOptimalPreviewSize(size);
-
-        int orientation = activityContext.getResources().getConfiguration().orientation;
-        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            textureView.setAspectRatio(previewSize.getWidth(), previewSize.getHeight());
-        } else {
-            textureView.setAspectRatio(previewSize.getHeight(), previewSize.getWidth());
-        }
-    }
-
     @SuppressLint("MissingPermission")
     private void startOpeningCamera() {
         try {
@@ -467,6 +449,11 @@ public class Camera2Photographer implements InternalPhotographer {
         } catch (CameraAccessException e) {
             callbackHandler.onError(new Error(Error.ERROR_CAMERA, "Failed to open camera: " + cameraId, e));
         }
+    }
+
+    @Override
+    public void startCanvasRequestFocus() {
+        preview.focusRequestAt(200, 250);
     }
 
     @Override
@@ -1043,34 +1030,45 @@ public class Camera2Photographer implements InternalPhotographer {
     }
 
     private void stopBackgroundThread() {
-        backgroundThread.quitSafely();
-        try {
-            backgroundThread.join();
-            backgroundThread = null;
-            backgroundHandler = null;
-        } catch (InterruptedException e) {
-            callbackHandler.onError(new Error(Error.ERROR_DEFAULT_CODE, e));
+        if (backgroundThread != null) {
+            backgroundThread.quitSafely();
+
+            try {
+                backgroundThread.join();
+                backgroundThread = null;
+                backgroundHandler = null;
+            } catch (InterruptedException e) {
+                callbackHandler.onError(new Error(Error.ERROR_DEFAULT_CODE, e));
+            }
         }
+
     }
 
     private void focusAt(MotionEvent event) {
         Rect focusRect = null;
-        Integer maxRegionsAf = characteristics.get(CameraCharacteristics.CONTROL_MAX_REGIONS_AF);
-        if (maxRegionsAf != null && maxRegionsAf >= 1) {
-            final Rect sensorArraySize = characteristics.get(CameraCharacteristics.SENSOR_INFO_ACTIVE_ARRAY_SIZE);
-            focusRect = Utils.calculateFocusArea(sensorArraySize, getDisplayOrientation(), textureView, event);
+        if (characteristics != null) {
+            Integer maxRegionsAf = characteristics.get(CameraCharacteristics.CONTROL_MAX_REGIONS_AF);
+
+            if (maxRegionsAf != null && maxRegionsAf >= 1) {
+                final Rect sensorArraySize = characteristics.get(CameraCharacteristics.SENSOR_INFO_ACTIVE_ARRAY_SIZE);
+                focusRect = Utils.calculateFocusArea(sensorArraySize, getDisplayOrientation(), textureView, event);
+            }
+
+            if (focusRect != null && focusHandler != null) {
+                focusHandler.focus(captureSession, previewRequestBuilder,
+                        focusRect,
+                        error -> {
+                            // resume repeating (preview surface will get frames)
+                            updatePreview(null);
+                            preview.focusFinished();
+                            if (error != null) {
+                                callbackHandler.onError(error);
+                            }
+                        });
+            }
+
+            preview.focusRequestAt((int) event.getX(), (int) event.getY());
         }
-        focusHandler.focus(captureSession, previewRequestBuilder,
-                focusRect,
-                error -> {
-                    // resume repeating (preview surface will get frames)
-                    updatePreview(null);
-                    preview.focusFinished();
-                    if (error != null) {
-                        callbackHandler.onError(error);
-                    }
-                });
-        preview.focusRequestAt((int) event.getX(), (int) event.getY());
     }
 
     private void updateZoom(float newZoom) {

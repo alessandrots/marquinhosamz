@@ -1,6 +1,8 @@
 package top.defaults.camera;
 
 import android.media.MediaRecorder;
+
+
 import androidx.annotation.Nullable;
 
 import java.util.Set;
@@ -126,4 +128,6 @@ public interface Photographer {
 
         void onError(Error error);
     }
+
+    void startCanvasRequestFocus();
 }

@@ -1,7 +1,7 @@
 package com.scanlibrary;
 
 import android.Manifest;
-import android.app.Fragment;
+import android.content.pm.PackageManager;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -9,18 +9,17 @@ import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.SparseIntArray;
-import android.view.LayoutInflater;
 import android.view.Surface;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.jakewharton.rxbinding2.view.RxView;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
-
-import butterknife.BindView;
 import top.defaults.camera.CameraView;
 import top.defaults.camera.CanvasDrawer;
 import top.defaults.camera.Photographer;
@@ -28,13 +27,23 @@ import top.defaults.camera.PhotographerFactory;
 import top.defaults.camera.PhotographerHelper;
 import top.defaults.camera.SimpleOnEventListener;
 
-
-public class CanvasPhotoFragment extends Fragment {
-
-    private View view;
-    private Photographer photographer;
-    private PhotographerHelper photographerHelper;
-    private CameraView preview;
+public class CanvasPhotoActivity extends AppCompatActivity {
+    /**
+     * 0) Mudar sdk version (build.gradle do app) :
+     *         minSdkVersion 27
+     *         targetSdkVersion 27
+     * 1) Pra buildar, depois de ter feito todo o processo de
+     * 2) Importar new module (file => import new module)
+     * 3) Adicionar o módulo como dependência (file => Project Structure)
+     * 4) colocar os classpaths no build.gradle (root)
+     *      classpath 'com.android.tools.build:gradle:3.0.1'
+     *      classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
+     *      classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
+     *  5) File => Project Structure
+     *     Em Module colocar a Source e Target Compatibility para java 1.8
+     *
+     *
+     */
 
     private static final String TAG = "AndroidCameraApi";
 
@@ -51,20 +60,23 @@ public class CanvasPhotoFragment extends Fragment {
 
     private static final int REQUEST_CAMERA_PERMISSION = 200;
 
-    //@BindView(R.id.)
+    private Photographer photographer;
+    private PhotographerHelper photographerHelper;
+
+    private CameraView preview;
+
+    //@BindView(R.id.action)
     ImageButton actionButton;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.canvas_fragment, null);
-        init();
-        return view;
-    }
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-    private void init() {
-        preview = view.findViewById(R.id.preview);
+        setContentView(R.layout.canvas_fragment);
 
-        actionButton = view.findViewById(R.id.action);
+        preview = findViewById(R.id.preview);
+
+        actionButton = findViewById(R.id.action);
 
         actionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,7 +84,7 @@ public class CanvasPhotoFragment extends Fragment {
                 if (photographer !=  null) {
                     photographer.takePicture();
                 } else {
-                    Toast.makeText(view.getContext(),"takePicture is Clicked", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(),"takePicture is Clicked", Toast.LENGTH_LONG).show();
                 }
 
             }
@@ -116,23 +128,21 @@ public class CanvasPhotoFragment extends Fragment {
             }
         });
 
-        RxPermissions rxPermissions = new RxPermissions(this.getActivity());
+        RxPermissions rxPermissions = new RxPermissions(this);
 
         RxView.attaches(preview)
                 .compose(rxPermissions.ensure(Manifest.permission.CAMERA,
                         Manifest.permission.RECORD_AUDIO,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE))
                 .subscribe(granted -> {
-                    /**
                     if (granted) {
                         //startVideoRecordActivity();
                     } else {
                         //Snackbar.make(prepareToRecord, getString(R.string.no_enough_permission), Snackbar.LENGTH_SHORT).setAction("Confirm", null).show();
                     }
-                     */
                 });
 
-        photographer = PhotographerFactory.createPhotographerWithCamera2(this.getActivity(), preview);
+        photographer = PhotographerFactory.createPhotographerWithCamera2(this, preview);
         photographerHelper = new PhotographerHelper(photographer);
         photographerHelper.setFileDir(MEDIA_DIR);
 
@@ -177,5 +187,48 @@ public class CanvasPhotoFragment extends Fragment {
 
              */
         });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == REQUEST_CAMERA_PERMISSION) {
+            if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                // close the app
+                Toast.makeText(CanvasPhotoActivity.this, "Sorry!!!, you can't use this app without granting permission", Toast.LENGTH_LONG).show();
+                finish();
+            }
+        }
+    }
+
+    //@OnClick(R.id.switch_mode)
+    void switchMode() {
+        photographerHelper.switchMode();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        enterFullscreen();
+        photographer.startPreview();
+    }
+
+    @Override
+    protected void onPause() {
+        photographer.stopPreview();
+        super.onPause();
+    }
+
+    private void enterFullscreen() {
+        View decorView = getWindow().getDecorView();
+        decorView.setBackgroundColor(Color.BLACK);
+        int uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+        decorView.setSystemUiVisibility(uiOptions);
     }
 }

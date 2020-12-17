@@ -3,15 +3,17 @@ package top.defaults.camera;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.viewpager.widget.ViewPager;
+//import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.view.ViewCompat;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -115,7 +117,7 @@ public class CameraView extends RelativeLayout {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         if (!isInEditMode()) {
-            //displayOrientationDetector.enable(ViewPager.getDisplay(this));//TODO
+            displayOrientationDetector.enable(ViewCompat.getDisplay(this));
         }
     }
 
@@ -155,13 +157,16 @@ public class CameraView extends RelativeLayout {
 
     public void setFocusIndicatorDrawer(CanvasDrawer drawer) {
         overlay.setCanvasDrawer(drawer);
+        //overlay.focusRequestAt(50, 50);
     }
 
     void focusRequestAt(int x, int y) {
+
         overlay.focusRequestAt(x, y);
     }
 
     void focusFinished() {
+
         overlay.focusFinished();
     }
 
