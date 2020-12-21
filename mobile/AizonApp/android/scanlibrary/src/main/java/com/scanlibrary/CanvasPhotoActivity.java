@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.util.SparseIntArray;
 import android.view.Surface;
 import android.view.View;
@@ -45,7 +46,7 @@ public class CanvasPhotoActivity extends AppCompatActivity {
      *
      */
 
-    private static final String TAG = "AndroidCameraApi";
+    private static final String TAG = "AizonApp_CameraApi";
 
     public static final String MEDIA_DIR = Environment.getExternalStorageDirectory().getPath() + "/0/amazon/CameraAppCanvas";
 
@@ -92,7 +93,7 @@ public class CanvasPhotoActivity extends AppCompatActivity {
 
         preview.setFocusIndicatorDrawer(new CanvasDrawer() {
             private static final int SIZE = 300;
-            private static final int LINE_LENGTH = 50;
+            private static final int LINE_LENGTH = 300;
 
             @Override
             public Paint[] initPaints() {
@@ -136,8 +137,10 @@ public class CanvasPhotoActivity extends AppCompatActivity {
                         Manifest.permission.WRITE_EXTERNAL_STORAGE))
                 .subscribe(granted -> {
                     if (granted) {
+                        Log.i(TAG, "GRANTED...");
                         //startVideoRecordActivity();
                     } else {
+                        Log.i(TAG, "NOT GRANTED...");
                         //Snackbar.make(prepareToRecord, getString(R.string.no_enough_permission), Snackbar.LENGTH_SHORT).setAction("Confirm", null).show();
                     }
                 });
