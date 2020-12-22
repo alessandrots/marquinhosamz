@@ -100,6 +100,18 @@ public class ScanActivity extends Activity implements IScanner, ComponentCallbac
 
     public void startCanvasActivity() {
         Intent intent = new Intent(this, CanvasPhotoActivity.class);
+
+        this.getDataFromIntent(ScanConstants.ID_PROCESS_SCAN_IMAGE, 0);
+        this.getDataFromIntent(ScanConstants.IMAGE_TYPE_SCAN_IMAGE, 1);
+
+        Bundle bundle = new Bundle();
+
+        bundle.putString(ScanConstants.ID_PROCESS_SCAN_IMAGE, this.idProcesso);
+        bundle.putString(ScanConstants.IMAGE_TYPE_SCAN_IMAGE, Integer.toString(this.tipoImagem));
+        bundle.putInt(ScanConstants.OPEN_INTENT_PREFERENCE, getPreferenceContent());
+
+        intent.putExtras(bundle);
+
         //EditText editText = (EditText) findViewById(R.id.editText);
         //String message = editText.getText().toString();
         //intent.putExtra(EXTRA_MESSAGE, message);

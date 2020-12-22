@@ -816,6 +816,29 @@ public class Camera2Photographer implements InternalPhotographer {
     }
 
     @Override
+    public String takePictureToPath() {
+        if (mode != Values.MODE_IMAGE) {
+            callbackHandler.onError(new Error(Error.ERROR_INVALID_PARAM, "Cannot takePicture() in non-IMAGE mode"));
+            return null;
+        }
+
+        try {
+            nextImageAbsolutePath = Utils.getImageFilePath();
+        } catch (IOException e) {
+            callbackHandler.onError(Utils.errorFromThrowable(e));
+            return null;
+        }
+        if (autoFocus) {
+            lockFocus();
+        } else {
+            captureStillPicture();
+        }
+        preview.shot();
+
+        return nextImageAbsolutePath;
+    }
+
+    @Override
     public void startRecording(MediaRecorderConfigurator configurator) {
         throwIfNoMediaRecorder();
         if (camera == null || !textureView.isAvailable() || previewSize == null) {

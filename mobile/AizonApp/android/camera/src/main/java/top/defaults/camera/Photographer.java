@@ -57,6 +57,8 @@ public interface Photographer {
 
     void takePicture();
 
+    String takePictureToPath();
+
     void startRecording(@Nullable MediaRecorderConfigurator configurator);
 
     /**

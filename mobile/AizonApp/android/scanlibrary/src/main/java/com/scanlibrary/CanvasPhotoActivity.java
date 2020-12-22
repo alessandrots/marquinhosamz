@@ -1,13 +1,18 @@
 package com.scanlibrary;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.util.SparseIntArray;
 import android.view.Surface;
@@ -20,6 +25,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.jakewharton.rxbinding2.view.RxView;
 import com.tbruyelle.rxpermissions2.RxPermissions;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import top.defaults.camera.CameraView;
 import top.defaults.camera.CanvasDrawer;
@@ -51,6 +64,12 @@ public class CanvasPhotoActivity extends AppCompatActivity {
     public static final String MEDIA_DIR = Environment.getExternalStorageDirectory().getPath() + "/0/amazon/CameraAppCanvas";
 
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
+    private Uri fileUri;
+    private IScanner scanner;
+    private String pictureImagePath = "";
+    private String idProcesso;
+    private String tipoImagem;
+
 
     static {
         ORIENTATIONS.append(Surface.ROTATION_0, 90);
@@ -83,7 +102,22 @@ public class CanvasPhotoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (photographer !=  null) {
-                    photographer.takePicture();
+                    String filepath = photographer.takePictureToPath();
+
+                    File fileImageOrigin = new File(filepath);
+
+                    try {
+                        FileOutputStream outputStream = new FileOutputStream(filepath);
+
+                        Uri fileUri = Uri.fromFile(fileImageOrigin);
+
+                        Bitmap bitmap = getBitmap(fileUri);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    //fazer a integração aqui, com o retorno da imagem, BITMAP e a chamada do método
+                    //postImagePick que está nessa classe
                 } else {
                     Toast.makeText(getApplicationContext(),"takePicture is Clicked", Toast.LENGTH_LONG).show();
                 }
@@ -190,6 +224,39 @@ public class CanvasPhotoActivity extends AppCompatActivity {
 
              */
         });
+
+        init();
+    }
+
+    private void init() {
+        //cameraButton = (ImageButton) view.findViewById(R.id.cameraButton);
+        //cameraButton.setOnClickListener(new CameraButtonClickListener());
+        //galleryButton = (ImageButton) view.findViewById(R.id.selectButton);
+        //galleryButton.setOnClickListener(new GalleryClickListener());
+
+        idProcesso = getIntent().getStringExtra(ScanConstants.ID_PROCESS_SCAN_IMAGE);
+        tipoImagem = getIntent().getStringExtra(ScanConstants.IMAGE_TYPE_SCAN_IMAGE);
+
+        /**
+        if (isIntentPreferenceSet()) {
+            handleIntentPreference();
+        } else {
+            getActivity().finish();
+        }*/
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(newBase);
+
+        /**
+         *
+         * if (!(newBase instanceof IScanner)) {
+         *             throw new ClassCastException("Activity must implement IScanner");
+         *         }
+         *         this.scanner = (IScanner) newBase;
+         */
+
     }
 
     @Override
@@ -233,5 +300,108 @@ public class CanvasPhotoActivity extends AppCompatActivity {
                 | View.SYSTEM_UI_FLAG_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
         decorView.setSystemUiVisibility(uiOptions);
+    }
+
+    /**
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (!(activity instanceof IScanner)) {
+            throw new ClassCastException("Activity must implement IScanner");
+        }
+        this.scanner = (IScanner) activity;
+    }
+    */
+
+
+    private File clearTempImages() {
+        File tempFolder = null;
+
+        try {
+            //File path = getActivity().getBaseContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+            File path = this.getBaseContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+
+            tempFolder = new File(path, "/AizonApp");
+
+            if (!tempFolder.exists()) {
+                tempFolder.mkdir();
+            }
+
+            tempFolder = new File(tempFolder.getAbsoluteFile(), "/" + this.idProcesso + "/" + this.tipoImagem);
+
+            if (!tempFolder.exists()) {
+                tempFolder.mkdirs();
+            }
+
+            //for (File f : tempFolder.listFiles()){
+            //f.delete();
+            //}
+
+            return tempFolder;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    private File createImageFile() {
+        Locale localeBr = new Locale("pt", "BR");
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", localeBr).format(new Date());
+
+        File path = clearTempImages();
+
+        if (path == null) {
+            //path = getActivity().getBaseContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+            path = this.getBaseContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+            Log.i(TAG, "path = " + path.getPath());
+        }
+
+        //File fileImageOrigin = new File(path,  "ORIGINAL_" + timeStamp + ".jpg");
+        File fileImageOrigin = new File(path,  "ORIGINAL" + ".jpg");
+
+        Log.i(TAG, "file1 = " + fileImageOrigin.getPath());
+        this.pictureImagePath = fileImageOrigin.getAbsolutePath();
+
+        try {
+            FileOutputStream outputStream = new FileOutputStream(fileImageOrigin);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        fileUri = Uri.fromFile(fileImageOrigin);
+
+        return fileImageOrigin;
+    }
+
+    protected void postImagePick(Bitmap bitmap) {
+        //Uri uri = Utils.getUri(getActivity(), bitmap);
+        Uri uri = Utils.getUri(this, bitmap);
+
+        if (bitmap != null && !bitmap.isRecycled()) {
+            bitmap.recycle();
+            bitmap = null;
+        }
+
+        scanner.onBitmapSelect(uri, this.pictureImagePath);
+    }
+
+    private Bitmap getBitmap(Uri selectedimg) throws IOException {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inSampleSize = 3;
+
+        //Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), selectedimg);
+        Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedimg);
+
+
+        /**
+         AssetFileDescriptor fileDescriptor = null;
+         fileDescriptor =
+         getActivity().getContentResolver().openAssetFileDescriptor(selectedimg, "r");
+         Bitmap original
+         = BitmapFactory.decodeFileDescriptor(
+         fileDescriptor.getFileDescriptor(), null, options);
+         */
+        return bitmap;
     }
 }
