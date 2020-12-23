@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.error.ANError;
@@ -115,7 +116,29 @@ public class ScanActivity extends Activity implements IScanner, ComponentCallbac
         //EditText editText = (EditText) findViewById(R.id.editText);
         //String message = editText.getText().toString();
         //intent.putExtra(EXTRA_MESSAGE, message);
-        startActivity(intent);
+        //startActivity(intent);
+        startActivityForResult(intent, 2);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK && requestCode == 2) {
+            startCanvasActivity();
+
+            if (data.hasExtra("key1") && data.hasExtra("key2")) {
+
+                //TODO
+                //CHAMAR AQUI O MÉTODO ABAIXO, TRAZENDO
+                //onBitmapSelect
+                // A URI DO INTENT data
+                Toast.makeText(
+                        this,
+                        "Your reult is :  " + data.getExtras().getString("key1") + " " + data.getExtras().getString("key2"),
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     private void initPickFragment() {
@@ -227,6 +250,8 @@ public class ScanActivity extends Activity implements IScanner, ComponentCallbac
         fragmentTransaction.commit();
 
     }
+
+
 
     private HashMap<Integer, PointF> convertMapPointsToSerializableHash(Map<Integer, PointF> points) {
         Set<Integer> keysPoints = points.keySet();
@@ -447,10 +472,12 @@ public class ScanActivity extends Activity implements IScanner, ComponentCallbac
                 });
     }
 
+    /**
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
     }
+     */
 
     @Override
     public void onTrimMemory(int level) {

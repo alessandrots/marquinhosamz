@@ -178,6 +178,7 @@ public class Camera2Photographer implements InternalPhotographer {
 
         @Override
         public void onReady() {
+
             captureStillPicture();
         }
 
@@ -188,7 +189,9 @@ public class Camera2Photographer implements InternalPhotographer {
 
         @Override
         public void onImageAvailable(ImageReader reader) {
-            backgroundHandler.post(new ImageSaver(reader.acquireLatestImage(), nextImageAbsolutePath));
+            if (backgroundHandler != null) {
+                backgroundHandler.post(new ImageSaver(reader.acquireLatestImage(), nextImageAbsolutePath));
+            }
         }
 
     };
@@ -453,6 +456,7 @@ public class Camera2Photographer implements InternalPhotographer {
 
     @Override
     public void startCanvasRequestFocus() {
+
         preview.focusRequestAt(200, 250);
     }
 
@@ -477,11 +481,13 @@ public class Camera2Photographer implements InternalPhotographer {
 
     @Override
     public Size getPreviewSize() {
+
         return previewSize;
     }
 
     @Override
     public Size getImageSize() {
+
         return imageSize;
     }
 
@@ -524,6 +530,7 @@ public class Camera2Photographer implements InternalPhotographer {
 
     @Override
     public Set<AspectRatio> getSupportedAspectRatios() {
+
         return previewSizeMap.ratios();
     }
 
@@ -839,6 +846,23 @@ public class Camera2Photographer implements InternalPhotographer {
     }
 
     @Override
+    public void takePictureWithPath(String filepath) {
+        if (mode != Values.MODE_IMAGE) {
+            callbackHandler.onError(new Error(Error.ERROR_INVALID_PARAM, "Cannot takePicture() in non-IMAGE mode"));
+            return;
+        }
+
+        nextImageAbsolutePath = filepath;//Utils.getImageFilePath();
+
+        if (autoFocus) {
+            lockFocus();
+        } else {
+            captureStillPicture();
+        }
+        preview.shot();
+    }
+
+    @Override
     public void startRecording(MediaRecorderConfigurator configurator) {
         throwIfNoMediaRecorder();
         if (camera == null || !textureView.isAvailable() || previewSize == null) {
@@ -1010,6 +1034,33 @@ public class Camera2Photographer implements InternalPhotographer {
                         public void onCaptureCompleted(@NonNull CameraCaptureSession session,
                                                        @NonNull CaptureRequest request,
                                                        @NonNull TotalCaptureResult result) {
+
+                            /**
+                             * TENTAR FAZER A CHAMADA :
+                             * INTENT
+                             * SETRESULT
+                             * FINISH
+                             */
+
+                            /**
+                             * TODO
+                             * ok PARA SER CHAMADO onCaptureCompleted
+                             Intent data = new Intent();
+                             data.putExtra("key1", "value1");
+                             data.putExtra("key2", "value2");
+                             setResult(RESULT_OK, data);
+                             finish();
+
+                             try {
+                             FileOutputStream outputStream = new FileOutputStream(fileImageOrigin.getPath());
+
+                             Uri fileUri = Uri.fromFile(fileImageOrigin);
+
+                             Bitmap bitmap = getBitmap(fileUri);
+                             } catch (Exception e) {
+                             e.printStackTrace();
+                             }
+                             */
                             unlockFocus();
                             callbackHandler.onShotFinished(nextImageAbsolutePath);
                         }

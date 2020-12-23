@@ -2,6 +2,7 @@ package com.scanlibrary;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -98,16 +99,43 @@ public class CanvasPhotoActivity extends AppCompatActivity {
 
         actionButton = findViewById(R.id.action);
 
+        //scanner = ((IScanner)this.getParent());
+
         actionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (photographer !=  null) {
-                    String filepath = photographer.takePictureToPath();
 
-                    File fileImageOrigin = new File(filepath);
+                    File fileImageOrigin = createImageFile();
+
+                    /**
+                     * TODO
+                     * PASSAR ESTA ACTIVITY PARA O takePictureWithPath
+                     * PARA CHAMAR A ROTINA DO
+                     * INTENT
+                     * SETRESULT
+                     * FINISH
+                     *
+                     */
+
+                    //photographer.takePictureWithPath(fileImageOrigin.getPath());
+
+                    /** NOT OK
+                     String filepath = photographer.takePictureToPath();
+
+                     File fileImageOrigin = new File(filepath);
+                     */
+
+
+                    /** ok PARA SER CHAMADO onCaptureCompleted
+                     Intent data = new Intent();
+                    data.putExtra("key1", "value1");
+                    data.putExtra("key2", "value2");
+                    setResult(RESULT_OK, data);
+                    finish();
 
                     try {
-                        FileOutputStream outputStream = new FileOutputStream(filepath);
+                        FileOutputStream outputStream = new FileOutputStream(fileImageOrigin.getPath());
 
                         Uri fileUri = Uri.fromFile(fileImageOrigin);
 
@@ -115,13 +143,10 @@ public class CanvasPhotoActivity extends AppCompatActivity {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-
-                    //fazer a integração aqui, com o retorno da imagem, BITMAP e a chamada do método
-                    //postImagePick que está nessa classe
+                    */
                 } else {
                     Toast.makeText(getApplicationContext(),"takePicture is Clicked", Toast.LENGTH_LONG).show();
                 }
-
             }
         });
 
@@ -383,7 +408,8 @@ public class CanvasPhotoActivity extends AppCompatActivity {
             bitmap = null;
         }
 
-        scanner.onBitmapSelect(uri, this.pictureImagePath);
+        //scanner.onBitmapSelect(uri, this.pictureImagePath);
+        //((IScanner)this.getParent()).onBitmapSelect(uri, this.pictureImagePath);
     }
 
     private Bitmap getBitmap(Uri selectedimg) throws IOException {
