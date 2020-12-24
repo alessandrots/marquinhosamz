@@ -7,10 +7,12 @@ import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.PointF;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -21,6 +23,7 @@ import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
@@ -124,21 +127,44 @@ public class ScanActivity extends Activity implements IScanner, ComponentCallbac
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        Bitmap bitmap = null;
+
         if (resultCode == RESULT_OK && requestCode == 2) {
-            startCanvasActivity();
+            if (data.hasExtra(ScanConstants.FILE_IMAGE_PHOTO_PATH_ABSOLUTE) ) {
+                String filepath = data.getExtras().getString(ScanConstants.FILE_IMAGE_PHOTO_PATH_ABSOLUTE);
 
-            if (data.hasExtra("key1") && data.hasExtra("key2")) {
+                File fileImageOrigin = new File(filepath);
 
-                //TODO
-                //CHAMAR AQUI O MÉTODO ABAIXO, TRAZENDO
-                //onBitmapSelect
-                // A URI DO INTENT data
-                Toast.makeText(
-                        this,
-                        "Your reult is :  " + data.getExtras().getString("key1") + " " + data.getExtras().getString("key2"),
-                        Toast.LENGTH_SHORT).show();
+                try {
+                    Uri fileUri = Uri.fromFile(fileImageOrigin);
+
+                    bitmap = Utils.getBitmap(this, fileUri);
+
+                    //bitmap = getBitmap(fileUri);
+
+                    Uri uri = Utils.getUri(this, bitmap);
+
+                    if (bitmap != null && !bitmap.isRecycled()) {
+                        bitmap.recycle();
+                        bitmap = null;
+                    }
+
+                    onBitmapSelect(uri, filepath);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
+    }
+
+    private Bitmap getBitmap(Uri selectedimg) throws IOException {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inSampleSize = 3;
+
+        //Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), selectedimg);
+        Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedimg);
+
+        return bitmap;
     }
 
     private void initPickFragment() {

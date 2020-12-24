@@ -86,8 +86,9 @@ public class CanvasPhotoActivity extends AppCompatActivity {
 
     private CameraView preview;
 
-    //@BindView(R.id.action)
-    ImageButton actionButton;
+    private ImageButton actionButton;
+
+    private File fileImageOrigin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,50 +106,16 @@ public class CanvasPhotoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (photographer !=  null) {
+                    fileImageOrigin = createImageFile();
 
-                    File fileImageOrigin = createImageFile();
-
-                    /**
-                     * TODO
-                     * PASSAR ESTA ACTIVITY PARA O takePictureWithPath
-                     * PARA CHAMAR A ROTINA DO
-                     * INTENT
-                     * SETRESULT
-                     * FINISH
-                     *
-                     */
-
-                    //photographer.takePictureWithPath(fileImageOrigin.getPath());
-
-                    /** NOT OK
-                     String filepath = photographer.takePictureToPath();
-
-                     File fileImageOrigin = new File(filepath);
-                     */
-
-
-                    /** ok PARA SER CHAMADO onCaptureCompleted
-                     Intent data = new Intent();
-                    data.putExtra("key1", "value1");
-                    data.putExtra("key2", "value2");
-                    setResult(RESULT_OK, data);
-                    finish();
-
-                    try {
-                        FileOutputStream outputStream = new FileOutputStream(fileImageOrigin.getPath());
-
-                        Uri fileUri = Uri.fromFile(fileImageOrigin);
-
-                        Bitmap bitmap = getBitmap(fileUri);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    */
+                    photographer.takePictureWithPath(fileImageOrigin.getPath());
                 } else {
                     Toast.makeText(getApplicationContext(),"takePicture is Clicked", Toast.LENGTH_LONG).show();
                 }
             }
         });
+
+
 
         preview.setFocusIndicatorDrawer(new CanvasDrawer() {
             private static final int SIZE = 300;

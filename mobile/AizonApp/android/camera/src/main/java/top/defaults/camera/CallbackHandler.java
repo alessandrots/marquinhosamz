@@ -1,8 +1,11 @@
 package top.defaults.camera;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
+import android.widget.Toast;
 
 import top.defaults.logger.Logger;
 
@@ -94,6 +97,23 @@ class CallbackHandler extends Handler {
     void onShotFinished(String filePath) {
         Message.obtain(this, CALLBACK_ON_SHOT_FINISHED, filePath).sendToTarget();
     }
+
+    /**
+    void onShotFinished(String filePath, Activity activity) {
+        Message.obtain(this, CALLBACK_ON_SHOT_FINISHED, filePath).sendToTarget();
+
+        Toast.makeText(activity, "YOUR RESULT IS :  " , Toast.LENGTH_SHORT).show();
+
+
+        Intent data = new Intent();
+        data.putExtra("fileImagePhotoPath", filePath);
+        //data.putExtra("key2", "value2");
+        activity.setResult(activity.RESULT_OK, data);
+        activity.finish();
+
+
+    }
+     **/
 
     void onError(final Error error) {
         Message.obtain(this, CALLBACK_ON_ERROR, error).sendToTarget();

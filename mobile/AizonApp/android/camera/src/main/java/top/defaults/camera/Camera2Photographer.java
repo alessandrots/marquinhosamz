@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.ImageFormat;
@@ -1034,6 +1035,9 @@ public class Camera2Photographer implements InternalPhotographer {
                         public void onCaptureCompleted(@NonNull CameraCaptureSession session,
                                                        @NonNull CaptureRequest request,
                                                        @NonNull TotalCaptureResult result) {
+                            unlockFocus();
+
+                            callbackHandler.onShotFinished(nextImageAbsolutePath);
 
                             /**
                              * TENTAR FAZER A CHAMADA :
@@ -1041,28 +1045,10 @@ public class Camera2Photographer implements InternalPhotographer {
                              * SETRESULT
                              * FINISH
                              */
-
-                            /**
-                             * TODO
-                             * ok PARA SER CHAMADO onCaptureCompleted
-                             Intent data = new Intent();
-                             data.putExtra("key1", "value1");
-                             data.putExtra("key2", "value2");
-                             setResult(RESULT_OK, data);
-                             finish();
-
-                             try {
-                             FileOutputStream outputStream = new FileOutputStream(fileImageOrigin.getPath());
-
-                             Uri fileUri = Uri.fromFile(fileImageOrigin);
-
-                             Bitmap bitmap = getBitmap(fileUri);
-                             } catch (Exception e) {
-                             e.printStackTrace();
-                             }
-                             */
-                            unlockFocus();
-                            callbackHandler.onShotFinished(nextImageAbsolutePath);
+                            Intent data = new Intent();
+                            data.putExtra("fileImagePhotoPath", nextImageAbsolutePath);
+                            activityContext.setResult(activityContext.RESULT_OK, data);
+                            activityContext.finish();
                         }
 
                         @Override

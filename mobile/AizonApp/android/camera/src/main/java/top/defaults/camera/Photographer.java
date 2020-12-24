@@ -1,5 +1,6 @@
 package top.defaults.camera;
 
+import android.app.Activity;
 import android.media.MediaRecorder;
 
 
