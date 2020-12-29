@@ -1044,11 +1044,12 @@ public class Camera2Photographer implements InternalPhotographer {
                              * INTENT
                              * SETRESULT
                              * FINISH
-                             */
+
                             Intent data = new Intent();
                             data.putExtra("fileImagePhotoPath", nextImageAbsolutePath);
                             activityContext.setResult(activityContext.RESULT_OK, data);
                             activityContext.finish();
+                             */
                         }
 
                         @Override

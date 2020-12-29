@@ -10,6 +10,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -87,6 +88,8 @@ public class CanvasPhotoActivity extends AppCompatActivity {
     private CameraView preview;
 
     private ImageButton actionButton;
+    private ImageButton closeButton;
+    private Rect rectangleImage;
 
     private File fileImageOrigin;
 
@@ -100,6 +103,8 @@ public class CanvasPhotoActivity extends AppCompatActivity {
 
         actionButton = findViewById(R.id.action);
 
+        closeButton = findViewById(R.id.flip);
+
         //scanner = ((IScanner)this.getParent());
 
         actionButton.setOnClickListener(new View.OnClickListener() {
@@ -109,9 +114,46 @@ public class CanvasPhotoActivity extends AppCompatActivity {
                     fileImageOrigin = createImageFile();
 
                     photographer.takePictureWithPath(fileImageOrigin.getPath());
+
+                    Toast.makeText(getApplicationContext(),"Foto tirada. Feche a Janela!", Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(getApplicationContext(),"takePicture is Clicked", Toast.LENGTH_LONG).show();
                 }
+            }
+        });
+
+        closeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /**
+                 * TENTAR FAZER A CHAMADA :
+                 * INTENT
+                 * SETRESULT
+                 * FINISH
+                 */
+                 Intent data = new Intent();
+                 data.putExtra(ScanConstants.FILE_IMAGE_PHOTO_PATH_ABSOLUTE, fileImageOrigin.getPath());
+
+                Uri fileUri = Uri.fromFile(fileImageOrigin);
+
+                try {
+                    Bitmap bitmap = Utils.getBitmap(getBaseContext(), fileUri);
+                    Bitmap bitmapCrop = Bitmap.createBitmap(bitmap, 0, 0, rectangleImage.width(), rectangleImage.height());
+
+                    if (bitmapCrop != null) {
+                        createImageCropFile(bitmapCrop);
+                    }
+
+                    Uri uri = Utils.getUri(getBaseContext(), bitmap);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                //activityContext.
+                setResult(RESULT_OK, data);
+                finish();
+                 //activityContext.finish();
+
             }
         });
 
@@ -141,6 +183,7 @@ public class CanvasPhotoActivity extends AppCompatActivity {
 
                 Paint paint = paints[0];
 
+                /*
                 canvas.drawLine(left, top + LINE_LENGTH, left, top, paint);
                 canvas.drawLine(left, top, left + LINE_LENGTH, top, paint);
 
@@ -152,6 +195,10 @@ public class CanvasPhotoActivity extends AppCompatActivity {
 
                 canvas.drawLine(left + LINE_LENGTH, bottom, left, bottom, paint);
                 canvas.drawLine(left, bottom, left, bottom - LINE_LENGTH, paint);
+                *
+                 */
+                rectangleImage = new Rect(100, 75, 600, 700);
+                canvas.drawRect(100, 75, 600, 700, paint);
             }
         });
 
@@ -357,6 +404,27 @@ public class CanvasPhotoActivity extends AppCompatActivity {
 
         try {
             FileOutputStream outputStream = new FileOutputStream(fileImageOrigin);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        fileUri = Uri.fromFile(fileImageOrigin);
+
+        return fileImageOrigin;
+    }
+
+    private File createImageCropFile(Bitmap bmp) {
+        File path = this.getBaseContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        Log.i(TAG, "path = " + path.getPath());
+
+        File fileImageOrigin = new File(path,  "CROP" + ".jpg");
+
+        Log.i(TAG, "file1 = " + fileImageOrigin.getPath());
+        this.pictureImagePath = fileImageOrigin.getAbsolutePath();
+
+        try {
+            FileOutputStream outputStream = new FileOutputStream(fileImageOrigin);
+            bmp.compress(Bitmap.CompressFormat.PNG, 100, outputStream); // bmp is your Bitmap instance
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

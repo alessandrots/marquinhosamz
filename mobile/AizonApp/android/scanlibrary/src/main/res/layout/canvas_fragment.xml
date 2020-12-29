@@ -39,5 +39,15 @@
             android:padding="16dp"
             android:background="?android:selectableItemBackground"/>
 
+        <ImageButton
+            android:id="@+id/flip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:padding="16dp"
+            android:src="@drawable/ic_switch_camera"
+            android:background="?android:selectableItemBackground"/>
+
     </RelativeLayout>
 </RelativeLayout>
