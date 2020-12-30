@@ -992,7 +992,7 @@ public class Camera2Photographer implements InternalPhotographer {
         }
     }
 
-    private void captureStillPicture() {
+    private void   captureStillPicture() {
         try {
             CaptureRequest.Builder captureRequestBuilder = camera.createCaptureRequest(
                     CameraDevice.TEMPLATE_STILL_CAPTURE);

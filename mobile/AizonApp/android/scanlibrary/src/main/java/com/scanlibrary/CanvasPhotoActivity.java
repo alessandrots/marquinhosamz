@@ -138,7 +138,17 @@ public class CanvasPhotoActivity extends AppCompatActivity {
 
                 try {
                     Bitmap bitmap = Utils.getBitmap(getBaseContext(), fileUri);
-                    Bitmap bitmapCrop = Bitmap.createBitmap(bitmap, 0, 0, rectangleImage.width(), rectangleImage.height());
+                    //Bitmap bitmapCrop = Bitmap.createBitmap(bitmap, 250, 400, rectangleImage.width(), rectangleImage.height());//NOK
+
+                    //Bitmap bitmapCrop = Bitmap.createBitmap(bitmap, 250, 400, 1024, 768);//NOK
+
+                    //Bitmap bitmapCrop = Bitmap.createBitmap(bitmap, 0, 0, 2592, 1944);//NOK
+
+                    Bitmap bitmapCrop = Bitmap.createBitmap(bitmap, 0, 0, 2048, 1536);//OK crop good
+
+                    //Bitmap bitmapCrop = Bitmap.createBitmap(bitmap, 0, 0, 2592, 1944);//OK but crop is shit
+
+                    //Bitmap bitmapCrop = Bitmap.createBitmap(bitmap, 50, 50, 2048, 1536);//OK but too many space
 
                     if (bitmapCrop != null) {
                         createImageCropFile(bitmapCrop);
@@ -189,7 +199,7 @@ public class CanvasPhotoActivity extends AppCompatActivity {
 
                 canvas.drawLine(right - LINE_LENGTH, top, right, top, paint);
                 canvas.drawLine(right, top, right, top + LINE_LENGTH, paint);
-
++-
                 canvas.drawLine(right, bottom - LINE_LENGTH, right, bottom, paint);
                 canvas.drawLine(right, bottom, right - LINE_LENGTH, bottom, paint);
 
@@ -414,8 +424,12 @@ public class CanvasPhotoActivity extends AppCompatActivity {
     }
 
     private File createImageCropFile(Bitmap bmp) {
-        File path = this.getBaseContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        Log.i(TAG, "path = " + path.getPath());
+        File path = clearTempImages();
+
+        if (path == null) {
+            path = this.getBaseContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+            Log.i(TAG, "path = " + path.getPath());
+        }
 
         File fileImageOrigin = new File(path,  "CROP" + ".jpg");
 
