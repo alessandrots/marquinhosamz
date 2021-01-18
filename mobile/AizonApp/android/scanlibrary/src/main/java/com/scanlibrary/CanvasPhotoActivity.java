@@ -21,6 +21,7 @@ import android.view.Surface;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
+import android.graphics.Matrix;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,10 +29,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -61,7 +64,7 @@ public class CanvasPhotoActivity extends AppCompatActivity {
      *
      */
 
-    private static final String TAG = "AizonApp_CameraApi";
+    private static final String TAG = "AizonApp_CanvasAct";
 
     public static final String MEDIA_DIR = Environment.getExternalStorageDirectory().getPath() + "/0/amazon/CameraAppCanvas";
 
@@ -91,6 +94,8 @@ public class CanvasPhotoActivity extends AppCompatActivity {
     private ImageButton closeButton;
     private Rect rectangleImage;
 
+    private View rectangle;
+
     private File fileImageOrigin;
 
     @Override
@@ -104,8 +109,9 @@ public class CanvasPhotoActivity extends AppCompatActivity {
         actionButton = findViewById(R.id.action);
 
         closeButton = findViewById(R.id.flip);
-
         //scanner = ((IScanner)this.getParent());
+
+        rectangle = findViewById(R.id.rectangle);
 
         actionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -136,15 +142,22 @@ public class CanvasPhotoActivity extends AppCompatActivity {
 
                 Uri fileUri = Uri.fromFile(fileImageOrigin);
 
+                Bitmap bitmapCrop = null;
+
                 try {
                     Bitmap bitmap = Utils.getBitmap(getBaseContext(), fileUri);
+
+                    Bitmap resized =Bitmap.createScaledBitmap(bitmap, (int)(bitmap.getWidth()*0.8), (int)(bitmap.getHeight()*0.8), true);
+
+                    cropImage(resized, preview, rectangle );
+
                     //Bitmap bitmapCrop = Bitmap.createBitmap(bitmap, 250, 400, rectangleImage.width(), rectangleImage.height());//NOK
 
                     //Bitmap bitmapCrop = Bitmap.createBitmap(bitmap, 250, 400, 1024, 768);//NOK
 
                     //Bitmap bitmapCrop = Bitmap.createBitmap(bitmap, 0, 0, 2592, 1944);//NOK
 
-                    Bitmap bitmapCrop = Bitmap.createBitmap(bitmap, 0, 0, 2048, 1536);//OK crop good
+                    //Bitmap bitmapCrop = Bitmap.createBitmap(bitmap, 0, 0, 2048, 1536);//OK crop good ***
 
                     //Bitmap bitmapCrop = Bitmap.createBitmap(bitmap, 0, 0, 2592, 1944);//OK but crop is shit
 
@@ -193,22 +206,9 @@ public class CanvasPhotoActivity extends AppCompatActivity {
 
                 Paint paint = paints[0];
 
-                /*
-                canvas.drawLine(left, top + LINE_LENGTH, left, top, paint);
-                canvas.drawLine(left, top, left + LINE_LENGTH, top, paint);
 
-                canvas.drawLine(right - LINE_LENGTH, top, right, top, paint);
-                canvas.drawLine(right, top, right, top + LINE_LENGTH, paint);
-+-
-                canvas.drawLine(right, bottom - LINE_LENGTH, right, bottom, paint);
-                canvas.drawLine(right, bottom, right - LINE_LENGTH, bottom, paint);
-
-                canvas.drawLine(left + LINE_LENGTH, bottom, left, bottom, paint);
-                canvas.drawLine(left, bottom, left, bottom - LINE_LENGTH, paint);
-                *
-                 */
-                rectangleImage = new Rect(100, 75, 600, 700);
-                canvas.drawRect(100, 75, 600, 700, paint);
+                //rectangleImage = new Rect(100, 75, 600, 700);
+                canvas.drawRect(100, 75, 600, 800, paint);
             }
         });
 
@@ -351,16 +351,48 @@ public class CanvasPhotoActivity extends AppCompatActivity {
         decorView.setSystemUiVisibility(uiOptions);
     }
 
-    /**
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        if (!(activity instanceof IScanner)) {
-            throw new ClassCastException("Activity must implement IScanner");
-        }
-        this.scanner = (IScanner) activity;
+    private final byte[] cropImage(Bitmap bitmap, View frame, View reference) {
+        int heightOriginal = frame.getHeight();
+        int widthOriginal = frame.getWidth();
+
+        int heightFrame = reference.getHeight();
+        int widthFrame = reference.getWidth();
+        int leftFrame = reference.getLeft();
+        int topFrame = reference.getTop();
+
+        int heightReal = bitmap.getHeight();
+        int widthReal = bitmap.getWidth();
+
+        int widthFinal = widthFrame * widthReal / widthOriginal;
+        int heightFinal = heightFrame * heightReal / heightOriginal;
+        int leftFinal = leftFrame * widthReal / widthOriginal;
+        int topFinal = topFrame * heightReal / heightOriginal;
+
+        Matrix matrix = new Matrix();
+        matrix.postRotate(90);
+
+        Log.i(TAG, "bitmap.getHeight() " + bitmap.getHeight());
+        Log.i(TAG, "bitmap.getWidth() " + bitmap.getWidth());
+
+        Log.i(TAG, "leftFinal " + leftFinal);
+        Log.i(TAG, "topFinal " + topFinal);
+        Log.i(TAG, "widthFinal " + widthFinal);
+        Log.i(TAG, "heightFinal " + heightFinal);
+
+
+        Bitmap bitmapFinal = null;
+        bitmapFinal = Bitmap.createBitmap(bitmap, leftFinal, topFinal, widthFinal, heightFinal, matrix, true);
+
+        //bitmapFinal =Bitmap.createScaledBitmap(bitmap, (int)(bitmap.getWidth()*0.8), (int)(bitmap.getHeight()*0.8), true);
+
+        createImageCropFile(bitmapFinal);
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmapFinal.compress(Bitmap.CompressFormat.JPEG, 100, (OutputStream)stream);
+        byte[] var10000 = stream.toByteArray();
+
+        return var10000;
     }
-    */
 
 
     private File clearTempImages() {

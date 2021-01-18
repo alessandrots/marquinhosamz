@@ -207,7 +207,9 @@ public class Camera2Photographer implements InternalPhotographer {
         preview.addCallback(new CameraView.Callback() {
             @Override
             public void onSingleTap(MotionEvent e) {
-                focusAt(e);
+                //COMENTADO TEMPORARIAMENTE TODO 19/01/21
+                //para não mostrar o retângulo da CameraViewOverlay (Canvas)
+                //focusAt(e);
             }
 
             @Override

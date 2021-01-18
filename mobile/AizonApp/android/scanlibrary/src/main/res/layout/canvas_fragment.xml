@@ -5,8 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    tools:context="com.scanlibrary.CanvasPhotoFragment">
-
+    tools:context="com.scanlibrary.CanvasPhotoActivity">
 
     <top.defaults.camera.CameraView
         android:id="@+id/preview"
@@ -22,7 +21,33 @@
         app:pinchToZoom="false"
         app:showFocusIndicator="true" />
 
+    <RelativeLayout
+        android:id="@+id/rl_rectangle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="250dp"
+        android:layout_marginLeft="30dp">
 
+        <!--
+         3fffffff
+        <ImageButton
+            android:id="@+id/tstaction"
+            android:layout_width="wrap_content"
+            android:layout_height="64dp"
+            android:layout_centerInParent="true"
+            android:padding="16dp"
+            android:background="?android:selectableItemBackground"/>
+        -->
+        <View
+            android:id="@+id/rectangle"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:layout_margin="16dp"
+            android:background="@drawable/rectangle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/actions_layout"
@@ -43,11 +68,14 @@
             android:id="@+id/flip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="224dp"
+            android:background="?android:selectableItemBackground"
             android:padding="16dp"
-            android:src="@drawable/ic_switch_camera"
-            android:background="?android:selectableItemBackground"/>
+            android:src="@drawable/ic_switch_camera" />
 
     </RelativeLayout>
+
+
+
+
 </RelativeLayout>
