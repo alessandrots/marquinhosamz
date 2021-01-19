@@ -3,6 +3,9 @@ package com.aizonapp;
 import android.app.Application;
 import android.content.Context;
 
+import androidx.camera.camera2.Camera2Config;
+import androidx.camera.core.CameraXConfig;
+
 import com.facebook.react.BuildConfig;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
@@ -14,7 +17,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import com.amazonlibrary.RNOpenCvLibraryPackage;
 
-public class MainApplication extends Application implements ReactApplication {
+public class MainApplication extends Application implements ReactApplication, CameraXConfig.Provider {
 
     private final ReactNativeHost mReactNativeHost =
             new ReactNativeHost(this) {
@@ -50,6 +53,10 @@ public class MainApplication extends Application implements ReactApplication {
         super.onCreate();
         SoLoader.init(this, /* native exopackage */ false);
         initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
+    }
+    @Override
+    public CameraXConfig getCameraXConfig() {
+        return Camera2Config.defaultConfig();
     }
 
     /**

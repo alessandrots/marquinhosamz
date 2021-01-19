@@ -19,6 +19,8 @@ import android.widget.Toast;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
+import com.rifafauzi.customcamera.ui.camera.CameraFragment;
+import com.rifafauzi.customcamera.ui.main.MainActivity;
 
 import org.json.JSONObject;
 
@@ -75,8 +77,12 @@ public class ScanActivity extends Activity implements IScanner, ComponentCallbac
         super.onCreate(savedInstanceState);
         AndroidNetworking.initialize(getApplicationContext());
         setContentView(R.layout.scan_layout);
+
         //init();
-        startCanvasActivity();
+
+        //startCanvasActivity();
+
+        initCameraRifaFauzi();
     }
 
     /**
@@ -101,6 +107,27 @@ public class ScanActivity extends Activity implements IScanner, ComponentCallbac
         fragmentTransaction.commit();
     }
     */
+
+    private void initCameraRifaFauzi() {
+        Intent intent = new Intent(this, MainActivity.class);
+
+        this.getDataFromIntent(ScanConstants.ID_PROCESS_SCAN_IMAGE, 0);
+        this.getDataFromIntent(ScanConstants.IMAGE_TYPE_SCAN_IMAGE, 1);
+
+        Bundle bundle = new Bundle();
+
+        bundle.putString(ScanConstants.ID_PROCESS_SCAN_IMAGE, this.idProcesso);
+        bundle.putString(ScanConstants.IMAGE_TYPE_SCAN_IMAGE, Integer.toString(this.tipoImagem));
+        bundle.putInt(ScanConstants.OPEN_INTENT_PREFERENCE, getPreferenceContent());
+
+        intent.putExtras(bundle);
+
+        //EditText editText = (EditText) findViewById(R.id.editText);
+        //String message = editText.getText().toString();
+        //intent.putExtra(EXTRA_MESSAGE, message);
+        //startActivity(intent);
+        startActivityForResult(intent, 2);
+    }
 
     public void startCanvasActivity() {
         Intent intent = new Intent(this, CanvasPhotoActivity.class);
