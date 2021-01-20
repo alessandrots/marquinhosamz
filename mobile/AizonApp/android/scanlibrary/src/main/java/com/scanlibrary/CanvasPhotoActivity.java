@@ -111,7 +111,7 @@ public class CanvasPhotoActivity extends AppCompatActivity {
         closeButton = findViewById(R.id.flip);
         //scanner = ((IScanner)this.getParent());
 
-        rectangle = findViewById(R.id.rectangle);
+        //rectangle = findViewById(R.id.rectangle);
 
         actionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -149,7 +149,7 @@ public class CanvasPhotoActivity extends AppCompatActivity {
 
                     Bitmap resized =Bitmap.createScaledBitmap(bitmap, (int)(bitmap.getWidth()*0.8), (int)(bitmap.getHeight()*0.8), true);
 
-                    cropImage(resized, preview, rectangle );
+                    //cropImage(resized, preview, rectangle );
 
                     //Bitmap bitmapCrop = Bitmap.createBitmap(bitmap, 250, 400, rectangleImage.width(), rectangleImage.height());//NOK
 

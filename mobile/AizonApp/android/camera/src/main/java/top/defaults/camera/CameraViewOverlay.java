@@ -58,7 +58,7 @@ class CameraViewOverlay extends SurfaceView {
                     Log.i(TAG, "getSurface surfaceChanged   " );
 
                     //Para desenhar o retângulo
-                    //focusRequestAt(300, 350);
+                    focusRequestAt(300, 350);
                 }
             }
 

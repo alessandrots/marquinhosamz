@@ -124,6 +124,34 @@ public class RNOpenCvLibraryModule extends ReactContextBaseJavaModule  implement
             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             i.putExtra(ScanConstants.OPEN_INTENT_PREFERENCE, preference);
 
+            i.putExtra(ScanConstants.CHOICE_CANVAS_ACTIVITY, "true");
+
+            i.putExtra(ScanConstants.ID_PROCESS_SCAN_IMAGE, idProcesso);
+            i.putExtra(ScanConstants.IMAGE_TYPE_SCAN_IMAGE, Integer.toString(tipoImagem));
+
+            this.reactContext.startActivity(i);
+            promise.resolve(idProcesso);
+
+            sc.startActivityForResult(i, 1);
+            mPromises.put(1, promise);
+
+        } catch (Exception e) {
+            promise.reject(E_LAYOUT_ERROR, e);
+        }
+    }
+
+    @ReactMethod
+    public void scanImageCameraXCrop(String idProcesso, int tipoImagem, Promise promise) {
+        try {
+            int preference = ScanConstants.OPEN_CAMERA;
+
+            ScanActivity sc = new ScanActivity(RNOpenCvLibraryModule.this);
+            Intent i = new Intent(this.reactContext, sc.getClass());
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            i.putExtra(ScanConstants.OPEN_INTENT_PREFERENCE, preference);
+
+            i.putExtra(ScanConstants.CHOICE_CANVAS_ACTIVITY, "false");
+
             i.putExtra(ScanConstants.ID_PROCESS_SCAN_IMAGE, idProcesso);
             i.putExtra(ScanConstants.IMAGE_TYPE_SCAN_IMAGE, Integer.toString(tipoImagem));
 

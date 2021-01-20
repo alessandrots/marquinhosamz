@@ -46,6 +46,7 @@ public class ScanActivity extends Activity implements IScanner, ComponentCallbac
     private String idProcesso;
     private Integer tipoImagem;
     private String pathImageOrigin;
+    private boolean escolhaCanvasActivity;
 
     private float x1 = 0;
     private float x2 = 0;
@@ -78,11 +79,15 @@ public class ScanActivity extends Activity implements IScanner, ComponentCallbac
         AndroidNetworking.initialize(getApplicationContext());
         setContentView(R.layout.scan_layout);
 
+        this.getDataFromIntent(ScanConstants.CHOICE_CANVAS_ACTIVITY, 2);
+
         //init();
 
-        //startCanvasActivity();
-
-        initCameraRifaFauzi();
+        if (escolhaCanvasActivity) {
+            startCanvasActivity();
+        } else {
+            initCameraRifaFauzi();
+        }
     }
 
     /**
@@ -226,6 +231,9 @@ public class ScanActivity extends Activity implements IScanner, ComponentCallbac
                     break;
                 case 1:
                     this.tipoImagem = Integer.parseInt(tmp);
+                    break;
+                case 2:
+                    this.escolhaCanvasActivity = Boolean.parseBoolean(tmp);
                     break;
             }
         }

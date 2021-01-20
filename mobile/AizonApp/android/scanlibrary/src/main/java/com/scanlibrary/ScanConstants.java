@@ -31,6 +31,8 @@ public class ScanConstants {
     public final static String IMAGE_TYPE_SCAN_IMAGE   = "imageType";
     public final static String PATH_ABSOLUTE_IMAGE_ORIGIN  = "pathAbsoluteIMAGE";
 
+    public final static String CHOICE_CANVAS_ACTIVITY   = "ESCOLHA_CANVAS_ACTIVITY";
+
     public final static String FILE_IMAGE_PHOTO_PATH_ABSOLUTE  = "fileImagePhotoPath";
 
 }

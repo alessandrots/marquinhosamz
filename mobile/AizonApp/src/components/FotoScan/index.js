@@ -46,7 +46,7 @@ export default function FotoScan(props) {
     console.log('AIZONApp_ FotoScan props = ', props);
 
     if (props?.idProcesso) {
-      alertMessage( 'Gerado do ID de controle ' + props.idProcesso, null, null, 'AIZON-IMAGE')
+      //alertMessage( 'Gerado do ID de controle ' + props.idProcesso, null, null, 'AIZON-IMAGE')
       storageStatusProcessingImage(1);
       setIdProcess(props.idProcesso);
       let urls = new Array();
@@ -79,11 +79,10 @@ export default function FotoScan(props) {
 
 
   function scanner(tipoImagem) {
-    console.log('AIZONApp_FotoScan_scanner');
-
-    //scanImage('scanner');
     scanImageForProcess(tipoImagem);
   }
+
+  
 
   /**
     let promise = new Promise(function(resolve, reject) {
@@ -94,9 +93,25 @@ export default function FotoScan(props) {
     try {
       const response = await OpenCV.scanImageForProcess(idProcess, tipoImagem);
 
-      console.log('\n\n AIZONApp_ response = ', response);
-
       let msg = "scanImageForProcess";
+
+      postScanner(tipoImagem);
+
+      alertMessage( msg, null, null, 'AIZON-IMAGE');
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  function scannerCanvas(tipoImagem) {
+    scanImageCameraXCrop(tipoImagem);
+  }
+
+  async function scanImageCameraXCrop(tipoImagem) {
+    try {
+      const response = await OpenCV.scanImageCameraXCrop(idProcess, tipoImagem);
+
+      let msg = "scanImageCameraXCrop";
 
       postScanner(tipoImagem);
 
@@ -135,8 +150,6 @@ export default function FotoScan(props) {
             setImageVerso(dataF);
             showImageVerso(dataF);
           }
-
-           console.log('\n\n AIZONApp_ clearTimeout');
            clearTimeout(myVar);
          }
 
@@ -175,13 +188,13 @@ export default function FotoScan(props) {
    *  4- http://45.4.186.2:5000//image/pdf_process_certify2/{{id}}
    */
   function executePromisePipeline(contador) {
-    console.log('AIZONApp_ Contador = ' + contador.toString() );
+    //console.log('AIZONApp_ Contador = ' + contador.toString() );
 
     new Promise((resolve, reject) => {
       let retorno = processSequencePipeline(urlsPipeline[contador]);
 
       if (retorno) {
-        console.log('AIZONApp_ Sucesso na execução do pipeline. Fluxo : ', urlsPipeline[contador]);
+        //console.log('AIZONApp_ Sucesso na execução do pipeline. Fluxo : ', urlsPipeline[contador]);
         contador++;
         resolve(true);
       } else {
@@ -190,7 +203,7 @@ export default function FotoScan(props) {
     })
     .then((ret) => {
       if (ret && (contador < urlsPipeline.length())) {
-        console.log('AIZONApp_ resolve true execute again ');
+        //console.log('AIZONApp_ resolve true execute again ');
         executePromisePipeline(contador);
       } else {
          setLoading(false);
@@ -207,7 +220,7 @@ export default function FotoScan(props) {
     .catch((err) => {
       setLoading(false);
       storageStatusProcessingImage(4);
-      console.log('AIZONApp_ Erro na execução do pipeline. Fluxo : ', urlsPipeline[contador]);
+      //console.log('AIZONApp_ Erro na execução do pipeline. Fluxo : ', urlsPipeline[contador]);
       alertMessage( 'Houve erro no processamento das imagens', null, null, 'AIZON-PROCESS');
     })
   }
@@ -256,7 +269,6 @@ export default function FotoScan(props) {
     if (!resposta.isErro) {
       let data = res.data;
 
-      //console.log('AIZONApp_ FotoScan classification data = ', data);
       console.log('AIZONApp_ FotoScan classification SUCESS');
 
       preProcessImage();
@@ -276,7 +288,6 @@ export default function FotoScan(props) {
     if (!resposta.isErro) {
       let data = res.data;
 
-      //console.log('AIZONApp_ FotoScan preProcessImage data = ', data);
       console.log('AIZONApp_ FotoScan preProcessImage SUCESS');
 
       dataExtract();
@@ -296,7 +307,6 @@ export default function FotoScan(props) {
     if (!resposta.isErro) {
       let data = res.data;
 
-      //console.log('AIZONApp_ FotoScan data_extract2 data = ', data);
       console.log('AIZONApp_ FotoScan data_extract2 SUCESS');
 
       dataValidate();
@@ -316,7 +326,6 @@ export default function FotoScan(props) {
     if (!resposta.isErro) {
       let data = res.data;
 
-      //console.log('AIZONApp_ FotoScan dataValidate data = ', data);
       console.log('AIZONApp_ FotoScan dataValidate SUCESS');
 
       pdfProcessCertify();
@@ -368,12 +377,12 @@ export default function FotoScan(props) {
       if (images) {
         arrTmp = [...images];
         arrTmp.push(imgObjFrontal);
-        console.log('AIZONApp_ showImageFrontal if = ');
+        //console.log('AIZONApp_ showImageFrontal if = ');
         setImages(arrTmp);
         setIsVisibleList(true);
       } else {
         arrTmp.push(imgObjFrontal);
-        console.log('AIZONApp_ showImageFrontal else = ');
+        //console.log('AIZONApp_ showImageFrontal else = ');
         setImages(arrTmp);
         setIsVisibleList(true);
       }
@@ -492,7 +501,7 @@ export default function FotoScan(props) {
             <ContainerImageLeft>
               <ContainerDadosView>
                 <TitleText>Verso- {idProcess}: </TitleText>
-                  <SubmitButton onPress={ () =>scanner(1) }>
+                  <SubmitButton onPress={ () =>scannerCanvas(1) }>
                     <SubmitText>Foto</SubmitText>
                   </SubmitButton>
               </ContainerDadosView>
@@ -520,6 +529,7 @@ export default function FotoScan(props) {
                       />
                 )}
             </ContainerImageLeft>
+
 
             <ContainerImagens>
                 <SafeAreaView>

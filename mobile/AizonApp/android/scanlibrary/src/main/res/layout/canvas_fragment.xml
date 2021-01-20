@@ -21,6 +21,7 @@
         app:pinchToZoom="false"
         app:showFocusIndicator="true" />
 
+    <!--
     <RelativeLayout
         android:id="@+id/rl_rectangle"
         android:layout_width="wrap_content"
@@ -28,16 +29,7 @@
         android:layout_marginTop="250dp"
         android:layout_marginLeft="30dp">
 
-        <!--
-         3fffffff
-        <ImageButton
-            android:id="@+id/tstaction"
-            android:layout_width="wrap_content"
-            android:layout_height="64dp"
-            android:layout_centerInParent="true"
-            android:padding="16dp"
-            android:background="?android:selectableItemBackground"/>
-        -->
+
         <View
             android:id="@+id/rectangle"
             android:layout_width="match_parent"
@@ -48,6 +40,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </RelativeLayout>
+
+    -->
 
     <RelativeLayout
         android:id="@+id/actions_layout"
