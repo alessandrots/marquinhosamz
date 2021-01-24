@@ -37,6 +37,8 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.3.0-alpha02'
     implementation 'com.amitshekhar.android:android-networking:1.0.2'
 
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
+
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
 
     //implementation 'com.jakewharton:butterknife:8.8.1'
@@ -49,10 +51,25 @@ dependencies {
     implementation 'com.github.duanhong169:text-button:1.0.5'
     implementation 'com.github.bumptech.glide:glide:4.7.1'
 
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.7.1'
     //annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.0.0'
 
+
+    //
+    // navigation
+    //implementation "androidx.navigation:navigation-fragment-ktx:$navigationVersion"
+    //implementation "androidx.navigation:navigation-ui-ktx:$navigationVersion"
+
+    // cameraX
+    implementation "androidx.camera:camera-core:$cameraXVersion"
+    implementation "androidx.camera:camera-camera2:$cameraXVersion"
+    implementation "androidx.camera:camera-view:$cameraXViewVersion"
+
+    implementation "androidx.camera:camera-lifecycle:$cameraXLifecycleVersion"
+
+    //
     implementation project(path: ':camera')
     implementation project(path: ':cameraxcrop')
 }

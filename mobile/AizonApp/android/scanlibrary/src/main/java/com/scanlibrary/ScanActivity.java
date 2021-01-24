@@ -16,6 +16,8 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
@@ -38,7 +40,7 @@ import java.util.Set;
 /**
  * Created by jhansi on 28/03/15.
  */
-public class ScanActivity extends Activity implements IScanner, ComponentCallbacks2 {
+public class ScanActivity extends AppCompatActivity implements IScanner, ComponentCallbacks2 {
 
     private static final String TAG = "AIZONApp_ScanActivity";
 
@@ -86,7 +88,8 @@ public class ScanActivity extends Activity implements IScanner, ComponentCallbac
         if (escolhaCanvasActivity) {
             startCanvasActivity();
         } else {
-            initCameraRifaFauzi();
+            //initCameraRifaFauzi();
+            initCropFragment();
         }
     }
 
@@ -112,6 +115,27 @@ public class ScanActivity extends Activity implements IScanner, ComponentCallbac
         fragmentTransaction.commit();
     }
     */
+
+    private void initCropFragment() {
+        this.getDataFromIntent(ScanConstants.ID_PROCESS_SCAN_IMAGE, 0);
+        this.getDataFromIntent(ScanConstants.IMAGE_TYPE_SCAN_IMAGE, 1);
+
+        CameraCropFragment fragment = new CameraCropFragment();
+        Bundle bundle = new Bundle();
+
+        bundle.putString(ScanConstants.ID_PROCESS_SCAN_IMAGE, this.idProcesso);
+        bundle.putString(ScanConstants.IMAGE_TYPE_SCAN_IMAGE, Integer.toString(this.tipoImagem));
+        bundle.putInt(ScanConstants.OPEN_INTENT_PREFERENCE, getPreferenceContent());
+
+        fragment.setArguments(bundle);
+        androidx.fragment.app.FragmentManager fragmentManager = getSupportFragmentManager();
+        androidx.fragment.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.add(R.id.content, fragment);
+
+        //executeGet(null);
+        //executePost(null);
+        fragmentTransaction.commit();
+    }
 
     private void initCameraRifaFauzi() {
         Intent intent = new Intent(this, MainActivity.class);

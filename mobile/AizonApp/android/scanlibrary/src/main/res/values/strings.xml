@@ -36,4 +36,7 @@
     <string name="flash_auto">Auto</string>
     <string name="flash_on">On</string>
     <string name="flash_off">Off</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
