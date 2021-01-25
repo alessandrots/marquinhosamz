@@ -114,7 +114,7 @@ public class ScanActivity extends AppCompatActivity implements IScanner, Compone
         //executePost(null);
         fragmentTransaction.commit();
     }
-    */
+     */
 
     private void initCropFragment() {
         this.getDataFromIntent(ScanConstants.ID_PROCESS_SCAN_IMAGE, 0);
@@ -136,6 +136,8 @@ public class ScanActivity extends AppCompatActivity implements IScanner, Compone
         //executePost(null);
         fragmentTransaction.commit();
     }
+
+
 
     private void initCameraRifaFauzi() {
         Intent intent = new Intent(this, MainActivity.class);

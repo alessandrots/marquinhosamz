@@ -20,8 +20,12 @@ import android.content.Intent;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Base64;
 import android.util.SparseArray;
+
+import androidx.core.os.HandlerCompat;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -30,6 +34,8 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class RNOpenCvLibraryModule extends ReactContextBaseJavaModule  implements PassDataInterface, ActivityEventListener {
 
@@ -39,11 +45,18 @@ public class RNOpenCvLibraryModule extends ReactContextBaseJavaModule  implement
 
     private static final String E_LAYOUT_ERROR = "E_LAYOUT_ERROR";
 
+    private ExecutorService executorService;
+    private Handler mainThreadHandler;
+
     public RNOpenCvLibraryModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
         this.reactContext.addActivityEventListener(this);
         mPromises = new SparseArray<>();
+
+        //ExecutorService executorService = Executors.newFixedThreadPool(4);
+        //Handler mainThreadHandler = HandlerCompat.createAsync(Looper.getMainLooper());
+        //mainThreadHandler.
     }
 
     @Override
@@ -115,55 +128,76 @@ public class RNOpenCvLibraryModule extends ReactContextBaseJavaModule  implement
 
     @ReactMethod
     public void scanImageForProcess(String idProcesso, int tipoImagem, Promise promise) {
-        try {
-            int preference = ScanConstants.OPEN_CAMERA;
+        ReactApplicationContext reactContextPvt = this.reactContext;
+        new Handler(Looper.getMainLooper()).post(
+                new Runnable() {
+                    public void run() {
+                        try {
+                            int preference = ScanConstants.OPEN_CAMERA;
 
-            ScanActivity sc = new ScanActivity(RNOpenCvLibraryModule.this);
-            //Intent i = new Intent(this.reactContext, ScanActivity.class);
-            Intent i = new Intent(this.reactContext, sc.getClass());
-            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            i.putExtra(ScanConstants.OPEN_INTENT_PREFERENCE, preference);
+                            ScanActivity sc = new ScanActivity(RNOpenCvLibraryModule.this);
+                            //Intent i = new Intent(this.reactContext, ScanActivity.class);
+                            Intent i = new Intent(reactContextPvt, sc.getClass());
+                            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            i.putExtra(ScanConstants.OPEN_INTENT_PREFERENCE, preference);
 
-            i.putExtra(ScanConstants.CHOICE_CANVAS_ACTIVITY, "true");
+                            i.putExtra(ScanConstants.CHOICE_CANVAS_ACTIVITY, "true");
 
-            i.putExtra(ScanConstants.ID_PROCESS_SCAN_IMAGE, idProcesso);
-            i.putExtra(ScanConstants.IMAGE_TYPE_SCAN_IMAGE, Integer.toString(tipoImagem));
+                            i.putExtra(ScanConstants.ID_PROCESS_SCAN_IMAGE, idProcesso);
+                            i.putExtra(ScanConstants.IMAGE_TYPE_SCAN_IMAGE, Integer.toString(tipoImagem));
 
-            this.reactContext.startActivity(i);
-            promise.resolve(idProcesso);
+                            reactContextPvt.startActivity(i);
+                            promise.resolve(idProcesso);
 
-            sc.startActivityForResult(i, 1);
-            mPromises.put(1, promise);
+                            sc.startActivityForResult(i, 1);
+                            mPromises.put(1, promise);
 
-        } catch (Exception e) {
-            promise.reject(E_LAYOUT_ERROR, e);
-        }
+                        } catch (Exception e) {
+                            promise.reject(E_LAYOUT_ERROR, e);
+                        }
+                    }
+                }
+        );
+
+
     }
 
     @ReactMethod
     public void scanImageCameraXCrop(String idProcesso, int tipoImagem, Promise promise) {
-        try {
-            int preference = ScanConstants.OPEN_CAMERA;
+        ReactApplicationContext reactContextPvt = this.reactContext;
 
-            ScanActivity sc = new ScanActivity(RNOpenCvLibraryModule.this);
-            Intent i = new Intent(this.reactContext, sc.getClass());
-            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            i.putExtra(ScanConstants.OPEN_INTENT_PREFERENCE, preference);
+        //https://stackoverflow.com/questions/3875184/cant-create-handler-inside-thread-that-has-not-called-looper-prepare
+        //https://developer.android.com/guide/background/threading
 
-            i.putExtra(ScanConstants.CHOICE_CANVAS_ACTIVITY, "false");
+        new Handler(Looper.getMainLooper()).post(
+                new Runnable() {
+                    public void run() {
+                        try {
+                            int preference = ScanConstants.OPEN_CAMERA;
 
-            i.putExtra(ScanConstants.ID_PROCESS_SCAN_IMAGE, idProcesso);
-            i.putExtra(ScanConstants.IMAGE_TYPE_SCAN_IMAGE, Integer.toString(tipoImagem));
+                            ScanActivity sc = new ScanActivity(RNOpenCvLibraryModule.this);
+                            Intent i = new Intent(reactContextPvt, sc.getClass());
+                            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            i.putExtra(ScanConstants.OPEN_INTENT_PREFERENCE, preference);
 
-            this.reactContext.startActivity(i);
-            promise.resolve(idProcesso);
+                            i.putExtra(ScanConstants.CHOICE_CANVAS_ACTIVITY, "false");
 
-            sc.startActivityForResult(i, 1);
-            mPromises.put(1, promise);
+                            i.putExtra(ScanConstants.ID_PROCESS_SCAN_IMAGE, idProcesso);
+                            i.putExtra(ScanConstants.IMAGE_TYPE_SCAN_IMAGE, Integer.toString(tipoImagem));
 
-        } catch (Exception e) {
-            promise.reject(E_LAYOUT_ERROR, e);
-        }
+                            reactContextPvt.startActivity(i);
+                            promise.resolve(idProcesso);
+
+                            sc.startActivityForResult(i, 1);
+                            mPromises.put(1, promise);
+
+                        } catch (Exception e) {
+                            promise.reject(E_LAYOUT_ERROR, e);
+                        }
+                    }
+                }
+        );
+
     }
 
     @Override
