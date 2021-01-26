@@ -83,38 +83,8 @@ public class ScanActivity extends AppCompatActivity implements IScanner, Compone
 
         this.getDataFromIntent(ScanConstants.CHOICE_CANVAS_ACTIVITY, 2);
 
-        //init();
-
-        if (escolhaCanvasActivity) {
-            startCanvasActivity();
-        } else {
-            //initCameraRifaFauzi();
-            initCropFragment();
-        }
+        initCropFragment();
     }
-
-    /**
-    private void init() {
-        this.getDataFromIntent(ScanConstants.ID_PROCESS_SCAN_IMAGE, 0);
-        this.getDataFromIntent(ScanConstants.IMAGE_TYPE_SCAN_IMAGE, 1);
-
-        PickImageFragment fragment = new PickImageFragment();
-        Bundle bundle = new Bundle();
-
-        bundle.putString(ScanConstants.ID_PROCESS_SCAN_IMAGE, this.idProcesso);
-        bundle.putString(ScanConstants.IMAGE_TYPE_SCAN_IMAGE, Integer.toString(this.tipoImagem));
-        bundle.putInt(ScanConstants.OPEN_INTENT_PREFERENCE, getPreferenceContent());
-
-        fragment.setArguments(bundle);
-        android.app.FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.content, fragment);
-
-        //executeGet(null);
-        //executePost(null);
-        fragmentTransaction.commit();
-    }
-     */
 
     private void initCropFragment() {
         this.getDataFromIntent(ScanConstants.ID_PROCESS_SCAN_IMAGE, 0);
@@ -132,34 +102,10 @@ public class ScanActivity extends AppCompatActivity implements IScanner, Compone
         androidx.fragment.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.content, fragment);
 
-        //executeGet(null);
-        //executePost(null);
         fragmentTransaction.commit();
     }
 
-
-
-    private void initCameraRifaFauzi() {
-        Intent intent = new Intent(this, MainActivity.class);
-
-        this.getDataFromIntent(ScanConstants.ID_PROCESS_SCAN_IMAGE, 0);
-        this.getDataFromIntent(ScanConstants.IMAGE_TYPE_SCAN_IMAGE, 1);
-
-        Bundle bundle = new Bundle();
-
-        bundle.putString(ScanConstants.ID_PROCESS_SCAN_IMAGE, this.idProcesso);
-        bundle.putString(ScanConstants.IMAGE_TYPE_SCAN_IMAGE, Integer.toString(this.tipoImagem));
-        bundle.putInt(ScanConstants.OPEN_INTENT_PREFERENCE, getPreferenceContent());
-
-        intent.putExtras(bundle);
-
-        //EditText editText = (EditText) findViewById(R.id.editText);
-        //String message = editText.getText().toString();
-        //intent.putExtra(EXTRA_MESSAGE, message);
-        //startActivity(intent);
-        startActivityForResult(intent, 2);
-    }
-
+    /**
     public void startCanvasActivity() {
         Intent intent = new Intent(this, CanvasPhotoActivity.class);
 
@@ -181,6 +127,27 @@ public class ScanActivity extends AppCompatActivity implements IScanner, Compone
         startActivityForResult(intent, 2);
     }
 
+     private void initPickFragment() {
+         this.getDataFromIntent(ScanConstants.ID_PROCESS_SCAN_IMAGE, 0);
+         this.getDataFromIntent(ScanConstants.IMAGE_TYPE_SCAN_IMAGE, 1);
+
+         PickImageFragment fragment = new PickImageFragment();
+         Bundle bundle = new Bundle();
+
+         bundle.putString(ScanConstants.ID_PROCESS_SCAN_IMAGE, this.idProcesso);
+         bundle.putString(ScanConstants.IMAGE_TYPE_SCAN_IMAGE, Integer.toString(this.tipoImagem));
+         bundle.putInt(ScanConstants.OPEN_INTENT_PREFERENCE, getPreferenceContent());
+
+         fragment.setArguments(bundle);
+         android.app.FragmentManager fragmentManager = getFragmentManager();
+         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+         fragmentTransaction.add(R.id.content, fragment);
+
+         fragmentTransaction.commit();
+     }
+
+     */
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -197,8 +164,6 @@ public class ScanActivity extends AppCompatActivity implements IScanner, Compone
                     Uri fileUri = Uri.fromFile(fileImageOrigin);
 
                     bitmap = Utils.getBitmap(this, fileUri);
-
-                    //bitmap = getBitmap(fileUri);
 
                     Uri uri = Utils.getUri(this, bitmap);
 
@@ -219,31 +184,9 @@ public class ScanActivity extends AppCompatActivity implements IScanner, Compone
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = 3;
 
-        //Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), selectedimg);
         Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedimg);
 
         return bitmap;
-    }
-
-    private void initPickFragment() {
-        this.getDataFromIntent(ScanConstants.ID_PROCESS_SCAN_IMAGE, 0);
-        this.getDataFromIntent(ScanConstants.IMAGE_TYPE_SCAN_IMAGE, 1);
-
-        PickImageFragment fragment = new PickImageFragment();
-        Bundle bundle = new Bundle();
-
-        bundle.putString(ScanConstants.ID_PROCESS_SCAN_IMAGE, this.idProcesso);
-        bundle.putString(ScanConstants.IMAGE_TYPE_SCAN_IMAGE, Integer.toString(this.tipoImagem));
-        bundle.putInt(ScanConstants.OPEN_INTENT_PREFERENCE, getPreferenceContent());
-
-        fragment.setArguments(bundle);
-        android.app.FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.content, fragment);
-
-        //executeGet(null);
-        //executePost(null);
-        fragmentTransaction.commit();
     }
 
     private void getDataFromIntent(String constante, int escolha) {

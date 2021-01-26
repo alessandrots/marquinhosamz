@@ -96,12 +96,9 @@ public class CameraCropFragment extends Fragment {
 
     private static final String TAG = "AIZONApp_CameraCropFrag";
 
-
     private View rectangle;
     private ListenableFuture processCameraProviderFuture;
     private ProcessCameraProvider processCameraProvider;
-    private static final String IMAGE_DIRECTORY = "/CustomImage";
-    //public static final CameraFragment.Companion Companion = new CameraFragment.Companion((DefaultConstructorMarker)null);
     private HashMap _$_findViewCache;
 
     @Override
@@ -116,13 +113,11 @@ public class CameraCropFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ListenableFuture var10001 = ProcessCameraProvider.getInstance(this.requireContext());
-        //Intrinsics.checkExpressionValueIsNotNull(var10001, "ProcessCameraProvider.ge…nstance(requireContext())");
         this.processCameraProviderFuture = var10001;
     }
 
     @Nullable
     public View onCreateView(@NotNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        //Intrinsics.checkParameterIsNotNull(inflater, "inflater");
         init();
         return inflater.inflate(R.layout.fragment_camera_crop, container, false);
     }
@@ -133,15 +128,12 @@ public class CameraCropFragment extends Fragment {
     }
 
     public void onViewCreated(@NotNull View view, @Nullable Bundle savedInstanceState) {
-        //Intrinsics.checkParameterIsNotNull(view, "view");
+
         super.onViewCreated(view, savedInstanceState);
         View var10001 = view.findViewById(R.id.rectangle);
-        //Intrinsics.checkExpressionValueIsNotNull(var10001, "view.findViewById(R.id.rectangle)");
+
         this.rectangle = var10001;
         ListenableFuture var10000 = this.processCameraProviderFuture;
-        if (var10000 == null) {
-            //Intrinsics.throwUninitializedPropertyAccessException("processCameraProviderFuture");
-        }
 
         var10000.addListener((Runnable)(new Runnable() {
             public final void run() {
@@ -156,7 +148,6 @@ public class CameraCropFragment extends Fragment {
                     e.printStackTrace();
                 }
 
-                //Intrinsics.checkExpressionValueIsNotNull(var10001, "processCameraProviderFuture.get()");
                 var10000.processCameraProvider = (ProcessCameraProvider)var10001;
                 ((PreviewView)CameraCropFragment.this._$_findCachedViewById(R.id.viewFinder)).post((Runnable)(new Runnable() {
                     public final void run() {
@@ -167,14 +158,10 @@ public class CameraCropFragment extends Fragment {
         }), ContextCompat.getMainExecutor(this.requireContext()));
     }
 
-
     public void onDestroyView() {
         super.onDestroyView();
         if (((CameraCropFragment)this).processCameraProvider != null) {
             ProcessCameraProvider var10000 = this.processCameraProvider;
-            if (var10000 == null) {
-                //Intrinsics.throwUninitializedPropertyAccessException("processCameraProvider");
-            }
 
             var10000.unbindAll();
         }
@@ -184,27 +171,19 @@ public class CameraCropFragment extends Fragment {
 
     private final void setupCamera() {
         ProcessCameraProvider var10000 = this.processCameraProvider;
-        if (var10000 == null) {
-            //Intrinsics.throwUninitializedPropertyAccessException("processCameraProvider");
-        }
 
         var10000.unbindAll();
         var10000 = this.processCameraProvider;
-        if (var10000 == null) {
-            //Intrinsics.throwUninitializedPropertyAccessException("processCameraProvider");
-        }
 
         Camera var2 = var10000.bindToLifecycle((LifecycleOwner)this, CameraSelector.DEFAULT_BACK_CAMERA, new UseCase[]{(UseCase)this.buildPreviewUseCase(), (UseCase)this.buildImageCaptureUseCase(), (UseCase)this.buildImageAnalysisUseCase()});
-        //Intrinsics.checkExpressionValueIsNotNull(var2, "processCameraProvider.bi…ldImageAnalysisUseCase())");
         Camera camera = var2;
         CameraControl var10001 = camera.getCameraControl();
-        //Intrinsics.checkExpressionValueIsNotNull(var10001, "camera.cameraControl");
         this.setupTapForFocus(var10001);
     }
 
     private final Preview buildPreviewUseCase() {
         PreviewView var10000 = (PreviewView)this._$_findCachedViewById(R.id.viewFinder);
-        //Intrinsics.checkExpressionValueIsNotNull(var10000, "viewFinder");
+
         Display display = var10000.getDisplay();
         DisplayMetrics var3 = new DisplayMetrics();
         boolean var4 = false;
@@ -212,17 +191,17 @@ public class CameraCropFragment extends Fragment {
         boolean var7 = false;
         display.getMetrics(var3);
         Builder var10 = new Builder();
-        //Intrinsics.checkExpressionValueIsNotNull(display, "display");
+
         Preview var9 = var10.setTargetRotation(display.getRotation()).setTargetResolution(new Size(var3.widthPixels, var3.heightPixels)).build();
         var5 = false;
         boolean var6 = false;
         boolean var8 = false;
         PreviewView var10001 = (PreviewView)this._$_findCachedViewById(R.id.viewFinder);
-        //Intrinsics.checkExpressionValueIsNotNull(var10001, "viewFinder");
+
         var9.setPreviewSurfaceProvider(var10001.getPreviewSurfaceProvider());
-        //Intrinsics.checkExpressionValueIsNotNull(var9, "Preview.Builder()\n      …aceProvider\n            }");
+
         var10001 = (PreviewView)this._$_findCachedViewById(R.id.viewFinder);
-        //Intrinsics.checkExpressionValueIsNotNull(var10001, "viewFinder");
+
         var9.setPreviewSurfaceProvider(var10001.getPreviewSurfaceProvider());
         return var9;
     }
@@ -235,14 +214,9 @@ public class CameraCropFragment extends Fragment {
 
         if (path == null) {
             path = getActivity().getBaseContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-            //Log.i(TAG, "path = " + path.getPath());
         }
 
-        //File fileImageOrigin = new File(path,  "ORIGINAL_" + timeStamp + ".jpg");
         File fileImageOrigin = new File(path,  "ORIGINAL" + ".jpg");
-
-        //Log.i(TAG, "file1 = " + fileImageOrigin.getPath());
-        //this.pictureImagePath = fileImageOrigin.getAbsolutePath();
 
         try {
             FileOutputStream outputStream = new FileOutputStream(fileImageOrigin);
@@ -274,10 +248,6 @@ public class CameraCropFragment extends Fragment {
                 tempFolder.mkdirs();
             }
 
-            //for (File f : tempFolder.listFiles()){
-            //f.delete();
-            //}
-
             return tempFolder;
         } catch (Exception e) {
             e.printStackTrace();
@@ -299,7 +269,6 @@ public class CameraCropFragment extends Fragment {
 
     private final ImageCapture buildImageCaptureUseCase() {
         PreviewView var10000 = (PreviewView)this._$_findCachedViewById(R.id.viewFinder);
-        //Intrinsics.checkExpressionValueIsNotNull(var10000, "viewFinder");
         Display display = var10000.getDisplay();
         DisplayMetrics var3 = new DisplayMetrics();
         boolean var4 = false;
@@ -310,13 +279,10 @@ public class CameraCropFragment extends Fragment {
 
         androidx.camera.core.ImageCapture.Builder var10 = new androidx.camera.core.ImageCapture.Builder();
 
-        //Intrinsics.checkExpressionValueIsNotNull(display, "display");
-
         ImageCapture var11 = var10.setTargetRotation(display.getRotation())
                 .setTargetResolution(new Size(var3.widthPixels, var3.heightPixels))
                 .setFlashMode(ImageCapture.FLASH_MODE_AUTO)
                 .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY).build();
-        //Intrinsics.checkExpressionValueIsNotNull(var11, "ImageCapture.Builder()\n …ITY)\n            .build()");
         final ImageCapture capture = var11;
 
         final ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -333,13 +299,9 @@ public class CameraCropFragment extends Fragment {
                         var10000 = CameraCropFragment.this;
 
                         PreviewView var10002 = (PreviewView)CameraCropFragment.this._$_findCachedViewById(R.id.viewFinder);
-                        //Intrinsics.checkExpressionValueIsNotNull(var10002, "viewFinder");
+
                         byte[] croppedImage = var10000.cropImage(rotatedBitmap, (View)var10002, CameraCropFragment.access$getRectangle$p(CameraCropFragment.this));
 
-                        //if (bitmapCrop != null) {
-                        //    createImageCropFile(bitmapCrop);
-                        //}
-                        //CameraCropFragment.this.saveImage(croppedImage);
                         String pathImageCrop = CameraCropFragment.this.saveImageORIGINAL(croppedImage);
                         pictureImagePath = pathImageCrop;
 
@@ -351,7 +313,6 @@ public class CameraCropFragment extends Fragment {
                     }
 
                     public void onError(int imageCaptureError, @NotNull String message, @Nullable Throwable cause) {
-                        //Intrinsics.checkParameterIsNotNull(message, "message");
                         Toast.makeText(CameraCropFragment.this.requireContext(), (CharSequence)("Error: " + message), Toast.LENGTH_LONG).show();
                         Log.e("CameraFragment", "Capture error " + imageCaptureError + ": " + message, cause);
                     }
@@ -364,7 +325,7 @@ public class CameraCropFragment extends Fragment {
 
     private final ImageAnalysis buildImageAnalysisUseCase() {
         PreviewView var10000 = (PreviewView)this._$_findCachedViewById(R.id.viewFinder);
-        //Intrinsics.checkExpressionValueIsNotNull(var10000, "viewFinder");
+
         Display display = var10000.getDisplay();
         DisplayMetrics var3 = new DisplayMetrics();
         boolean var4 = false;
@@ -372,9 +333,9 @@ public class CameraCropFragment extends Fragment {
         boolean var7 = false;
         display.getMetrics(var3);
         androidx.camera.core.ImageAnalysis.Builder var9 = new androidx.camera.core.ImageAnalysis.Builder();
-        //Intrinsics.checkExpressionValueIsNotNull(display, "display");
+
         ImageAnalysis var10 = var9.setTargetRotation(display.getRotation()).setTargetResolution(new Size(var3.widthPixels, var3.heightPixels)).setBackpressureStrategy(1).setImageQueueDepth(10).build();
-        //Intrinsics.checkExpressionValueIsNotNull(var10, "ImageAnalysis.Builder()\n…(10)\n            .build()");
+
         ImageAnalysis analysis = var10;
         analysis.setAnalyzer((Executor)Executors.newSingleThreadExecutor(), null);
         return analysis;
@@ -397,10 +358,10 @@ public class CameraCropFragment extends Fragment {
                         TextureView textureView = var7;
                         TextureViewMeteringPointFactory factory = new TextureViewMeteringPointFactory(textureView);
                         MeteringPoint var8 = factory.createPoint(event.getX(), event.getY());
-                        //Intrinsics.checkExpressionValueIsNotNull(var8, "factory.createPoint(event.x, event.y)");
+
                         MeteringPoint point = var8;
                         FocusMeteringAction var9 = androidx.camera.core.FocusMeteringAction.Builder.from(point).build();
-                        //Intrinsics.checkExpressionValueIsNotNull(var9, "FocusMeteringAction.Builder.from(point).build()");
+
                         FocusMeteringAction action = var9;
                         cameraControl.startFocusAndMetering(action);
                         return true;
@@ -429,22 +390,12 @@ public class CameraCropFragment extends Fragment {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmapFinal.compress(CompressFormat.JPEG, 100, (OutputStream)stream);
         byte[] var10000 = stream.toByteArray();
-        //Intrinsics.checkExpressionValueIsNotNull(var10000, "stream.toByteArray()");
+
         return var10000;
     }
 
     private final String saveImageORIGINAL(byte[] bytes) {
         FileOutputStream outStream = null;
-
-        /**
-        String fileName = "CROP_" + System.currentTimeMillis() + ".jpg";
-
-        File directoryName = new File(Environment.getExternalStorageDirectory().toString() + "/CustomImage");
-        File file = new File(directoryName, fileName);
-        if (!directoryName.exists()) {
-            directoryName.mkdirs();
-        }
-         */
 
         File path = clearTempImages();
 
@@ -472,62 +423,8 @@ public class CameraCropFragment extends Fragment {
         }
 
         String var10000 = file.getAbsolutePath();
-        //Intrinsics.checkExpressionValueIsNotNull(var10000, "file.absolutePath");
+
         return var10000;
-    }
-
-    private File createImageCropFile(Bitmap bmp) {
-        File path = clearTempImages();
-
-        if (path == null) {
-            path = getActivity().getBaseContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-            Log.i(TAG, "path = " + path.getPath());
-        }
-
-        File fileImageOrigin = new File(path,  "CROP" + ".jpg");
-
-        Log.i(TAG, "file1 = " + fileImageOrigin.getPath());
-        this.pictureImagePath = fileImageOrigin.getAbsolutePath();
-
-        try {
-            FileOutputStream outputStream = new FileOutputStream(fileImageOrigin);
-            bmp.compress(Bitmap.CompressFormat.PNG, 100, outputStream); // bmp is your Bitmap instance
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        fileUri = Uri.fromFile(fileImageOrigin);
-
-        return fileImageOrigin;
-    }
-
-    private final String saveImage(byte[] bytes) {
-        FileOutputStream outStream = null;
-        String fileName = "KTP" + System.currentTimeMillis() + ".jpg";
-        Context var10000 = this.requireContext();
-        //Intrinsics.checkExpressionValueIsNotNull(var10000, "requireContext()");
-        Context context = var10000;
-        File directoryName = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File file = new File(directoryName, fileName);
-        if (directoryName != null && !directoryName.exists()) {
-            directoryName.mkdirs();
-        }
-
-        try {
-            file.createNewFile();
-            outStream = new FileOutputStream(file);
-            outStream.write(bytes);
-            MediaScannerConnection.scanFile(context, new String[]{file.getPath()}, new String[]{"image/jpeg"}, (OnScanCompletedListener)null);
-            outStream.close();
-        } catch (FileNotFoundException var8) {
-            var8.printStackTrace();
-        } catch (IOException var9) {
-            var9.printStackTrace();
-        }
-
-        String var10 = file.getAbsolutePath();
-        //Intrinsics.checkExpressionValueIsNotNull(var10, "file.absolutePath");
-        return var10;
     }
 
     private final Bitmap rotate(@NotNull Bitmap $this$rotate, int degree) {
@@ -543,9 +440,6 @@ public class CameraCropFragment extends Fragment {
     // $FF: synthetic method
     public static final ProcessCameraProvider access$getProcessCameraProvider$p(CameraCropFragment $this) {
         ProcessCameraProvider var10000 = $this.processCameraProvider;
-        if (var10000 == null) {
-            //Intrinsics.throwUninitializedPropertyAccessException("processCameraProvider");
-        }
 
         return var10000;
     }
@@ -553,9 +447,6 @@ public class CameraCropFragment extends Fragment {
     // $FF: synthetic method
     public static final ListenableFuture access$getProcessCameraProviderFuture$p(CameraCropFragment $this) {
         ListenableFuture var10000 = $this.processCameraProviderFuture;
-        if (var10000 == null) {
-            //Intrinsics.throwUninitializedPropertyAccessException("processCameraProviderFuture");
-        }
 
         return var10000;
     }
