@@ -123,7 +123,13 @@ public class CameraCropFragment extends Fragment {
     @Nullable
     public View onCreateView(@NotNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         //Intrinsics.checkParameterIsNotNull(inflater, "inflater");
+        init();
         return inflater.inflate(R.layout.fragment_camera_crop, container, false);
+    }
+
+    private void init() {
+        idProcesso = getArguments().getString(ScanConstants.ID_PROCESS_SCAN_IMAGE);
+        tipoImagem = getArguments().getString(ScanConstants.IMAGE_TYPE_SCAN_IMAGE);
     }
 
     public void onViewCreated(@NotNull View view, @Nullable Bundle savedInstanceState) {
@@ -280,6 +286,17 @@ public class CameraCropFragment extends Fragment {
         return null;
     }
 
+    protected void postImagePick(Bitmap bitmap) {
+        Uri uri = Utils.getUri(getActivity(), bitmap);
+
+        if (bitmap != null && !bitmap.isRecycled()) {
+            bitmap.recycle();
+            bitmap = null;
+        }
+
+        scanner.onBitmapSelect(uri, this.pictureImagePath);
+    }
+
     private final ImageCapture buildImageCaptureUseCase() {
         PreviewView var10000 = (PreviewView)this._$_findCachedViewById(R.id.viewFinder);
         //Intrinsics.checkExpressionValueIsNotNull(var10000, "viewFinder");
@@ -288,14 +305,22 @@ public class CameraCropFragment extends Fragment {
         boolean var4 = false;
         boolean var5 = false;
         boolean var7 = false;
+
         display.getMetrics(var3);
+
         androidx.camera.core.ImageCapture.Builder var10 = new androidx.camera.core.ImageCapture.Builder();
+
         //Intrinsics.checkExpressionValueIsNotNull(display, "display");
-        ImageCapture var11 = var10.setTargetRotation(display.getRotation()).setTargetResolution(new Size(var3.widthPixels, var3.heightPixels))
-                .setFlashMode(ImageCapture.FLASH_MODE_AUTO).setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY).build();
+
+        ImageCapture var11 = var10.setTargetRotation(display.getRotation())
+                .setTargetResolution(new Size(var3.widthPixels, var3.heightPixels))
+                .setFlashMode(ImageCapture.FLASH_MODE_AUTO)
+                .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY).build();
         //Intrinsics.checkExpressionValueIsNotNull(var11, "ImageCapture.Builder()\n …ITY)\n            .build()");
         final ImageCapture capture = var11;
+
         final ExecutorService executor = Executors.newSingleThreadExecutor();
+
         ((ImageButton)this._$_findCachedViewById(R.id.cameraCaptureImageButton)).setOnClickListener((OnClickListener)(new OnClickListener() {
             public final void onClick(View it) {
                 capture.takePicture(createImageFile(), (Executor)executor, (OnImageSavedCallback)(new OnImageSavedCallback() {
@@ -306,10 +331,23 @@ public class CameraCropFragment extends Fragment {
                         //Intrinsics.checkExpressionValueIsNotNull(bitmap, "bitmap");
                         Bitmap rotatedBitmap = var10000.rotate(bitmap, 90);
                         var10000 = CameraCropFragment.this;
+
                         PreviewView var10002 = (PreviewView)CameraCropFragment.this._$_findCachedViewById(R.id.viewFinder);
                         //Intrinsics.checkExpressionValueIsNotNull(var10002, "viewFinder");
                         byte[] croppedImage = var10000.cropImage(rotatedBitmap, (View)var10002, CameraCropFragment.access$getRectangle$p(CameraCropFragment.this));
-                        CameraCropFragment.this.saveImage(croppedImage);
+
+                        //if (bitmapCrop != null) {
+                        //    createImageCropFile(bitmapCrop);
+                        //}
+                        //CameraCropFragment.this.saveImage(croppedImage);
+                        String pathImageCrop = CameraCropFragment.this.saveImageORIGINAL(croppedImage);
+                        pictureImagePath = pathImageCrop;
+
+                        Bitmap bitmapCrop = BitmapFactory.decodeFile(pictureImagePath);
+
+                        if (bitmapCrop != null) {
+                            postImagePick(bitmapCrop);
+                        }
                     }
 
                     public void onError(int imageCaptureError, @NotNull String message, @Nullable Throwable cause) {
@@ -397,12 +435,29 @@ public class CameraCropFragment extends Fragment {
 
     private final String saveImageORIGINAL(byte[] bytes) {
         FileOutputStream outStream = null;
+
+        /**
         String fileName = "CROP_" + System.currentTimeMillis() + ".jpg";
+
         File directoryName = new File(Environment.getExternalStorageDirectory().toString() + "/CustomImage");
         File file = new File(directoryName, fileName);
         if (!directoryName.exists()) {
             directoryName.mkdirs();
         }
+         */
+
+        File path = clearTempImages();
+
+        if (path == null) {
+            path = getActivity().getBaseContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+            Log.i(TAG, "path = " + path.getPath());
+        }
+
+        File fileImageOrigin = new File(path,  "CROP" + ".jpg");
+
+        Log.i(TAG, "file1 = " + fileImageOrigin.getPath());
+
+        File file = fileImageOrigin;
 
         try {
             file.createNewFile();
@@ -419,6 +474,31 @@ public class CameraCropFragment extends Fragment {
         String var10000 = file.getAbsolutePath();
         //Intrinsics.checkExpressionValueIsNotNull(var10000, "file.absolutePath");
         return var10000;
+    }
+
+    private File createImageCropFile(Bitmap bmp) {
+        File path = clearTempImages();
+
+        if (path == null) {
+            path = getActivity().getBaseContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+            Log.i(TAG, "path = " + path.getPath());
+        }
+
+        File fileImageOrigin = new File(path,  "CROP" + ".jpg");
+
+        Log.i(TAG, "file1 = " + fileImageOrigin.getPath());
+        this.pictureImagePath = fileImageOrigin.getAbsolutePath();
+
+        try {
+            FileOutputStream outputStream = new FileOutputStream(fileImageOrigin);
+            bmp.compress(Bitmap.CompressFormat.PNG, 100, outputStream); // bmp is your Bitmap instance
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        fileUri = Uri.fromFile(fileImageOrigin);
+
+        return fileImageOrigin;
     }
 
     private final String saveImage(byte[] bytes) {
