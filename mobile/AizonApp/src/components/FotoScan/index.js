@@ -76,33 +76,6 @@ export default function FotoScan(props) {
     setIsVisible(true);
   };
 
-
-
-  function scanner(tipoImagem) {
-    scanImageForProcess(tipoImagem);
-  }
-
-  
-
-  /**
-    let promise = new Promise(function(resolve, reject) {
-      //
-    });
-   */
-  async function scanImageForProcess(tipoImagem) {
-    try {
-      const response = await OpenCV.scanImageForProcess(idProcess, tipoImagem);
-
-      let msg = "scanImageForProcess";
-
-      postScanner(tipoImagem);
-
-      alertMessage( msg, null, null, 'AIZON-IMAGE');
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
   function scannerCanvas(tipoImagem) {
     scanImageCameraXCrop(tipoImagem);
   }
@@ -163,6 +136,7 @@ export default function FotoScan(props) {
 
   //FORMA 1 DE CHAMAR TODO O FLUXO DE PROCESSAMENTO
   //Processa todo o fluxo via Chamadas via Promise
+  /**
   async function processAllViaPromise() {
 
     if (!images || images.length == 0) {
@@ -177,6 +151,7 @@ export default function FotoScan(props) {
 
     executePromisePipeline(0);//await PhotoService.processPipeline('/image/processPipeline', idProcess);
   }
+   */
 
    /**
    * Após o clique do showImages ou showImagesTemp
@@ -186,7 +161,7 @@ export default function FotoScan(props) {
    *  2- http://45.4.186.2:5000//image/data_extract2/{{id}}
    *  3- http://45.4.186.2:5000//image/data_validate2/{{id}}
    *  4- http://45.4.186.2:5000//image/pdf_process_certify2/{{id}}
-   */
+
   function executePromisePipeline(contador) {
     //console.log('AIZONApp_ Contador = ' + contador.toString() );
 
@@ -242,6 +217,8 @@ export default function FotoScan(props) {
         return false;
       }
    }
+      
+  */
 
 
   //FORMA 2 DE CHAMAR TODO O FLUXO DE PROCESSAMENTO
@@ -442,6 +419,7 @@ export default function FotoScan(props) {
     }
   }
 
+  /**
   function limparTela() {
     setImages([]);
     setIsVisibleList(false);
@@ -453,6 +431,8 @@ export default function FotoScan(props) {
   function goToDataVisualization(data) {
     navigation.navigate('ViewData', { side: '0', 'identificacaoDocumento': data.id});
   }
+
+  */
 
   function getMainScreen() {
     return (
@@ -469,7 +449,7 @@ export default function FotoScan(props) {
 
                 <ContainerDadosView>
                   <TitleText> Frente - {idProcess}: </TitleText>
-                  <SubmitButton onPress={ () => scanner(0) }>
+                  <SubmitButton onPress={ () => scannerCanvas(0) }>
                     <SubmitText>Foto</SubmitText>
                   </SubmitButton>
                 </ContainerDadosView>
