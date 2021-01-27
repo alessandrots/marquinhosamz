@@ -1,5 +1,6 @@
 package com.scanlibrary;
 
+import android.Manifest;
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
@@ -56,7 +57,9 @@ import com.google.common.util.concurrent.ListenableFuture;
 //import com.rifafauzi.customcamera.R.id;
 //import com.rifafauzi.customcamera.R.layout;
 //import com.rifafauzi.customcamera.ui.camera.CameraFragmentDirections.ActionLaunchGalleryFragment;
+import com.jakewharton.rxbinding2.view.RxView;
 import com.rifafauzi.customcamera.utils.FileCreator;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -114,6 +117,8 @@ public class CameraCropFragment extends Fragment {
         super.onCreate(savedInstanceState);
         ListenableFuture var10001 = ProcessCameraProvider.getInstance(this.requireContext());
         this.processCameraProviderFuture = var10001;
+
+
     }
 
     @Nullable
@@ -131,6 +136,26 @@ public class CameraCropFragment extends Fragment {
 
         super.onViewCreated(view, savedInstanceState);
         View var10001 = view.findViewById(R.id.rectangle);
+
+        //cameraButton = (ImageButton) view.findViewById(R.id.cameraButton);
+
+        View viewFinder = view.findViewById(R.id.viewFinder);
+
+        RxPermissions rxPermissions = new RxPermissions((Activity)this.scanner);
+
+        RxView.attaches(viewFinder)
+            .compose(rxPermissions.ensure(Manifest.permission.CAMERA,
+                    Manifest.permission.RECORD_AUDIO,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE))
+            .subscribe(granted -> {
+                if (granted) {
+                    Log.i(TAG, "GRANTED...");
+                    //startVideoRecordActivity();
+                } else {
+                    Log.i(TAG, "NOT GRANTED...");
+                    //Snackbar.make(prepareToRecord, getString(R.string.no_enough_permission), Snackbar.LENGTH_SHORT).setAction("Confirm", null).show();
+                }
+            });
 
         this.rectangle = var10001;
         ListenableFuture var10000 = this.processCameraProviderFuture;
