@@ -58,7 +58,6 @@ import com.google.common.util.concurrent.ListenableFuture;
 //import com.rifafauzi.customcamera.R.layout;
 //import com.rifafauzi.customcamera.ui.camera.CameraFragmentDirections.ActionLaunchGalleryFragment;
 import com.jakewharton.rxbinding2.view.RxView;
-import com.rifafauzi.customcamera.utils.FileCreator;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import org.jetbrains.annotations.NotNull;

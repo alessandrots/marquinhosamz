@@ -57,7 +57,6 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.0.0'
 
 
-    //
     // navigation
     //implementation "androidx.navigation:navigation-fragment-ktx:$navigationVersion"
     //implementation "androidx.navigation:navigation-ui-ktx:$navigationVersion"
@@ -68,8 +67,4 @@ dependencies {
     implementation "androidx.camera:camera-view:$cameraXViewVersion"
 
     implementation "androidx.camera:camera-lifecycle:$cameraXLifecycleVersion"
-
-    //
-    implementation project(path: ':camera')
-    implementation project(path: ':cameraxcrop')
 }

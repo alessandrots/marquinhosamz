@@ -242,7 +242,6 @@ dependencies {
     }
     implementation project(path: ':opencv4')
     implementation project(path: ':scanlibrary')
-    implementation project(path: ':camera')
 
     // cameraX
     implementation "androidx.camera:camera-core:$cameraXVersion"

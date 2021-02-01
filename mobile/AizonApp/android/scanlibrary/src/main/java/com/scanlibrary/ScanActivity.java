@@ -26,8 +26,6 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.jakewharton.rxbinding2.view.RxView;
-import com.rifafauzi.customcamera.ui.camera.CameraFragment;
-import com.rifafauzi.customcamera.ui.main.MainActivity;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import org.json.JSONObject;
