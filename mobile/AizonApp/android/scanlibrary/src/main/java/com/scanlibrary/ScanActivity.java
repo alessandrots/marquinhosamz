@@ -1,11 +1,13 @@
 package com.scanlibrary;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PointF;
@@ -14,15 +16,19 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
+import com.jakewharton.rxbinding2.view.RxView;
 import com.rifafauzi.customcamera.ui.camera.CameraFragment;
 import com.rifafauzi.customcamera.ui.main.MainActivity;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import org.json.JSONObject;
 
@@ -43,6 +49,7 @@ import java.util.Set;
 public class ScanActivity extends AppCompatActivity implements IScanner, ComponentCallbacks2 {
 
     private static final String TAG = "AIZONApp_ScanActivity";
+    private static final int REQUEST_CAMERA_PERMISSION = 200;
 
     private PassDataInterface passDataInterface;
     private String idProcesso;
@@ -80,6 +87,25 @@ public class ScanActivity extends AppCompatActivity implements IScanner, Compone
         super.onCreate(savedInstanceState);
         AndroidNetworking.initialize(getApplicationContext());
         setContentView(R.layout.scan_layout);
+
+        View view = findViewById(android.R.id.content).getRootView();
+
+        RxPermissions rxPermissions = new RxPermissions(this);
+
+        RxView.attaches(view)
+        .compose(rxPermissions.ensure(Manifest.permission.CAMERA,
+                Manifest.permission.RECORD_AUDIO,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE))
+        .subscribe(granted -> {
+            if (granted) {
+                Log.i(TAG, "GRANTED...");
+                //startVideoRecordActivity();
+            } else {
+                Log.i(TAG, "NOT GRANTED...");
+                //Snackbar.make(prepareToRecord, getString(R.string.no_enough_permission), Snackbar.LENGTH_SHORT).setAction("Confirm", null).show();
+            }
+        });
+
 
         this.getDataFromIntent(ScanConstants.CHOICE_CANVAS_ACTIVITY, 2);
 
@@ -281,7 +307,18 @@ public class ScanActivity extends AppCompatActivity implements IScanner, Compone
 
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
+        if (requestCode == REQUEST_CAMERA_PERMISSION) {
+            if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                // close the app
+                Toast.makeText(ScanActivity.this, "Sorry!!!, you can't use this app without granting permission", Toast.LENGTH_LONG).show();
+                finish();
+            }
+        }
+    }
 
     private HashMap<Integer, PointF> convertMapPointsToSerializableHash(Map<Integer, PointF> points) {
         Set<Integer> keysPoints = points.keySet();
