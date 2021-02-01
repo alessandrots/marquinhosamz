@@ -21,6 +21,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.error.ANError;
@@ -35,6 +37,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -48,6 +51,14 @@ public class ScanActivity extends AppCompatActivity implements IScanner, Compone
 
     private static final String TAG = "AIZONApp_ScanActivity";
     private static final int REQUEST_CAMERA_PERMISSION = 200;
+
+    private static final ArrayList<String> RECORD_VIDEO_PERMISSIONS = new ArrayList<>(3);
+
+    static {
+        RECORD_VIDEO_PERMISSIONS.add(Manifest.permission.CAMERA);
+        RECORD_VIDEO_PERMISSIONS.add(Manifest.permission.RECORD_AUDIO);
+        RECORD_VIDEO_PERMISSIONS.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+    }
 
     private PassDataInterface passDataInterface;
     private String idProcesso;
@@ -85,6 +96,8 @@ public class ScanActivity extends AppCompatActivity implements IScanner, Compone
         super.onCreate(savedInstanceState);
         AndroidNetworking.initialize(getApplicationContext());
         setContentView(R.layout.scan_layout);
+
+        //getCameraPermission();
 
         View view = findViewById(android.R.id.content).getRootView();
 
@@ -128,49 +141,6 @@ public class ScanActivity extends AppCompatActivity implements IScanner, Compone
 
         fragmentTransaction.commit();
     }
-
-    /**
-    public void startCanvasActivity() {
-        Intent intent = new Intent(this, CanvasPhotoActivity.class);
-
-        this.getDataFromIntent(ScanConstants.ID_PROCESS_SCAN_IMAGE, 0);
-        this.getDataFromIntent(ScanConstants.IMAGE_TYPE_SCAN_IMAGE, 1);
-
-        Bundle bundle = new Bundle();
-
-        bundle.putString(ScanConstants.ID_PROCESS_SCAN_IMAGE, this.idProcesso);
-        bundle.putString(ScanConstants.IMAGE_TYPE_SCAN_IMAGE, Integer.toString(this.tipoImagem));
-        bundle.putInt(ScanConstants.OPEN_INTENT_PREFERENCE, getPreferenceContent());
-
-        intent.putExtras(bundle);
-
-        //EditText editText = (EditText) findViewById(R.id.editText);
-        //String message = editText.getText().toString();
-        //intent.putExtra(EXTRA_MESSAGE, message);
-        //startActivity(intent);
-        startActivityForResult(intent, 2);
-    }
-
-     private void initPickFragment() {
-         this.getDataFromIntent(ScanConstants.ID_PROCESS_SCAN_IMAGE, 0);
-         this.getDataFromIntent(ScanConstants.IMAGE_TYPE_SCAN_IMAGE, 1);
-
-         PickImageFragment fragment = new PickImageFragment();
-         Bundle bundle = new Bundle();
-
-         bundle.putString(ScanConstants.ID_PROCESS_SCAN_IMAGE, this.idProcesso);
-         bundle.putString(ScanConstants.IMAGE_TYPE_SCAN_IMAGE, Integer.toString(this.tipoImagem));
-         bundle.putInt(ScanConstants.OPEN_INTENT_PREFERENCE, getPreferenceContent());
-
-         fragment.setArguments(bundle);
-         android.app.FragmentManager fragmentManager = getFragmentManager();
-         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-         fragmentTransaction.add(R.id.content, fragment);
-
-         fragmentTransaction.commit();
-     }
-
-     */
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -305,6 +275,7 @@ public class ScanActivity extends AppCompatActivity implements IScanner, Compone
 
     }
 
+    /**
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -315,6 +286,63 @@ public class ScanActivity extends AppCompatActivity implements IScanner, Compone
                 Toast.makeText(ScanActivity.this, "Sorry!!!, you can't use this app without granting permission", Toast.LENGTH_LONG).show();
                 finish();
             }
+        }
+    }
+    */
+
+    public void getCameraPermission(){
+        if (!checkPermission()) {
+            requestPermission();
+        }
+    }
+
+    private boolean checkPermission(){
+        /* int result = ContextCompat.checkSelfPermission(this.getBaseContext(), Manifest.permission.CAMERA);
+        if (result == PackageManager.PERMISSION_GRANTED){
+            return true;
+        } else {
+            return false;
+        }
+        */
+
+        Context mContext = getApplicationContext();
+
+        for (String permission: RECORD_VIDEO_PERMISSIONS) {
+            int permissionCheck = ContextCompat.checkSelfPermission(this, permission);
+            if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+                //callbackHandler.onError(new Error(Error.ERROR_PERMISSION, "Unsatisfied permission: " + permission));
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private void requestPermission(){
+        if (ActivityCompat.shouldShowRequestPermissionRationale(ScanActivity.this, Manifest.permission.CAMERA)){
+
+            ActivityCompat.requestPermissions(ScanActivity.this, new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
+        } else {
+
+            ActivityCompat.requestPermissions(ScanActivity.this, new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_CAMERA_PERMISSION:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(ScanActivity.this,"Permission granted",Toast.LENGTH_SHORT).show();
+                    //store permission in shared pref
+
+                }
+
+                else {
+                    Toast.makeText(ScanActivity.this,"Permission denied",Toast.LENGTH_SHORT).show();
+                    //store permission in shared pref
+                }
+                break;
         }
     }
 
